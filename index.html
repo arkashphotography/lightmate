@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>LightMate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #0D0D0D; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; }
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: #1a1a1a; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+    .scroll-hide::-webkit-scrollbar { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    .fade-up { animation: fadeUp 0.35s ease forwards; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    // ─── COLORS ───────────────────────────────────────────────────────────────
+    const C = {
+      bg: '#0D0D0D', surface: '#141414', card: '#1C1C1C',
+      border: '#262626', amber: '#F59E0B', amberDim: '#F59E0B22',
+      text: '#FFFFFF', textSub: '#9CA3AF', textMuted: '#4B5563',
+      green: '#4ADE80', yellow: '#FACC15', red: '#F87171',
+      blue: '#93C5FD', purple: '#A78BFA',
+    };
+
+    // ─── MOCK DATA ────────────────────────────────────────────────────────────
+    const CHALLENGES = [
+      {
+        id: 1, day: 1,
+        title: 'תאורת רמברנדט', duration: "15 דק'", category: 'פורטרט',
+        difficulty: 'מתחיל', diagram: 'rembrandt',
+        description: 'צור תאורת פורטרט קלאסית בסגנון רמברנדט, המאופיינת במשולש אור קטן על הלחי בצד הצל. הצב מקור אור אחד בזווית של 45° מהצד ו-45° למעלה מפניו של הנושא.',
+        tips: [
+          'הצב את האור ב-45° לצד ו-45° למעלה מהנושא',
+          "חפש את 'המשולש' הקטן מתחת לעין בצד הצל",
+          'השתמש ברפלקטור לצד הצל כדי לרכך אותו',
+          'ניתן להשתמש בחלון ביתי כמקור אור זמין',
+        ],
+      },
+      {
+        id: 2, day: 2,
+        title: 'תאורה דרמטית – אור אחד', duration: "20 דק'", category: 'פורטרט',
+        difficulty: 'מתחיל', diagram: 'split',
+        description: 'השתמש במקור אור יחיד ליצירת תאורה דרמטית ועוצמתית. אור צדדי קשה יוצר צללים חזקים שמוסיפים עומק ואופי לפורטרט.',
+        tips: [
+          'הצב אור אחד בדיוק לצד הנושא (90°)',
+          'ככל שהאור רחוק יותר, הצללים חדים יותר',
+          'רקע כהה ייצור קונטרסט מקסימלי',
+          'בקש מהנושא לסובב מעט את הפנים לכיוון האור',
+        ],
+      },
+      {
+        id: 3, day: 3,
+        title: 'תאורת חלון בלבד', duration: "10 דק'", category: 'טבעי',
+        difficulty: 'מתחיל', diagram: 'window',
+        description: 'אחד מסוגי התאורה הקלים ביותר לעבודה – חלון. אור טבעי מחלון יוצר תאורה רכה ויפה במיוחד לפורטרטים.',
+        tips: [
+          'שב את הנושא מולאלת החלון, לא מולו',
+          'עננים בחוץ = diffuser טבעי = אור רך יותר',
+          'השתמש בדף לבן כרפלקטור מהצד השני',
+          'צהריים = אור קשה, בוקר/ערב = אור רך',
+        ],
+      },
+      {
+        id: 4, day: 4,
+        title: 'תאורת פרפר (Beauty)', duration: "25 דק'", category: 'פורטרט',
+        difficulty: 'בינוני', diagram: 'butterfly',
+        description: 'תאורת butterfly היא תאורת הביוטי הקלאסית. האור ממוקם ישירות מעל המצלמה וגורם לצל בצורת פרפר מתחת לאף.',
+        tips: [
+          'הצב את האור גבוה, ישירות מעל ומאחורי המצלמה',
+          'כוון כלפי מטה בזווית של כ-45°',
+          'השתמש ברפלקטור מתחת לפנים לאור רך',
+          'מתאים במיוחד לעצמות לחיים בולטות',
+        ],
+      },
+      {
+        id: 5, day: 5,
+        title: 'תאורה שלוש נקודות', duration: "35 דק'", category: 'פורטרט',
+        difficulty: 'מתקדם', diagram: 'threepoint',
+        description: 'הסטנדרט של עולם הסרטים ופורטרטים מקצועיים. שלושה מקורות אור: key light, fill light ו-rim/hair light.',
+        tips: [
+          'Key light: 45° שמאל/ימין, 45° למעלה – זה האור הראשי',
+          'Fill light: צד שני, חלש יותר ב-1–2 f-stops',
+          'Rim light: מאחורי הנושא ליצירת הפרדה מהרקע',
+          'התחל עם key בלבד, ואז הוסף בהדרגה',
+        ],
+      },
+    ];
+
+    const SETUPS = [
+      { id:1, nameHe:'פורטרט רמברנדט',   name:'Rembrandt Portrait',    category:'portrait', diagram:'rembrandt',  lights:2, gear:['Strobe/Flash','Softbox 60×90','Reflector'],                    suitable:['פורטרט','דרמטי','קלאסי'],   description:'תאורה קלאסית עם משולש אור על הלחי. מייצרת עומק ואופי.' },
+      { id:2, nameHe:'ביוטי פרפר',       name:'Butterfly / Beauty',    category:'portrait', diagram:'butterfly',  lights:1, gear:['Strobe/Flash','Beauty Dish','Reflector'],                   suitable:['ביוטי','פורטרט','אופנה'],   description:'אור מעל המצלמה ליצירת צל פרפר. תאורת ביוטי קלאסית.' },
+      { id:3, nameHe:'ספליט דרמטי',      name:'Split Dramatic',        category:'portrait', diagram:'split',      lights:1, gear:['Flash','Grid/Snoot'],                                      suitable:['דרמטי','אמנותי','עוצמתי'], description:'אור מהצד הגורם לחצי הפנים להיות בצל. עוצמתי ודרמטי.' },
+      { id:4, nameHe:'תאורה שלוש נקודות',name:'Three-Point Portrait',  category:'portrait', diagram:'threepoint', lights:3, gear:['2× Strobe','1× LED','Softbox 60×90','Octabox'],            suitable:['פורטרט','מקצועי','סרטים'],  description:'הסטנדרט הקלאסי – key, fill ו-rim.' },
+      { id:5, nameHe:'מוצר Flat Lay',    name:'Product Flat Lay',      category:'product',  diagram:'flatlay',    lights:2, gear:['2× Softbox','White Background','Diffuser'],                suitable:['מוצר','אינסטגרם','e-commerce'], description:'שני softboxes סימטריים לתאורה אחידה על המוצר.' },
+      { id:6, nameHe:'תאורת חלון',       name:'Window Light Portrait', category:'natural',  diagram:'window',     lights:0, gear:['חלון','Reflector לבן','Diffuser (רשות)'],               suitable:['פורטרט','טבעי','מינימליסטי'], description:'תאורה טבעית מחלון – פשוטה ויפה.' },
+      { id:7, nameHe:'Ring Light',       name:'Ring Light',            category:'fashion',  diagram:'ring',       lights:1, gear:['Ring Light','Tripod','Phone Mount'],                       suitable:['אופנה','יוצרי תוכן','וידאו'], description:'Ring light עגול עם catchlight מושלם בעיניים.' },
+      { id:8, nameHe:'High Key מוצר',   name:'High Key Product',      category:'product',  diagram:'highkey',    lights:3, gear:['3× Strobe','Large Softbox','White Backdrop'],              suitable:['מוצר','קטלוג','נקי'],      description:'תאורה בהירה ואחידה עם רקע לבן – סגנון קטלוג.' },
+    ];
+
+    const GUIDE_RESULTS = {
+      'portrait-1-dramatic': { sid:3, exp:'לפורטרט דרמטי עם אור אחד, Split Lighting הוא האידיאלי. אור צדדי יוצר קונטרסט עמוק ואופי עז.' },
+      'portrait-1-soft':     { sid:2, exp:'לפורטרט רך עם אור אחד, Butterfly Lighting עם Reflector נותן תאורה מחמיאה ורכה.' },
+      'portrait-1-natural':  { sid:6, exp:'לתאורה טבעית, חלון עם Reflector הוא הפתרון הפשוט והיפה ביותר.' },
+      'portrait-2-dramatic': { sid:1, exp:'Rembrandt Lighting עם שני מקורות אור נותן דרמטיות עם שליטה מדויקת על הצללים.' },
+      'portrait-2-soft':     { sid:1, exp:'Rembrandt עם Fill Light חלש יוצר תאורה מאוזנת עם עומק.' },
+      'portrait-2-natural':  { sid:6, exp:'חלון + רפלקטור ליצירת תאורה טבעית ומאוזנת.' },
+      'portrait-3-dramatic': { sid:4, exp:'Three-Point עם Rim חזק ו-Fill מינימלי יוצר מראה קולנועי עוצמתי.' },
+      'portrait-3-soft':     { sid:4, exp:'Three-Point הקלאסי עם Fill שווה ל-Key יוצר תאורה מקצועית ורכה.' },
+      'portrait-3-natural':  { sid:4, exp:'Three-Point עם LED חמים מדמה תאורה טבעית עשירה.' },
+      'product-1-dramatic':  { sid:3, exp:'מקור אור יחיד בזווית חדה יוצר צללים דרמטיים – אפקטיבי לשעונים ותכשיטים.' },
+      'product-1-soft':      { sid:5, exp:'Softbox גדול ממרחק למוצר עם Reflector מהצד השני.' },
+      'product-1-natural':   { sid:6, exp:'חלון גדול עם Diffuser לתאורה טבעית ורכה על המוצר.' },
+      'product-2-dramatic':  { sid:5, exp:'שני Softboxes בזווית א-סימטרית ליצירת צללים מובנים במוצר.' },
+      'product-2-soft':      { sid:5, exp:'Flat Lay: שני Softboxes סימטריים לתאורה אחידה לחלוטין.' },
+      'product-2-natural':   { sid:5, exp:'שני מקורות אור חמים המדמים תאורה טבעית על המוצר.' },
+      'product-3-soft':      { sid:8, exp:'High Key עם שלושה מקורות – רקע לבן עם תאורה מלאה ואחידה.' },
+      'product-3-dramatic':  { sid:8, exp:'שלושה מקורות עם RIM חזק ליצירת "גלו" מסביב למוצר.' },
+      'product-3-natural':   { sid:8, exp:'שלושה LED חמים לתאורה natural-looking עשירה.' },
+      'fashion-1-dramatic':  { sid:3, exp:'Split Light עם Rim נפרד ליצירת סגנון אופנה דרמטי.' },
+      'fashion-1-soft':      { sid:7, exp:'Ring Light לתאורה אחידה ומחמיאה – האהוב על יוצרי תוכן.' },
+      'fashion-1-natural':   { sid:6, exp:'חלון גדול לאופנה בסגנון editorial טבעי.' },
+      'fashion-2-dramatic':  { sid:1, exp:'Rembrandt עם Rim חזק לאופנה עם עומק ודרמה.' },
+      'fashion-2-soft':      { sid:2, exp:'Butterfly עם Fill Light לתאורת ביוטי אופנה מושלמת.' },
+      'fashion-2-natural':   { sid:6, exp:'שני חלונות (corner light) לתאורת editorial טבעית.' },
+      'fashion-3-dramatic':  { sid:4, exp:'Three-Point עם עיצוב קולנועי לאופנה דרמטית.' },
+      'fashion-3-soft':      { sid:4, exp:'Three-Point קלאסי לאופנה מקצועית ורכה.' },
+      'fashion-3-natural':   { sid:4, exp:'שלושה LED חמים לאופנה בסגנון outdoor natural.' },
+    };
+
+    function getSetup(sid) { return SETUPS.find(s => s.id === sid) || SETUPS[0]; }
+    function diffColor(d) {
+      if (d === 'מתחיל') return C.green;
+      if (d === 'בינוני') return C.yellow;
+      return C.red;
+    }
+
+    // ─── TECHNICAL SPECS (per setup id) ──────────────────────────────────────
+    const SETUP_SPECS = {
+      1: {
+        lights: [
+          { name:'Key Light',  color:'#F59E0B', angle:"45° שמאל",  dist:"1.2מ'", height:'+30ס"מ מעיניים',  modifier:'Softbox 60×90',      power:'1/1 (מלא)' },
+          { name:'Fill Light', color:'#93C5FD', angle:"45° ימין",  dist:"1.8מ'", height:'מישור עיניים',     modifier:'Reflector לבן / Octabox', power:'1/4 מה-Key' },
+        ],
+        camera: { aperture:'f/8', iso:'ISO 100', shutter:'1/125s' },
+        ratio:  'Key:Fill = 3:1',
+        tip:    "חפש 'משולש' קטן של אור על הלחי בצד הצל – זה סימן ההיכר של רמברנדט",
+      },
+      2: {
+        lights: [
+          { name:'Main Light', color:'#F59E0B', angle:"0° (ישר מעל המצלמה)", dist:"0.8מ'", height:'+50ס"מ מעיניים, 45° למטה', modifier:'Beauty Dish', power:'1/1 (מלא)' },
+          { name:'Reflector',  color:'#D1D5DB', angle:"מתחת לפנים",          dist:"0.4מ'", height:'מתחת לסנטר',              modifier:'Reflector לבן/כסף',  power:'N/A' },
+        ],
+        camera: { aperture:'f/5.6–8', iso:'ISO 100', shutter:'1/125s' },
+        ratio:  'Main:Reflector = 4:1',
+        tip:    "ודא שהצל מתחת לאף יוצר צורת פרפר – זה סימן ההיכר של הסט-אפ",
+      },
+      3: {
+        lights: [
+          { name:'Key Light', color:'#F59E0B', angle:"90° לצד (ישר מהצד)", dist:"1.0מ'", height:'מישור עיניים', modifier:'Grid / Snoot', power:'1/1 (מלא)' },
+        ],
+        camera: { aperture:'f/8', iso:'ISO 100', shutter:'1/160s' },
+        ratio:  'Key בלבד – אין Fill (יחס אינסוף)',
+        tip:    "בקש מהנושא לסובב 90° לכיוון האור. Grid מונע פיזור לא רצוי",
+      },
+      4: {
+        lights: [
+          { name:'Key Light',  color:'#F59E0B', angle:"45° שמאל",            dist:"1.2מ'", height:'+30ס"מ מעיניים', modifier:'Softbox 60×90',     power:'1/1 (מלא)' },
+          { name:'Fill Light', color:'#93C5FD', angle:"45° ימין",            dist:"1.8מ'", height:'מישור עיניים',    modifier:'Octabox / Umbrella', power:'1/4 מה-Key' },
+          { name:'Rim Light',  color:'#A78BFA', angle:"135° שמאל (מאחורי)", dist:"0.8מ'", height:'+20ס"מ מעיניים', modifier:'Snoot / Grid',       power:'1/2 מה-Key' },
+        ],
+        camera: { aperture:'f/8', iso:'ISO 100', shutter:'1/125s' },
+        ratio:  'Key:Fill = 2:1 · Rim חזק (לא מופיע בפנים)',
+        tip:    "הוסף בסדר: Key → Fill → Rim. בדוק כל אחד לפני שמוסיפים הבא",
+      },
+      5: {
+        lights: [
+          { name:'Left Softbox',  color:'#F59E0B', angle:"90° שמאל", dist:"0.6מ'", height:'45° מעל שטח הצילום', modifier:'Softbox 60×60', power:'1/1 (מלא)' },
+          { name:'Right Softbox', color:'#F59E0B', angle:"90° ימין", dist:"0.6מ'", height:'45° מעל שטח הצילום', modifier:'Softbox 60×60', power:'1/1 (מלא)' },
+        ],
+        camera: { aperture:'f/11–16', iso:'ISO 100', shutter:'1/125s' },
+        ratio:  '1:1 – שני האורות שווים (תאורה אחידה לחלוטין)',
+        tip:    "מצלמה ישר מעל (top-down). ודא שאין צל של ציוד על המוצר",
+      },
+      6: {
+        lights: [
+          { name:'חלון (אור טבעי)', color:'#FDE68A', angle:"90° שמאל/ימין",     dist:"0.5–1.5מ' מהנושא", height:'גובה עיניים',   modifier:'עננים = Diffuser טבעי',    power:'N/A' },
+          { name:'Reflector',       color:'#D1D5DB', angle:"הצד הנגדי לחלון",    dist:"0.6מ'",             height:'מישור עיניים', modifier:'Reflector לבן / דף A2',    power:'N/A' },
+        ],
+        camera: { aperture:'f/2.8–4', iso:'ISO 400–800', shutter:'1/100s' },
+        ratio:  'תלוי מרחק מהחלון – ככל שרחוק יותר, כהה יותר',
+        tip:    "בוקר/ערב = אור רך ויפה. צהריים = קשה. וילון דק = Diffuser מושלם",
+      },
+      7: {
+        lights: [
+          { name:'Ring Light', color:'#F59E0B', angle:"0° (ישר, מאחורי המצלמה)", dist:"0.8–1.2מ'", height:'מישור עיניים', modifier:'Ring Light 26cm+', power:'מלא' },
+        ],
+        camera: { aperture:'f/4–5.6', iso:'ISO 200', shutter:'1/125s' },
+        ratio:  'אור אחד ישיר – אין Fill נפרד',
+        tip:    "המצלמה חייבת להיות במרכז הרינג. הcatchlight העגול בעיניים = סימן ההיכר",
+      },
+      8: {
+        lights: [
+          { name:'Top (Main)',  color:'#F59E0B', angle:"0° מעל",   dist:"0.8מ' מעל", height:'ישר מלמעלה',   modifier:'Large Softbox', power:'1/1 (מלא)' },
+          { name:'Left Fill',  color:'#93C5FD', angle:"90° שמאל", dist:"1.0מ'",      height:'מישור עיניים', modifier:'Softbox 60×60', power:'1/2 מה-Main' },
+          { name:'Right Fill', color:'#93C5FD', angle:"90° ימין", dist:"1.0מ'",      height:'מישור עיניים', modifier:'Softbox 60×60', power:'1/2 מה-Main' },
+        ],
+        camera: { aperture:'f/11', iso:'ISO 100', shutter:'1/125s' },
+        ratio:  '1:1:1 – תאורה מלאה ואחידה',
+        tip:    "הרקע הלבן חייב לקבל 1–2 stops יותר מהנושא כדי להיות לבן טהור",
+      },
+    };
+
+    // ─── SVG DIAGRAMS ─────────────────────────────────────────────────────────
+
+    function Rays({ cx, cy, r = 13, n = 8, color, sw = 1.5 }) {
+      return Array.from({ length: n }).map((_, i) => {
+        const a = (i * 360 / n) * Math.PI / 180;
+        return <line key={i} x1={cx} y1={cy} x2={cx + Math.cos(a)*r} y2={cy + Math.sin(a)*r} stroke={color} strokeWidth={sw} />;
+      });
+    }
+    function Light({ cx, cy, color, label, labelDy = 18, r = 9 }) {
+      return (
+        <g>
+          <Rays cx={cx} cy={cy} r={r+6} color={color} sw={1.2} n={8} />
+          <circle cx={cx} cy={cy} r={r} fill={color} />
+          {label && <text x={cx} y={cy+labelDy} textAnchor="middle" fill={color} fontSize="9" fontWeight="bold">{label}</text>}
+        </g>
+      );
+    }
+    function Subject({ cx = 100, cy = 88 }) {
+      return (
+        <g>
+          <ellipse cx={cx} cy={cy+10} rx={11} ry={14} fill="#3D4451" stroke="#6B7280" strokeWidth="1.2" />
+          <circle cx={cx} cy={cy-6} r={10} fill="#4B5563" stroke="#9CA3AF" strokeWidth="1.2" />
+        </g>
+      );
+    }
+    function Camera({ cx = 100, cy = 162 }) {
+      return (
+        <g>
+          <rect x={cx-12} y={cy-8} width={24} height={16} rx={3} fill="#2D3748" stroke="#6B7280" strokeWidth="1.2" />
+          <circle cx={cx} cy={cy} r={5} fill="#111827" stroke="#9CA3AF" strokeWidth="1" />
+          <rect x={cx-5} y={cy-12} width={10} height={6} rx={2} fill="#2D3748" stroke="#6B7280" strokeWidth="1" />
+          <text x={cx} y={cy+22} textAnchor="middle" fill={C.textMuted} fontSize="8">Camera</text>
+        </g>
+      );
+    }
+    function BgRect() {
+      return (
+        <g>
+          <rect x={42} y={12} width={116} height={32} rx={4} fill="#1E2533" stroke="#374151" strokeWidth={1} />
+          <text x={100} y={32} textAnchor="middle" fill="#6B7280" fontSize="8">Background</text>
+        </g>
+      );
+    }
+    function DashLine({ x1,y1,x2,y2,color,opacity=0.5 }) {
+      return <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth={1} strokeDasharray="4 3" opacity={opacity} />;
+    }
+
+    function DiagramRembrandt({ size=200 }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 200 200">
+          <BgRect />
+          <DashLine x1={30} y1={46} x2={90} y2={82} color={C.amber} />
+          <DashLine x1={170} y1={88} x2={114} y2={88} color={C.blue} opacity={0.35} />
+          <Subject />
+          <Light cx={30} cy={46} color={C.amber} label="Key" labelDy={20} />
+          <Light cx={170} cy={88} color={C.blue} label="Fill" labelDy={18} r={7} />
+          <Camera />
+          <text x={108} y={106} fill={C.amber} fontSize="8" opacity={0.8}>▲ triangle</text>
+        </svg>
+      );
+    }
+    function DiagramButterfly({ size=200 }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 200 200">
+          <BgRect />
+          <DashLine x1={100} y1={55} x2={100} y2={78} color={C.amber} />
+          <Subject />
+          <Light cx={100} cy={46} color={C.amber} label="Main" labelDy={-14} />
+          <rect x={72} y={138} width={56} height={10} rx={3} fill="#D1D5DB" opacity={0.6} />
+          <text x={100} y={162} textAnchor="middle" fill={C.textMuted} fontSize="8">Reflector</text>
+          <Camera />
+          <text x={100} y={112} textAnchor="middle" fill={C.amber} fontSize="8">🦋 shadow</text>
+        </svg>
+      );
+    }
+    function DiagramSplit({ size=200 }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 200 200">
+          <BgRect />
+          <DashLine x1={22} y1={88} x2={86} y2={88} color={C.amber} />
+          <Subject />
+          {/* dark half overlay */}
+          <path d="M100,68 a22,22 0 0,1 0,44 Z" fill="#0D0D0D" opacity="0.6" />
+          <Light cx={22} cy={88} color={C.amber} label="Key" labelDy={20} />
+          <Camera />
+          <text x={128} y={88} fill={C.textMuted} fontSize="8" dominantBaseline="middle">Shadow</text>
+          <text x={72} y={78} fill="#FDE68A" fontSize="8">Light</text>
+        </svg>
+      );
+    }
+    function DiagramThreePoint({ size=200 }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 200 200">
+          <BgRect />
+          <DashLine x1={30} y1={46} x2={88} y2={80} color={C.amber} />
+          <DashLine x1={170} y1={68} x2={115} y2={84} color={C.blue} opacity={0.35} />
+          <DashLine x1={24} y1={132} x2={88} y2={100} color={C.purple} opacity={0.45} />
+          <Subject />
+          <Light cx={30} cy={46} color={C.amber} label="Key" labelDy={-14} r={9} />
+          <Light cx={170} cy={68} color={C.blue} label="Fill" labelDy={18} r={7} />
+          <Light cx={24} cy={132} color={C.purple} label="Rim" labelDy={18} r={7} />
+          <Camera />
+        </svg>
+      );
+    }
+    function DiagramWindow({ size=200 }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 200 200">
+          {/* Wall */}
+          <rect x={4} y={20} width={16} height={162} fill="#1F2937" stroke="#374151" strokeWidth={1} />
+          {/* Window */}
+          <rect x={4} y={52} width={16} height={82} fill="#FEF9C3" opacity={0.85} />
+          <line x1={12} y1={52} x2={12} y2={134} stroke="#9CA3AF" strokeWidth={0.5} />
+          <line x1={4}  y1={93} x2={20} y2={93}  stroke="#9CA3AF" strokeWidth={0.5} />
+          <text x={12} y={146} textAnchor="middle" fill="#FDE68A" fontSize="8">Window</text>
+          {/* Light rays */}
+          {[62,72,82,92,102,112,122].map((y,i) => (
+            <line key={y} x1={20} y1={y} x2={55+i*5} y2={y} stroke="#FDE68A" strokeWidth={1} opacity={0.55-i*0.05} />
+          ))}
+          <Subject />
+          {/* Reflector */}
+          <rect x={158} y={68} width={12} height={52} rx={3} fill="#E5E7EB" opacity={0.65} />
+          <text x={164} y={132} textAnchor="middle" fill={C.textMuted} fontSize="7.5">Ref.</text>
+          <Camera />
+        </svg>
+      );
+    }
+    function DiagramFlatLay({ size=200 }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 200 200">
+          <text x={100} y={14} textAnchor="middle" fill={C.textMuted} fontSize="8">Top-Down View</text>
+          {/* Table */}
+          <rect x={35} y={22} width={130} height={130} rx={5} fill="#1E2533" stroke="#374151" strokeWidth={1} />
+          {/* Product */}
+          <rect x={72} y={62} width={56} height={50} rx={4} fill="#374151" stroke="#6B7280" strokeWidth={1.5} />
+          <text x={100} y={91} textAnchor="middle" fill={C.textMuted} fontSize="9">Product</text>
+          {/* Left softbox */}
+          <rect x={4} y={62} width={24} height={56} rx={3} fill={C.amber} opacity={0.75} />
+          <text x={16} y={132} textAnchor="middle" fill={C.amber} fontSize="7.5">Softbox</text>
+          {[72,83,94,105,114].map(y => <line key={y} x1={28} y1={y} x2={70} y2={y} stroke={C.amber} strokeWidth={1} opacity={0.45} />)}
+          {/* Right softbox */}
+          <rect x={172} y={62} width={24} height={56} rx={3} fill={C.amber} opacity={0.75} />
+          <text x={184} y={132} textAnchor="middle" fill={C.amber} fontSize="7.5">Softbox</text>
+          {[72,83,94,105,114].map(y => <line key={y} x1={172} y1={y} x2={130} y2={y} stroke={C.amber} strokeWidth={1} opacity={0.45} />)}
+          {/* Camera (overhead) */}
+          <circle cx={100} cy={172} r={11} fill="#2D3748" stroke="#6B7280" strokeWidth={1.5} />
+          <circle cx={100} cy={172} r={5}  fill="#111827" stroke="#9CA3AF" strokeWidth={1} />
+          <text x={100} y={192} textAnchor="middle" fill={C.textMuted} fontSize="8">Camera (above)</text>
+        </svg>
+      );
+    }
+    function DiagramRing({ size=200 }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 200 200">
+          <BgRect />
+          <Subject cy={75} />
+          {/* Ring */}
+          <circle cx={100} cy={110} r={38} fill="none" stroke={C.amber} strokeWidth={9} opacity={0.85} />
+          <circle cx={100} cy={110} r={38} fill="none" stroke="#FEF9C3" strokeWidth={3} opacity={0.2} />
+          {/* Camera through ring */}
+          <circle cx={100} cy={110} r={13} fill="#111" stroke="#374151" strokeWidth={1} />
+          <circle cx={100} cy={110} r={6}  fill="#0D0D0D" />
+          <text x={100} y={160} textAnchor="middle" fill={C.amber} fontSize="9" fontWeight="bold">Ring Light</text>
+          <text x={100} y={174} textAnchor="middle" fill={C.textMuted} fontSize="8">Camera through center</text>
+          <text x={100} y={188} textAnchor="middle" fill={C.textSub} fontSize="7.5">⭕ Round catchlight in eyes</text>
+        </svg>
+      );
+    }
+    function DiagramHighKey({ size=200 }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 200 200">
+          {/* White bg */}
+          <rect x={28} y={10} width={144} height={130} rx={4} fill="#E5E7EB" stroke="#D1D5DB" strokeWidth={1} />
+          <text x={100} y={26} textAnchor="middle" fill="#9CA3AF" fontSize="8">White Background</text>
+          <Subject cx={100} cy={88} />
+          {/* Top */}
+          <Light cx={100} cy={18} color={C.amber} label="" r={8} />
+          {/* Left */}
+          <Light cx={34} cy={88} color={C.amber} label="" r={7} />
+          {/* Right */}
+          <Light cx={166} cy={88} color={C.amber} label="" r={7} />
+          <text x={100} y={18} textAnchor="middle" dy={-14} fill={C.amber} fontSize="8">Top</text>
+          <text x={28} y={100} textAnchor="middle" fill={C.amber} fontSize="8">L</text>
+          <text x={172} y={100} textAnchor="middle" fill={C.amber} fontSize="8">R</text>
+          <Camera />
+          <text x={100} y={196} textAnchor="middle" fill={C.amber} fontSize="8" fontWeight="bold">High Key</text>
+        </svg>
+      );
+    }
+
+    function LightingDiagram({ type, size=200 }) {
+      const map = {
+        rembrandt: DiagramRembrandt,
+        butterfly: DiagramButterfly,
+        split:     DiagramSplit,
+        threepoint:DiagramThreePoint,
+        window:    DiagramWindow,
+        flatlay:   DiagramFlatLay,
+        ring:      DiagramRing,
+        highkey:   DiagramHighKey,
+      };
+      const D = map[type] || DiagramRembrandt;
+      return <D size={size} />;
+    }
+
+    // ─── SPACE SCAN ───────────────────────────────────────────────────────────
+    const SCAN_STEPS_TEXT = [
+      '📷 מזהה מקורות אור...',
+      '📐 מנתח גודל ואופי החלל...',
+      '🎨 בודק רקעים ופוטנציאל...',
+      '✨ מכין המלצות תאורה...',
+    ];
+
+    const SCAN_PROMPT = `אתה מומחה תאורה מקצועי לצילום. נתח את תמונת החלל והחזר JSON בלבד, ללא טקסט נוסף.
+
+{
+  "conditions": {
+    "light": "תיאור מקורות האור שזיהית (חלונות, נורות, כיוון, עוצמה)",
+    "lightQuality": "soft/hard/mixed",
+    "space": "תיאור החלל – גודל משוער, צבע קירות, מאפיינים",
+    "background": "רקעים זמינים לצילום",
+    "challenges": "אתגרי התאורה העיקריים בחלל הזה"
+  },
+  "setups": [
+    {
+      "name": "שם הסט-אפ בעברית",
+      "nameEn": "English name",
+      "suitability": "משפט קצר: למה זה מתאים לחלל הזה ספציפית",
+      "accessibility": "עם האור הקיים/ציוד מינימלי/ציוד מלא",
+      "lights": [
+        { "name": "Key Light", "position": "תיאור מיקום", "distance": "X מ'" }
+      ],
+      "camera": { "aperture": "f/X", "iso": "ISO XXX", "shutter": "1/XXXs" },
+      "ratio": "יחסי תאורה",
+      "tip": "טיפ אחד חשוב לחלל הזה",
+      "difficulty": "קל/בינוני/מתקדם",
+      "diagram": "window/rembrandt/split/butterfly/threepoint/ring/flatlay/highkey"
+    }
+  ]
+}
+
+החזר 2-3 סט-אפים. diagram חייב להיות בדיוק מהרשימה הנ"ל. JSON תקין בלבד.`;
+
+    function SpaceScanPage() {
+      const [step, setStep]           = useState(1);
+      const [imgB64, setImgB64]       = useState(null);
+      const [imgType, setImgType]     = useState('image/jpeg');
+      const [preview, setPreview]     = useState(null);
+      const [results, setResults]     = useState(null);
+      const [error, setError]         = useState(null);
+      const [doneSteps, setDoneSteps] = useState([]);
+      const timers = useRef([]);
+
+      function clearTimers() { timers.current.forEach(clearTimeout); timers.current = []; }
+
+      function getExifOrientation(buffer) {
+        const view = new DataView(buffer);
+        if (view.getUint16(0, false) !== 0xFFD8) return 1;
+        let offset = 2;
+        while (offset < view.byteLength) {
+          const marker = view.getUint16(offset, false);
+          offset += 2;
+          if (marker === 0xFFE1) {
+            if (view.getUint32(offset + 2, false) === 0x45786966) {
+              const little = view.getUint16(offset + 8, false) === 0x4949;
+              const ifd = offset + 8 + view.getUint32(offset + 14, little);
+              const tags = view.getUint16(ifd, little);
+              for (let i = 0; i < tags; i++) {
+                if (view.getUint16(ifd + 2 + i * 12, little) === 0x0112)
+                  return view.getUint16(ifd + 2 + i * 12 + 8, little);
+              }
+            }
+            return 1;
+          }
+          if ((marker & 0xFF00) !== 0xFF00) break;
+          offset += view.getUint16(offset, false);
+        }
+        return 1;
+      }
+
+      function handleFile(file) {
+        const arrayReader = new FileReader();
+        arrayReader.onload = ae => {
+          const orientation = getExifOrientation(ae.target.result);
+          const dataReader = new FileReader();
+          dataReader.onload = e => {
+            const original = e.target.result;
+            setPreview(original);
+            const img = new Image();
+            img.onload = () => {
+              const MAX = 1600;
+              const swapped = orientation >= 5 && orientation <= 8;
+              let w = swapped ? img.height : img.width;
+              let h = swapped ? img.width : img.height;
+              if (w > MAX || h > MAX) {
+                if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+                else { w = Math.round(w * MAX / h); h = MAX; }
+              }
+              const canvas = document.createElement('canvas');
+              canvas.width = w; canvas.height = h;
+              const ctx = canvas.getContext('2d');
+              ctx.save();
+              if (orientation === 2) { ctx.translate(w, 0); ctx.scale(-1, 1); }
+              else if (orientation === 3) { ctx.translate(w, h); ctx.rotate(Math.PI); }
+              else if (orientation === 4) { ctx.translate(0, h); ctx.scale(1, -1); }
+              else if (orientation === 5) { ctx.rotate(Math.PI/2); ctx.scale(1, -1); }
+              else if (orientation === 6) { ctx.translate(w, 0); ctx.rotate(Math.PI/2); }
+              else if (orientation === 7) { ctx.translate(w, h); ctx.rotate(Math.PI/2); ctx.scale(1, -1); }
+              else if (orientation === 8) { ctx.translate(0, h); ctx.rotate(-Math.PI/2); }
+              if (swapped) ctx.drawImage(img, 0, 0, h, w);
+              else ctx.drawImage(img, 0, 0, w, h);
+              ctx.restore();
+              const compressed = canvas.toDataURL('image/jpeg', 0.85);
+              setImgType('image/jpeg');
+              setImgB64(compressed.split(',')[1]);
+              setPreview(compressed);
+            };
+            img.src = original;
+          };
+          dataReader.readAsDataURL(file);
+        };
+        arrayReader.readAsArrayBuffer(file);
+      }
+
+      async function analyze() {
+        setStep(2); setError(null); setDoneSteps([]); clearTimers();
+        SCAN_STEPS_TEXT.forEach((txt, i) => {
+          const t = setTimeout(() => setDoneSteps(prev => [...prev, txt]), i * 1600 + 400);
+          timers.current.push(t);
+        });
+
+        try {
+          const resp = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({
+              model: 'claude-sonnet-4-6',
+              max_tokens: 2500,
+              system: 'You are a professional photography lighting expert. Always respond with valid JSON only, no markdown, no explanation, no code blocks. Just raw JSON.',
+              messages: [{
+                role: 'user',
+                content: [
+                  { type: 'image', source: { type: 'base64', media_type: imgType, data: imgB64 } },
+                  { type: 'text', text: SCAN_PROMPT },
+                ],
+              }],
+            }),
+          });
+
+          const rawText = await resp.text();
+          console.log('Server response status:', resp.status);
+          console.log('Server response body:', rawText.slice(0, 500));
+          let data;
+          try { data = JSON.parse(rawText); } catch(e) {
+            throw new Error(`תגובה לא תקינה מהשרת (${resp.status}): ${rawText.slice(0, 100)}`);
+          }
+          if (!resp.ok) throw new Error(data.error?.message || `שגיאה ${resp.status}`);
+
+          const raw = data.content[0].text;
+          // Try to extract JSON - handle markdown code blocks too
+          const cleaned = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+          const match = cleaned.match(/\{[\s\S]*\}/);
+          if (!match) throw new Error('לא התקבל JSON תקין מה-AI. נסה שוב.');
+          clearTimers();
+          try {
+            setResults(JSON.parse(match[0]));
+          } catch (parseErr) {
+            throw new Error('שגיאה בעיבוד תגובת ה-AI. נסה שוב.');
+          }
+          setStep(3);
+        } catch (err) {
+          clearTimers();
+          setError(err.message);
+          setStep(1);
+        }
+      }
+
+      function reset() { clearTimers(); setStep(1); setResults(null); setPreview(null); setImgB64(null); setError(null); setDoneSteps([]); }
+
+      // ── Step 1: Upload ────────────────────────────────────────────────────
+      if (step === 1) return (
+        <div style={{ padding:'24px 18px 100px' }}>
+          <div style={{ color:'#fff', fontSize:24, fontWeight:800, marginBottom:2 }}>סריקת חלל</div>
+          <div style={{ color:C.textMuted, fontSize:13, marginBottom:20 }}>
+            העלה תמונה של החלל → Claude מנתח → סט-אפים מותאמים לך
+          </div>
+
+          {/* Steps bar */}
+          <div style={{ display:'flex', alignItems:'center', gap:0, marginBottom:24 }}>
+            {['צילום חלל','ניתוח AI','סט-אפים'].map((s, i) => (
+              <React.Fragment key={i}>
+                <div style={{ textAlign:'center', flexShrink:0 }}>
+                  <div style={{ width:28, height:28, borderRadius:'50%', background: i===0 ? C.amber : C.border, display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 4px' }}>
+                    <span style={{ color: i===0 ? '#000' : C.textMuted, fontSize:12, fontWeight:700 }}>{i+1}</span>
+                  </div>
+                  <div style={{ color: i===0 ? C.amber : C.textMuted, fontSize:10, whiteSpace:'nowrap' }}>{s}</div>
+                </div>
+                {i < 2 && <div style={{ flex:1, height:2, background:C.border, margin:'0 6px 18px' }} />}
+              </React.Fragment>
+            ))}
+          </div>
+
+          {/* Upload zone */}
+          {!preview ? (
+            <label style={{ display:'block', background:C.card, border:`2px dashed ${C.border}`, borderRadius:18, padding:'44px 20px', textAlign:'center', cursor:'pointer', marginBottom:16 }}>
+              <input type="file" accept="image/*" capture="environment" style={{ display:'none' }} onChange={e => e.target.files[0] && handleFile(e.target.files[0])} />
+              <div style={{ fontSize:44, marginBottom:12 }}>📷</div>
+              <div style={{ color:'#fff', fontSize:15, fontWeight:600, marginBottom:5 }}>צלם את החלל</div>
+              <div style={{ color:C.textMuted, fontSize:12 }}>נייד: פותח מצלמה · מחשב: בחר קובץ</div>
+            </label>
+          ) : (
+            <div style={{ marginBottom:16 }}>
+              <img src={preview} style={{ width:'100%', borderRadius:16, maxHeight:320, objectFit:'contain', marginBottom:8 }} />
+              <label style={{ display:'block', textAlign:'center', cursor:'pointer', color:C.textMuted, fontSize:12 }}>
+                <input type="file" accept="image/*" style={{ display:'none' }} onChange={e => e.target.files[0] && handleFile(e.target.files[0])} />
+                🔄 החלף תמונה
+              </label>
+            </div>
+          )}
+
+          {error && (
+            <div style={{ background:'#2D0000', border:'1px solid #F8717133', borderRadius:12, padding:'12px 14px', marginBottom:12, color:'#F87171', fontSize:13 }}>
+              ⚠️ {error}
+            </div>
+          )}
+
+          <button
+            onClick={analyze}
+            disabled={!preview}
+            style={{ background: preview ? C.amber : C.border, color: preview ? '#000' : C.textMuted, width:'100%', padding:'16px 0', borderRadius:16, fontSize:15, fontWeight:700, border:'none', cursor: preview ? 'pointer' : 'default' }}
+          >
+            {!preview ? 'העלה תמונה תחילה' : '⚡ נתח את החלל עם Claude'}
+          </button>
+        </div>
+      );
+
+      // ── Step 2: Analyzing ─────────────────────────────────────────────────
+      if (step === 2) return (
+        <div style={{ padding:'32px 18px 100px' }}>
+          <div style={{ color:'#fff', fontSize:22, fontWeight:800, marginBottom:20 }}>Claude מנתח...</div>
+
+          {preview && (
+            <div style={{ position:'relative', marginBottom:24 }}>
+              <img src={preview} style={{ width:'100%', borderRadius:16, maxHeight:280, objectFit:'contain', opacity:0.5 }} />
+              <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+                <div style={{ width:56, height:56, border:`4px solid ${C.border}`, borderTopColor:C.amber, borderRadius:'50%', animation:'spin 0.9s linear infinite' }} />
+              </div>
+            </div>
+          )}
+
+          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+            {doneSteps.map((txt, i) => (
+              <div key={i} className="fade-up" style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:'12px 16px', display:'flex', alignItems:'center', gap:10, color:'#fff', fontSize:13 }}>
+                <span style={{ color:C.green }}>✓</span> {txt}
+              </div>
+            ))}
+            {doneSteps.length < SCAN_STEPS_TEXT.length && (
+              <div style={{ background:C.card, border:`1px solid ${C.amber}22`, borderRadius:12, padding:'12px 16px', display:'flex', alignItems:'center', gap:10, color:C.textSub, fontSize:13 }}>
+                <div style={{ width:14, height:14, border:`2px solid ${C.border}`, borderTopColor:C.amber, borderRadius:'50%', animation:'spin 0.8s linear infinite', flexShrink:0 }} />
+                {SCAN_STEPS_TEXT[doneSteps.length]}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+
+      // ── Step 3: Results ───────────────────────────────────────────────────
+      if (step === 3 && results) {
+        const { conditions, setups } = results;
+        const qLabel = conditions.lightQuality === 'soft' ? '🌤 רך' : conditions.lightQuality === 'hard' ? '☀️ קשה' : '⛅ מעורב';
+        return (
+          <div style={{ paddingBottom:100 }}>
+            {/* Conditions header */}
+            <div style={{ background:'linear-gradient(160deg,#050F1A,#071520)', borderBottom:`1px solid #0EA5E933`, padding:'14px 18px 18px' }}>
+              <button onClick={reset} style={{ color:'#38BDF8', background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginBottom:12 }}>← סריקה חדשה</button>
+              <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
+                <span style={{ background:'#0EA5E922', color:'#38BDF8', border:'1px solid #0EA5E944', fontSize:10, fontWeight:700, padding:'2px 10px', borderRadius:20 }}>Claude Vision ✦</span>
+                <span style={{ background:'#0EA5E922', color:'#38BDF8', fontSize:10, padding:'2px 10px', borderRadius:20, border:'1px solid #0EA5E933' }}>{qLabel}</span>
+              </div>
+              <div style={{ color:'#fff', fontSize:18, fontWeight:800, marginBottom:12 }}>תנאי החלל שזוהו</div>
+              {preview && <img src={preview} style={{ width:'100%', borderRadius:12, maxHeight:200, objectFit:'contain', marginBottom:12, opacity:0.8 }} />}
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+                {[['💡 אור',conditions.light],['📐 חלל',conditions.space],['🎨 רקע',conditions.background],['⚠️ אתגר',conditions.challenges]].map(([lbl,val]) => (
+                  <div key={lbl} style={{ background:'#ffffff0A', borderRadius:10, padding:'8px 10px' }}>
+                    <div style={{ color:'#38BDF8', fontSize:10, fontWeight:600, marginBottom:3 }}>{lbl}</div>
+                    <div style={{ color:'#CBD5E1', fontSize:12, lineHeight:1.5 }}>{val}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Setups */}
+            <div style={{ padding:'18px 18px 8px' }}>
+              <div style={{ color:'#fff', fontSize:16, fontWeight:700, marginBottom:4 }}>סט-אפים מומלצים לחלל הזה</div>
+              <div style={{ color:C.textMuted, fontSize:12, marginBottom:14 }}>{setups.length} אפשרויות מותאמות לתנאים שנמצאו</div>
+
+              {setups.map((s, idx) => (
+                <div key={idx} className="fade-up" style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:18, overflow:'hidden', marginBottom:14 }}>
+                  {/* Card header */}
+                  <div style={{ background:C.surface, borderBottom:`1px solid ${C.border}`, padding:'12px 14px', display:'flex', gap:12, alignItems:'center' }}>
+                    <div style={{ background:C.bg, borderRadius:10, width:52, height:52, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, overflow:'hidden' }}>
+                      <LightingDiagram type={s.diagram || 'rembrandt'} size={44} />
+                    </div>
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <div style={{ color:'#fff', fontSize:14, fontWeight:700 }}>{s.name}</div>
+                      <div style={{ color:C.textMuted, fontSize:11 }}>{s.nameEn}</div>
+                    </div>
+                    <div style={{ display:'flex', flexDirection:'column', gap:4, alignItems:'flex-end', flexShrink:0 }}>
+                      <span style={{ background: s.difficulty==='קל' ? '#14532D' : s.difficulty==='בינוני' ? '#713F12' : '#450A0A', color: s.difficulty==='קל' ? C.green : s.difficulty==='בינוני' ? C.yellow : C.red, fontSize:10, fontWeight:700, padding:'2px 8px', borderRadius:8 }}>{s.difficulty}</span>
+                      <span style={{ background:C.border, color:C.textSub, fontSize:10, padding:'2px 8px', borderRadius:8, whiteSpace:'nowrap' }}>{s.accessibility}</span>
+                    </div>
+                  </div>
+
+                  <div style={{ padding:'12px 14px' }}>
+                    {/* Why suitable */}
+                    <div style={{ background:C.surface, borderRadius:10, padding:'8px 12px', color:C.textSub, fontSize:12, lineHeight:1.6, marginBottom:12 }}>
+                      {s.suitability}
+                    </div>
+
+                    {/* Lights */}
+                    {s.lights?.length > 0 && (
+                      <div style={{ marginBottom:10 }}>
+                        <div style={{ color:'#fff', fontSize:11, fontWeight:700, marginBottom:5 }}>📍 מיקום</div>
+                        {s.lights.map((l, li) => (
+                          <div key={li} style={{ display:'flex', gap:8, marginBottom:4 }}>
+                            <span style={{ color:C.amber, fontSize:11, flexShrink:0 }}>•</span>
+                            <span style={{ color:'#D1D5DB', fontSize:11 }}><b style={{ color:'#fff' }}>{l.name}</b> – {l.position} · {l.distance}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Camera */}
+                    {s.camera && (
+                      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:6, marginBottom:10 }}>
+                        {[['צמצם',s.camera.aperture],['ISO',s.camera.iso],['שאטר',s.camera.shutter]].map(([l,v]) => (
+                          <div key={l} style={{ background:C.surface, borderRadius:8, padding:'6px 4px', textAlign:'center' }}>
+                            <div style={{ color:C.textMuted, fontSize:9, marginBottom:2 }}>{l}</div>
+                            <div style={{ color:C.amber, fontSize:12, fontWeight:800 }}>{v}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Ratio */}
+                    {s.ratio && <div style={{ color:C.textSub, fontSize:11, marginBottom:8 }}>⚖️ {s.ratio}</div>}
+
+                    {/* Tip */}
+                    {s.tip && (
+                      <div style={{ background:'#1A1000', border:`1px solid ${C.amber}22`, borderRadius:10, padding:'8px 12px' }}>
+                        <span style={{ color:C.amber, fontSize:11 }}>💡 </span>
+                        <span style={{ color:'#D1D5DB', fontSize:11 }}>{s.tip}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ padding:'0 18px' }}>
+              <button onClick={reset} style={{ background:C.amber, color:'#000', width:'100%', padding:'14px 0', borderRadius:16, fontSize:14, fontWeight:700, border:'none', cursor:'pointer' }}>
+                📷 סרוק חלל חדש
+              </button>
+            </div>
+          </div>
+        );
+      }
+
+      return null;
+    }
+
+    // ─── NAVBAR ───────────────────────────────────────────────────────────────
+    function Navbar({ page, setPage }) {
+      const tabs = [
+        { id: 'home',    label: 'הבית',   icon: '🏠' },
+        { id: 'coach',   label: 'מאמן',   icon: '🎯' },
+        { id: 'scan',    label: 'סריקה',  icon: '📷' },
+        { id: 'guide',   label: 'מדריך',  icon: '✨' },
+        { id: 'library', label: 'ספרייה', icon: '📚' },
+      ];
+      return (
+        <nav style={{ background: '#0D0D0D', borderTop: `1px solid ${C.border}`, position:'fixed', bottom:0, left:0, right:0, display:'flex', justifyContent:'space-around', padding:'10px 0 14px', zIndex:50 }}>
+          {tabs.map(t => (
+            <button key={t.id} onClick={() => setPage(t.id)} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:3, background:'none', border:'none', cursor:'pointer', color: page===t.id ? C.amber : C.textMuted }}>
+              <span style={{ fontSize:22 }}>{t.icon}</span>
+              <span style={{ fontSize:11, fontWeight:600 }}>{t.label}</span>
+            </button>
+          ))}
+        </nav>
+      );
+    }
+
+    // ─── HOME ─────────────────────────────────────────────────────────────────
+    function HomePage({ setPage, setSelectedChallenge }) {
+      const today = CHALLENGES[0];
+      return (
+        <div style={{ padding:'24px 18px 100px' }}>
+          {/* Header */}
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:24 }}>
+            <div>
+              <div style={{ color:C.amber, fontSize:26, fontWeight:800, letterSpacing:'-0.5px' }}>LightMate</div>
+              <div style={{ color:C.textMuted, fontSize:13, marginTop:2 }}>למד תאורה בצעדים קטנים</div>
+            </div>
+            <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:14, padding:'8px 16px', textAlign:'center' }}>
+              <div style={{ fontSize:20 }}>🔥</div>
+              <div style={{ color:C.amber, fontSize:13, fontWeight:700 }}>7 ימים</div>
+            </div>
+          </div>
+
+          {/* Today's Challenge Hero */}
+          <div
+            onClick={() => { setSelectedChallenge(today); setPage('challenge'); }}
+            style={{ background:'linear-gradient(135deg,#1A1100,#261800)', border:`1px solid ${C.amber}28`, borderRadius:20, padding:'18px 16px', marginBottom:20, cursor:'pointer' }}
+          >
+            <div style={{ display:'flex', gap:8, marginBottom:10 }}>
+              <span style={{ background:C.amber, color:'#000', fontSize:11, fontWeight:700, padding:'2px 10px', borderRadius:20 }}>יום {today.day}</span>
+              <span style={{ color:C.amber, border:`1px solid ${C.amber}40`, fontSize:11, padding:'2px 10px', borderRadius:20 }}>{today.duration}</span>
+            </div>
+            <div style={{ color:C.textSub, fontSize:12, marginBottom:2 }}>האתגר של היום</div>
+            <div style={{ color:'#fff', fontSize:20, fontWeight:700, marginBottom:8 }}>{today.title}</div>
+            <div style={{ color:C.textSub, fontSize:13, lineHeight:1.6, marginBottom:14 }}>{today.description.slice(0,90)}…</div>
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <div style={{ display:'flex', gap:8 }}>
+                <span style={{ background:'#1F1F1F', color:C.textSub, fontSize:11, padding:'3px 10px', borderRadius:20 }}>{today.category}</span>
+                <span style={{ color:diffColor(today.difficulty), fontSize:11 }}>{today.difficulty}</span>
+              </div>
+              <span style={{ background:C.amber, color:'#000', fontSize:13, fontWeight:700, padding:'8px 18px', borderRadius:12 }}>התחל ←</span>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:24 }}>
+            {[['7','ימי רצף'],['12','אתגרים הושלמו']].map(([n,l]) => (
+              <div key={l} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:14, padding:'14px 16px' }}>
+                <div style={{ color:C.amber, fontSize:26, fontWeight:800 }}>{n}</div>
+                <div style={{ color:C.textMuted, fontSize:12, marginTop:2 }}>{l}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Space Scan CTA */}
+          <div
+            onClick={() => setPage('scan')}
+            style={{ background:'linear-gradient(135deg,#050F1A,#071825)', border:'1px solid #0EA5E933', borderRadius:16, padding:'16px 18px', marginBottom:12, cursor:'pointer', display:'flex', alignItems:'center', gap:14 }}
+          >
+            <div style={{ background:'#0EA5E911', border:'1px solid #0EA5E933', borderRadius:12, width:46, height:46, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+              <span style={{ fontSize:22 }}>📷</span>
+            </div>
+            <div style={{ flex:1 }}>
+              <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:2 }}>סרוק את החלל שלך</div>
+              <div style={{ color:'#38BDF8', fontSize:12, opacity:0.8 }}>Claude Vision מנתח → סט-אפים מותאמים לחלל הזה</div>
+            </div>
+            <span style={{ color:'#38BDF8', fontSize:18 }}>←</span>
+          </div>
+
+          {/* Quick Setup CTA */}
+          <div
+            onClick={() => setPage('guide')}
+            style={{ background:'linear-gradient(135deg,#141414,#1A1A1A)', border:`1px solid ${C.amber}33`, borderRadius:16, padding:'16px 18px', marginBottom:24, cursor:'pointer', display:'flex', alignItems:'center', gap:14 }}
+          >
+            <div style={{ background:'#1A1000', border:`1px solid ${C.amber}30`, borderRadius:12, width:46, height:46, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+              <span style={{ fontSize:22 }}>⚡</span>
+            </div>
+            <div style={{ flex:1 }}>
+              <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:2 }}>מצא סט-אפ עכשיו</div>
+              <div style={{ color:C.textMuted, fontSize:12 }}>3 שאלות → מיקום, מצלמה, יחסים – תוך דקה</div>
+            </div>
+            <span style={{ color:C.amber, fontSize:20 }}>←</span>
+          </div>
+
+          {/* More Challenges */}
+          <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:12 }}>אתגרים נוספים</div>
+          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+            {CHALLENGES.slice(1).map(ch => (
+              <div
+                key={ch.id}
+                onClick={() => { setSelectedChallenge(ch); setPage('challenge'); }}
+                style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:14, padding:'12px 14px', display:'flex', alignItems:'center', gap:12, cursor:'pointer' }}
+              >
+                <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, width:52, height:52, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, overflow:'hidden' }}>
+                  <LightingDiagram type={ch.diagram} size={44} />
+                </div>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ color:C.textMuted, fontSize:11, marginBottom:2 }}>יום {ch.day}</div>
+                  <div style={{ color:'#fff', fontSize:14, fontWeight:600 }}>{ch.title}</div>
+                  <div style={{ color:C.textMuted, fontSize:12 }}>{ch.duration} · {ch.category}</div>
+                </div>
+                <span style={{ color:diffColor(ch.difficulty), fontSize:11, fontWeight:500, flexShrink:0 }}>{ch.difficulty}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // ─── CHALLENGE ────────────────────────────────────────────────────────────
+    function ChallengePage({ challenge, setPage }) {
+      const [done, setDone] = useState(false);
+      if (!challenge) { setPage('home'); return null; }
+      return (
+        <div style={{ paddingBottom:24 }}>
+          {/* Topbar */}
+          <div style={{ background:C.surface, borderBottom:`1px solid ${C.border}`, padding:'14px 18px', display:'flex', alignItems:'center', gap:12 }}>
+            <button onClick={() => setPage('home')} style={{ color:C.amber, fontSize:20, background:'none', border:'none', cursor:'pointer', padding:0 }}>←</button>
+            <div>
+              <div style={{ color:C.textMuted, fontSize:11 }}>יום {challenge.day}</div>
+              <div style={{ color:'#fff', fontSize:14, fontWeight:600 }}>{challenge.title}</div>
+            </div>
+          </div>
+
+          <div style={{ padding:'20px 18px' }}>
+            {/* Badges */}
+            <div style={{ display:'flex', gap:8, marginBottom:16 }}>
+              {[challenge.category, challenge.difficulty, challenge.duration].map((b,i) => (
+                <span key={i} style={{ background: i===1 ? 'transparent' : '#1A1A1A', border:`1px solid ${i===1 ? diffColor(challenge.difficulty)+'55' : C.border}`, color: i===1 ? diffColor(challenge.difficulty) : C.textSub, fontSize:11, padding:'3px 10px', borderRadius:20 }}>{b}</span>
+              ))}
+            </div>
+
+            <div style={{ color:'#fff', fontSize:22, fontWeight:700, marginBottom:18 }}>{challenge.title}</div>
+
+            {/* Diagram */}
+            <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:18, padding:16, marginBottom:18, display:'flex', justifyContent:'center' }}>
+              <LightingDiagram type={challenge.diagram} size={200} />
+            </div>
+
+            {/* Description */}
+            <div style={{ color:'#fff', fontSize:14, fontWeight:600, marginBottom:8 }}>על האתגר</div>
+            <div style={{ color:C.textSub, fontSize:13, lineHeight:1.7, marginBottom:20 }}>{challenge.description}</div>
+
+            {/* Tips */}
+            <div style={{ color:'#fff', fontSize:14, fontWeight:600, marginBottom:10 }}>טיפים</div>
+            <div style={{ display:'flex', flexDirection:'column', gap:8, marginBottom:24 }}>
+              {challenge.tips.map((tip,i) => (
+                <div key={i} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:'10px 14px', display:'flex', gap:10 }}>
+                  <span style={{ color:C.amber, fontSize:12, fontWeight:700, flexShrink:0 }}>{i+1}.</span>
+                  <span style={{ color:'#D1D5DB', fontSize:13, lineHeight:1.6 }}>{tip}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Done button */}
+            <button
+              onClick={() => setDone(true)}
+              style={{ background: done ? '#15803D' : C.amber, color: done ? '#fff' : '#000', width:'100%', padding:'16px 0', borderRadius:16, fontSize:15, fontWeight:700, border:'none', cursor:'pointer' }}
+            >
+              {done ? '✓ הושלם! כל הכבוד!' : 'סמן כהושלם'}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── LIBRARY ──────────────────────────────────────────────────────────────
+    function LibraryPage() {
+      const [filter, setFilter]   = useState('all');
+      const [selected, setSelected] = useState(null);
+
+      const filters = [
+        { id:'all',     label:'הכל' },
+        { id:'portrait',label:'פורטרט' },
+        { id:'product', label:'מוצר' },
+        { id:'fashion', label:'אופנה' },
+        { id:'natural', label:'טבעי' },
+      ];
+      const filtered = filter === 'all' ? SETUPS : SETUPS.filter(s => s.category === filter);
+
+      if (selected) {
+        return (
+          <div style={{ paddingBottom:24 }}>
+            <div style={{ background:C.surface, borderBottom:`1px solid ${C.border}`, padding:'14px 18px', display:'flex', alignItems:'center', gap:12 }}>
+              <button onClick={() => setSelected(null)} style={{ color:C.amber, fontSize:20, background:'none', border:'none', cursor:'pointer', padding:0 }}>←</button>
+              <div style={{ color:'#fff', fontSize:14, fontWeight:600 }}>{selected.nameHe}</div>
+            </div>
+            <div style={{ padding:'20px 18px' }}>
+              <div style={{ color:'#fff', fontSize:22, fontWeight:700, marginBottom:2 }}>{selected.nameHe}</div>
+              <div style={{ color:C.textMuted, fontSize:13, marginBottom:16 }}>{selected.name}</div>
+              <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:18, padding:16, marginBottom:16, display:'flex', justifyContent:'center' }}>
+                <LightingDiagram type={selected.diagram} size={200} />
+              </div>
+              <div style={{ color:C.textSub, fontSize:13, lineHeight:1.7, marginBottom:18 }}>{selected.description}</div>
+              <div style={{ color:'#fff', fontSize:14, fontWeight:600, marginBottom:10 }}>ציוד נדרש</div>
+              {selected.gear.map((g,i) => (
+                <div key={i} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:10, padding:'9px 14px', marginBottom:8, display:'flex', gap:10, alignItems:'center' }}>
+                  <span style={{ color:C.amber }}>•</span>
+                  <span style={{ color:'#D1D5DB', fontSize:13 }}>{g}</span>
+                </div>
+              ))}
+              <div style={{ color:'#fff', fontSize:14, fontWeight:600, marginTop:16, marginBottom:10 }}>מתאים ל</div>
+              <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
+                {selected.suitable.map((s,i) => (
+                  <span key={i} style={{ background:'#1A1000', border:`1px solid ${C.amber}33`, color:C.amber, fontSize:12, padding:'4px 12px', borderRadius:20 }}>{s}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div style={{ padding:'24px 18px 100px' }}>
+          <div style={{ color:'#fff', fontSize:24, fontWeight:800, marginBottom:2 }}>ספריית סט-אפים</div>
+          <div style={{ color:C.textMuted, fontSize:13, marginBottom:18 }}>תרשימי תאורה מקצועיים</div>
+
+          {/* Filters */}
+          <div className="scroll-hide" style={{ display:'flex', gap:8, overflowX:'auto', paddingBottom:12, marginBottom:16 }}>
+            {filters.map(f => (
+              <button key={f.id} onClick={() => setFilter(f.id)} style={{ background: filter===f.id ? C.amber : C.card, color: filter===f.id ? '#000' : C.textSub, border: filter===f.id ? 'none' : `1px solid ${C.border}`, borderRadius:20, padding:'6px 16px', fontSize:13, fontWeight:600, whiteSpace:'nowrap', cursor:'pointer', flexShrink:0 }}>{f.label}</button>
+            ))}
+          </div>
+
+          {/* Grid */}
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+            {filtered.map(setup => (
+              <div key={setup.id} onClick={() => setSelected(setup)} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:14, padding:10, cursor:'pointer' }}>
+                <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, height:90, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:8, overflow:'hidden' }}>
+                  <LightingDiagram type={setup.diagram} size={80} />
+                </div>
+                <div style={{ color:'#fff', fontSize:12, fontWeight:600, marginBottom:3 }}>{setup.nameHe}</div>
+                <div style={{ color:C.textMuted, fontSize:11 }}>{setup.lights === 0 ? 'טבעי' : `${setup.lights} אורות`}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // ─── GUIDE ────────────────────────────────────────────────────────────────
+    function GuidePage() {
+      const [step, setStep]     = useState(0);
+      const [shoot, setShoot]   = useState('');
+      const [lights, setLights] = useState('');
+      const [result, setResult] = useState(null);
+
+      const shootTypes   = [{ id:'portrait',label:'פורטרט',icon:'👤' },{ id:'product',label:'מוצר',icon:'📦' },{ id:'fashion',label:'אופנה',icon:'👗' }];
+      const lightOptions = [{ id:'1',label:'אור אחד',icon:'💡' },{ id:'2',label:'שני אורות',icon:'💡💡' },{ id:'3',label:'שלושה+',icon:'💡💡💡' }];
+      const styleOptions = [{ id:'dramatic',label:'דרמטי',desc:'צללים חזקים, קונטרסט' },{ id:'soft',label:'רך',desc:'אור פרוש, מחמיא' },{ id:'natural',label:'טבעי',desc:'דמוי אור יום' }];
+
+      function pickStyle(styleId) {
+        const key  = `${shoot}-${lights}-${styleId}`;
+        const r    = GUIDE_RESULTS[key];
+        const sid  = r ? r.sid : 1;
+        const exp  = r ? r.exp : 'Rembrandt הוא נקודת התחלה מצוינת לכל סוג צילום!';
+        setResult({ setup: getSetup(sid), specs: SETUP_SPECS[sid], exp });
+        setStep(3);
+      }
+      function reset() { setStep(0); setShoot(''); setLights(''); setResult(null); }
+
+      const stepLabels = ['סוג צילום','מקורות אור','סגנון'];
+
+      // Result screen
+      if (step === 3 && result) {
+        const { setup, specs, exp } = result;
+        return (
+          <div style={{ paddingBottom:100 }}>
+
+            {/* ── Header ── */}
+            <div style={{ background:'linear-gradient(160deg,#1A1100,#100D00)', borderBottom:`1px solid ${C.amber}22`, padding:'14px 18px 16px' }}>
+              <button onClick={reset} style={{ color:C.amber, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginBottom:12 }}>← סט-אפ חדש</button>
+              <div style={{ color:C.amber, fontSize:11, fontWeight:700, letterSpacing:1, marginBottom:4 }}>✨ ההמלצה שלנו</div>
+              <div style={{ color:'#fff', fontSize:22, fontWeight:800, marginBottom:4 }}>{setup.nameHe}</div>
+              <div style={{ color:C.textSub, fontSize:13, lineHeight:1.6 }}>{exp}</div>
+            </div>
+
+            {/* ── Diagram ── */}
+            <div style={{ background:C.surface, borderBottom:`1px solid ${C.border}`, padding:'20px 0', display:'flex', justifyContent:'center' }}>
+              <LightingDiagram type={setup.diagram} size={220} />
+            </div>
+
+            {/* ── 📍 Positions ── */}
+            <div style={{ padding:'16px 18px', borderBottom:`1px solid ${C.border}` }}>
+              <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12 }}>
+                <span style={{ fontSize:15 }}>📍</span>
+                <span style={{ color:'#fff', fontSize:14, fontWeight:700 }}>מיקום פנסים</span>
+              </div>
+              {specs.lights.map((l, i) => (
+                <div key={i} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:14, padding:'12px 14px', marginBottom:8 }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
+                    <div style={{ width:9, height:9, borderRadius:'50%', background:l.color, flexShrink:0 }} />
+                    <span style={{ color:l.color, fontSize:13, fontWeight:700 }}>{l.name}</span>
+                  </div>
+                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'6px 12px' }}>
+                    {[['זווית', l.angle], ['מרחק', l.dist], ['גובה', l.height]].map(([label, val]) => (
+                      <div key={label} style={{ gridColumn: label === 'גובה' ? '1/-1' : undefined }}>
+                        <div style={{ color:C.textMuted, fontSize:10, marginBottom:2 }}>{label}</div>
+                        <div style={{ color:'#E5E7EB', fontSize:12, fontWeight:500 }}>{val}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ display:'flex', gap:6, marginTop:10, flexWrap:'wrap' }}>
+                    <span style={{ background:`${C.amber}18`, color:C.amber, fontSize:11, padding:'3px 10px', borderRadius:10, fontWeight:600 }}>{l.modifier}</span>
+                    {l.power !== 'N/A' && <span style={{ background:C.border, color:C.textSub, fontSize:11, padding:'3px 10px', borderRadius:10 }}>{l.power}</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* ── 📷 Camera ── */}
+            <div style={{ padding:'16px 18px', borderBottom:`1px solid ${C.border}` }}>
+              <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12 }}>
+                <span style={{ fontSize:15 }}>📷</span>
+                <span style={{ color:'#fff', fontSize:14, fontWeight:700 }}>הגדרות מצלמה</span>
+              </div>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
+                {[['צמצם', specs.camera.aperture], ['ISO', specs.camera.iso], ['שאטר', specs.camera.shutter]].map(([label, val]) => (
+                  <div key={label} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:'12px 8px', textAlign:'center' }}>
+                    <div style={{ color:C.textMuted, fontSize:10, marginBottom:5 }}>{label}</div>
+                    <div style={{ color:C.amber, fontSize:15, fontWeight:800, letterSpacing:'-0.5px' }}>{val}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── ⚖️ Ratio ── */}
+            <div style={{ padding:'14px 18px', borderBottom:`1px solid ${C.border}`, display:'flex', alignItems:'flex-start', gap:10 }}>
+              <span style={{ fontSize:15, marginTop:1 }}>⚖️</span>
+              <div>
+                <div style={{ color:'#fff', fontSize:13, fontWeight:700, marginBottom:4 }}>יחסי תאורה</div>
+                <div style={{ color:C.textSub, fontSize:13 }}>{specs.ratio}</div>
+              </div>
+            </div>
+
+            {/* ── 💡 Pro Tip ── */}
+            <div style={{ padding:'14px 18px', marginBottom:4 }}>
+              <div style={{ background:'#1A1000', border:`1px solid ${C.amber}30`, borderRadius:14, padding:'14px 16px' }}>
+                <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:6 }}>
+                  <span style={{ fontSize:14 }}>💡</span>
+                  <span style={{ color:C.amber, fontSize:13, fontWeight:700 }}>טיפ מקצועי</span>
+                </div>
+                <div style={{ color:'#D1D5DB', fontSize:13, lineHeight:1.7 }}>{specs.tip}</div>
+              </div>
+            </div>
+
+            <div style={{ padding:'0 18px' }}>
+              <button onClick={reset} style={{ background:C.amber, color:'#000', width:'100%', padding:'14px 0', borderRadius:16, fontSize:14, fontWeight:700, border:'none', cursor:'pointer' }}>צור סט-אפ חדש</button>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div style={{ padding:'24px 18px 100px' }}>
+          <div style={{ color:'#fff', fontSize:24, fontWeight:800, marginBottom:2 }}>מדריך חכם</div>
+          <div style={{ color:C.textMuted, fontSize:13, marginBottom:20 }}>קבל המלצת סט-אפ מותאמת אישית</div>
+
+          {/* Progress */}
+          <div style={{ display:'flex', gap:6, marginBottom:24 }}>
+            {stepLabels.map((s,i) => (
+              <div key={i} style={{ flex:1 }}>
+                <div style={{ height:3, background: i<=step ? C.amber : C.border, borderRadius:2, marginBottom:4 }} />
+                <div style={{ color: i<=step ? C.amber : C.textMuted, fontSize:11, textAlign:'center' }}>{s}</div>
+              </div>
+            ))}
+          </div>
+
+          {step === 0 && (
+            <div>
+              <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:14 }}>מה תצלם?</div>
+              {shootTypes.map(t => (
+                <button key={t.id} onClick={() => { setShoot(t.id); setStep(1); }} style={{ background:C.card, border:`1px solid ${C.border}`, color:'#fff', borderRadius:14, padding:'14px 16px', width:'100%', display:'flex', alignItems:'center', gap:14, cursor:'pointer', marginBottom:10, textAlign:'right' }}>
+                  <span style={{ fontSize:22 }}>{t.icon}</span>
+                  <span style={{ fontSize:15, fontWeight:500, flex:1 }}>{t.label}</span>
+                  <span style={{ color:C.amber }}>←</span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {step === 1 && (
+            <div>
+              <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:14 }}>כמה מקורות אור יש לך?</div>
+              {lightOptions.map(t => (
+                <button key={t.id} onClick={() => { setLights(t.id); setStep(2); }} style={{ background:C.card, border:`1px solid ${C.border}`, color:'#fff', borderRadius:14, padding:'14px 16px', width:'100%', display:'flex', alignItems:'center', gap:14, cursor:'pointer', marginBottom:10, textAlign:'right' }}>
+                  <span style={{ fontSize:18 }}>{t.icon}</span>
+                  <span style={{ fontSize:15, fontWeight:500, flex:1 }}>{t.label}</span>
+                  <span style={{ color:C.amber }}>←</span>
+                </button>
+              ))}
+              <button onClick={() => setStep(0)} style={{ color:C.textMuted, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginTop:4 }}>← חזור</button>
+            </div>
+          )}
+
+          {step === 2 && (
+            <div>
+              <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:14 }}>איזה סגנון תאורה?</div>
+              {styleOptions.map(t => (
+                <button key={t.id} onClick={() => pickStyle(t.id)} style={{ background:C.card, border:`1px solid ${C.border}`, color:'#fff', borderRadius:14, padding:'14px 16px', width:'100%', display:'flex', alignItems:'center', gap:14, cursor:'pointer', marginBottom:10, textAlign:'right' }}>
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontSize:15, fontWeight:500, marginBottom:2 }}>{t.label}</div>
+                    <div style={{ color:C.textMuted, fontSize:12 }}>{t.desc}</div>
+                  </div>
+                  <span style={{ color:C.amber }}>←</span>
+                </button>
+              ))}
+              <button onClick={() => setStep(1)} style={{ color:C.textMuted, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginTop:4 }}>← חזור</button>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ─── LIGHTING COACH ───────────────────────────────────────────────────────
+    const COACH_PROMPT = `אתה מאמן תאורה מקצועי לצילום. נתח את התאורה בתמונה הזו והחזר JSON בלבד, ללא טקסט נוסף.
+
+{
+  "score": 7,
+  "pattern": "שם תבנית התאורה שזוהתה (למשל: רמברנדט, split, butterfly, flat, חלון)",
+  "positives": ["דבר חיובי אחד", "דבר חיובי שני"],
+  "issues": [
+    { "problem": "תיאור הבעיה", "fix": "איך לתקן את זה בפועל", "difficulty": "קל" },
+    { "problem": "תיאור בעיה שניה", "fix": "פתרון מעשי", "difficulty": "בינוני" }
+  ],
+  "quickFix": "הדבר הכי קל שאפשר לעשות עכשיו לשיפור מידי",
+  "mood": "האווירה הנוכחית של התמונה במילה אחת"
+}
+
+score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues. JSON תקין בלבד.`;
+
+    function LightingCoachPage() {
+      const [step, setStep]           = useState(1);
+      const [imgB64, setImgB64]       = useState(null);
+      const [imgType, setImgType]     = useState('image/jpeg');
+      const [preview, setPreview]     = useState(null);
+      const [results, setResults]     = useState(null);
+      const [error, setError]         = useState(null);
+      const [doneSteps, setDoneSteps] = useState([]);
+      const timers = useRef([]);
+      const frontRef = useRef(null);
+      const backRef  = useRef(null);
+
+      const STEPS_TEXT = ['🔍 מזהה תבנית תאורה...','💡 מנתח איכות האור...','🎯 מזהה בעיות ספציפיות...','✨ מכין המלצות שיפור...'];
+
+      function clearTimers() { timers.current.forEach(clearTimeout); timers.current = []; }
+
+      function getExifOrientation(buffer) {
+        const view = new DataView(buffer);
+        if (view.getUint16(0, false) !== 0xFFD8) return 1;
+        let offset = 2;
+        while (offset < view.byteLength) {
+          const marker = view.getUint16(offset, false);
+          offset += 2;
+          if (marker === 0xFFE1) {
+            if (view.getUint32(offset + 2, false) === 0x45786966) {
+              const little = view.getUint16(offset + 8, false) === 0x4949;
+              const ifd = offset + 8 + view.getUint32(offset + 14, little);
+              const tags = view.getUint16(ifd, little);
+              for (let i = 0; i < tags; i++) {
+                if (view.getUint16(ifd + 2 + i * 12, little) === 0x0112)
+                  return view.getUint16(ifd + 2 + i * 12 + 8, little);
+              }
+            }
+            return 1;
+          }
+          if ((marker & 0xFF00) !== 0xFF00) break;
+          offset += view.getUint16(offset, false);
+        }
+        return 1;
+      }
+
+      function handleFile(file) {
+        const arrayReader = new FileReader();
+        arrayReader.onload = ae => {
+          const orientation = getExifOrientation(ae.target.result);
+          const dataReader = new FileReader();
+          dataReader.onload = e => {
+            const original = e.target.result;
+            const img = new Image();
+            img.onload = () => {
+              const MAX = 1600;
+              const swapped = orientation >= 5 && orientation <= 8;
+              let w = swapped ? img.height : img.width;
+              let h = swapped ? img.width : img.height;
+              if (w > MAX || h > MAX) {
+                if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+                else { w = Math.round(w * MAX / h); h = MAX; }
+              }
+              const canvas = document.createElement('canvas');
+              canvas.width = w; canvas.height = h;
+              const ctx = canvas.getContext('2d');
+              ctx.save();
+              if (orientation === 2) { ctx.translate(w, 0); ctx.scale(-1, 1); }
+              else if (orientation === 3) { ctx.translate(w, h); ctx.rotate(Math.PI); }
+              else if (orientation === 4) { ctx.translate(0, h); ctx.scale(1, -1); }
+              else if (orientation === 5) { ctx.rotate(Math.PI/2); ctx.scale(1, -1); }
+              else if (orientation === 6) { ctx.translate(w, 0); ctx.rotate(Math.PI/2); }
+              else if (orientation === 7) { ctx.translate(w, h); ctx.rotate(Math.PI/2); ctx.scale(1, -1); }
+              else if (orientation === 8) { ctx.translate(0, h); ctx.rotate(-Math.PI/2); }
+              if (swapped) ctx.drawImage(img, 0, 0, h, w);
+              else ctx.drawImage(img, 0, 0, w, h);
+              ctx.restore();
+              const compressed = canvas.toDataURL('image/jpeg', 0.85);
+              setImgType('image/jpeg');
+              setImgB64(compressed.split(',')[1]);
+              setPreview(compressed);
+            };
+            img.src = original;
+          };
+          dataReader.readAsDataURL(file);
+        };
+        arrayReader.readAsArrayBuffer(file);
+      }
+
+      async function analyze() {
+        setStep(2); setError(null); setDoneSteps([]); clearTimers();
+        STEPS_TEXT.forEach((txt, i) => {
+          const t = setTimeout(() => setDoneSteps(prev => [...prev, txt]), i * 1500 + 400);
+          timers.current.push(t);
+        });
+        try {
+          const resp = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({
+              model: 'claude-sonnet-4-6',
+              max_tokens: 1500,
+              system: 'You are a professional photography lighting coach. Always respond with valid JSON only, no markdown, no code blocks. Just raw JSON.',
+              messages: [{ role: 'user', content: [
+                { type: 'image', source: { type: 'base64', media_type: imgType, data: imgB64 } },
+                { type: 'text', text: COACH_PROMPT },
+              ]}],
+            }),
+          });
+          const rawText = await resp.text();
+          let data;
+          try { data = JSON.parse(rawText); } catch(e) { throw new Error(`שגיאת שרת: ${rawText.slice(0,80)}`); }
+          if (!resp.ok) throw new Error(data.error?.message || `שגיאה ${resp.status}`);
+          const raw = data.content[0].text;
+          const cleaned = raw.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+          const match = cleaned.match(/\{[\s\S]*\}/);
+          if (!match) throw new Error('לא התקבלה תגובה תקינה. נסה שוב.');
+          clearTimers();
+          setResults(JSON.parse(match[0]));
+          setStep(3);
+        } catch(err) {
+          clearTimers();
+          setError(err.message);
+          setStep(1);
+        }
+      }
+
+      function reset() { clearTimers(); setStep(1); setResults(null); setPreview(null); setImgB64(null); setError(null); setDoneSteps([]); }
+
+      const scoreColor = s => s >= 8 ? C.green : s >= 5 ? C.yellow : C.red;
+      const diffColor2 = d => d === 'קל' ? C.green : d === 'בינוני' ? C.yellow : C.red;
+
+      // Step 1
+      if (step === 1) return (
+        <div style={{ padding:'24px 18px 100px' }}>
+          <div style={{ color:'#fff', fontSize:24, fontWeight:800, marginBottom:4 }}>מאמן תאורה</div>
+          <div style={{ color:C.textMuted, fontSize:13, marginBottom:24 }}>צלם תמונה → AI מנתח את התאורה → טיפים לשיפור מיידי</div>
+
+          {/* Camera buttons */}
+          {!preview ? (
+            <div style={{ display:'flex', flexDirection:'column', gap:12, marginBottom:16 }}>
+              {/* Front camera (portrait / selfie) */}
+              <label style={{ display:'flex', alignItems:'center', gap:16, background:C.card, border:`2px solid ${C.amber}44`, borderRadius:18, padding:'20px 22px', cursor:'pointer' }}>
+                <input ref={frontRef} type="file" accept="image/*" capture="user" style={{ display:'none' }} onChange={e => e.target.files[0] && handleFile(e.target.files[0])} />
+                <div style={{ width:52, height:52, background:C.amber+'22', borderRadius:14, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                  <span style={{ fontSize:26 }}>🤳</span>
+                </div>
+                <div>
+                  <div style={{ color:'#fff', fontSize:15, fontWeight:700 }}>צלם פורטרט</div>
+                  <div style={{ color:C.textMuted, fontSize:12 }}>מצלמה קדמית – לניתוח תאורת פנים</div>
+                </div>
+              </label>
+
+              {/* Back camera (scene / environment) */}
+              <label style={{ display:'flex', alignItems:'center', gap:16, background:C.card, border:`2px solid ${C.border}`, borderRadius:18, padding:'20px 22px', cursor:'pointer' }}>
+                <input ref={backRef} type="file" accept="image/*" capture="environment" style={{ display:'none' }} onChange={e => e.target.files[0] && handleFile(e.target.files[0])} />
+                <div style={{ width:52, height:52, background:'#ffffff0A', borderRadius:14, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                  <span style={{ fontSize:26 }}>📷</span>
+                </div>
+                <div>
+                  <div style={{ color:'#fff', fontSize:15, fontWeight:700 }}>צלם סצנה</div>
+                  <div style={{ color:C.textMuted, fontSize:12 }}>מצלמה אחורית – לניתוח תאורת חלל</div>
+                </div>
+              </label>
+
+              {/* Gallery */}
+              <label style={{ display:'flex', alignItems:'center', gap:16, background:C.card, border:`2px dashed ${C.border}`, borderRadius:18, padding:'16px 22px', cursor:'pointer' }}>
+                <input type="file" accept="image/*" style={{ display:'none' }} onChange={e => e.target.files[0] && handleFile(e.target.files[0])} />
+                <div style={{ width:52, height:52, background:'#ffffff0A', borderRadius:14, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                  <span style={{ fontSize:26 }}>🖼️</span>
+                </div>
+                <div>
+                  <div style={{ color:'#fff', fontSize:15, fontWeight:700 }}>בחר מהגלריה</div>
+                  <div style={{ color:C.textMuted, fontSize:12 }}>העלה תמונה קיימת</div>
+                </div>
+              </label>
+            </div>
+          ) : (
+            <div style={{ marginBottom:16 }}>
+              <img src={preview} style={{ width:'100%', borderRadius:16, maxHeight:340, objectFit:'contain', marginBottom:8 }} />
+              <label style={{ display:'block', textAlign:'center', cursor:'pointer', color:C.textMuted, fontSize:12 }}>
+                <input type="file" accept="image/*" style={{ display:'none' }} onChange={e => e.target.files[0] && handleFile(e.target.files[0])} />
+                🔄 החלף תמונה
+              </label>
+            </div>
+          )}
+
+          {error && <div style={{ background:'#2D0000', border:'1px solid #F8717133', borderRadius:12, padding:'12px 14px', marginBottom:12, color:'#F87171', fontSize:13 }}>⚠️ {error}</div>}
+
+          <button onClick={analyze} disabled={!preview}
+            style={{ background: preview ? C.amber : C.border, color: preview ? '#000' : C.textMuted, width:'100%', padding:'18px 0', borderRadius:16, fontSize:16, fontWeight:700, border:'none', cursor: preview ? 'pointer' : 'default' }}>
+            {!preview ? 'צלם תמונה תחילה' : '⚡ נתח תאורה עם AI'}
+          </button>
+        </div>
+      );
+
+      // Step 2
+      if (step === 2) return (
+        <div style={{ padding:'32px 18px 100px' }}>
+          <div style={{ color:'#fff', fontSize:22, fontWeight:800, marginBottom:20 }}>מנתח תאורה...</div>
+          {preview && (
+            <div style={{ position:'relative', marginBottom:24 }}>
+              <img src={preview} style={{ width:'100%', borderRadius:16, maxHeight:280, objectFit:'contain', opacity:0.5 }} />
+              <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+                <div style={{ width:56, height:56, border:`4px solid ${C.border}`, borderTopColor:C.amber, borderRadius:'50%', animation:'spin 0.9s linear infinite' }} />
+              </div>
+            </div>
+          )}
+          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+            {doneSteps.map((txt, i) => (
+              <div key={i} className="fade-up" style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:'12px 16px', display:'flex', alignItems:'center', gap:10, color:'#fff', fontSize:13 }}>
+                <span style={{ color:C.green }}>✓</span> {txt}
+              </div>
+            ))}
+            {doneSteps.length < STEPS_TEXT.length && (
+              <div style={{ background:C.card, border:`1px solid ${C.amber}22`, borderRadius:12, padding:'12px 16px', display:'flex', alignItems:'center', gap:10, color:C.textSub, fontSize:13 }}>
+                <div style={{ width:14, height:14, border:`2px solid ${C.border}`, borderTopColor:C.amber, borderRadius:'50%', animation:'spin 0.8s linear infinite', flexShrink:0 }} />
+                {STEPS_TEXT[doneSteps.length]}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+
+      // Step 3
+      if (step === 3 && results) {
+        const { score, pattern, positives, issues, quickFix, mood } = results;
+        return (
+          <div style={{ paddingBottom:100 }}>
+            {/* Score header */}
+            <div style={{ background:'linear-gradient(160deg,#0D0D0D,#141414)', borderBottom:`1px solid ${C.border}`, padding:'20px 18px 24px' }}>
+              <button onClick={reset} style={{ color:C.amber, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginBottom:16 }}>← ניתוח חדש</button>
+              <div style={{ display:'flex', alignItems:'center', gap:20 }}>
+                {/* Score circle */}
+                <div style={{ width:80, height:80, borderRadius:'50%', border:`4px solid ${scoreColor(score)}`, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                  <div style={{ color:scoreColor(score), fontSize:28, fontWeight:900, lineHeight:1 }}>{score}</div>
+                  <div style={{ color:C.textMuted, fontSize:10 }}>מתוך 10</div>
+                </div>
+                <div>
+                  <div style={{ color:'#fff', fontSize:18, fontWeight:800, marginBottom:4 }}>ניתוח תאורה</div>
+                  {pattern && <div style={{ color:C.amber, fontSize:13, fontWeight:600, marginBottom:4 }}>תבנית: {pattern}</div>}
+                  {mood && <div style={{ color:C.textMuted, fontSize:12 }}>אווירה: {mood}</div>}
+                </div>
+              </div>
+            </div>
+
+            <div style={{ padding:'18px 18px 8px' }}>
+              {/* Quick fix */}
+              {quickFix && (
+                <div style={{ background:'linear-gradient(135deg,#1A1000,#1A1200)', border:`1px solid ${C.amber}44`, borderRadius:16, padding:'14px 16px', marginBottom:16 }}>
+                  <div style={{ color:C.amber, fontSize:12, fontWeight:700, marginBottom:6 }}>⚡ תיקון מהיר – עכשיו</div>
+                  <div style={{ color:'#fff', fontSize:14, lineHeight:1.6 }}>{quickFix}</div>
+                </div>
+              )}
+
+              {/* Positives */}
+              {positives?.length > 0 && (
+                <div style={{ marginBottom:16 }}>
+                  <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:10 }}>✅ מה עובד טוב</div>
+                  {positives.map((p, i) => (
+                    <div key={i} style={{ display:'flex', gap:10, alignItems:'flex-start', marginBottom:8 }}>
+                      <span style={{ color:C.green, fontSize:14, flexShrink:0 }}>•</span>
+                      <span style={{ color:'#D1D5DB', fontSize:13, lineHeight:1.6 }}>{p}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Issues */}
+              {issues?.length > 0 && (
+                <div style={{ marginBottom:16 }}>
+                  <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:10 }}>🔧 מה לשפר</div>
+                  {issues.map((issue, i) => (
+                    <div key={i} className="fade-up" style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:16, overflow:'hidden', marginBottom:10 }}>
+                      <div style={{ background:C.surface, padding:'10px 14px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                        <span style={{ color:'#fff', fontSize:13, fontWeight:600 }}>{issue.problem}</span>
+                        <span style={{ color:diffColor2(issue.difficulty), fontSize:11, fontWeight:700, background:C.bg, padding:'2px 8px', borderRadius:8, flexShrink:0, marginRight:8 }}>{issue.difficulty}</span>
+                      </div>
+                      <div style={{ padding:'10px 14px', display:'flex', gap:8 }}>
+                        <span style={{ color:C.amber, fontSize:13, flexShrink:0 }}>→</span>
+                        <span style={{ color:'#9CA3AF', fontSize:13, lineHeight:1.6 }}>{issue.fix}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Preview */}
+              {preview && <img src={preview} style={{ width:'100%', borderRadius:14, maxHeight:220, objectFit:'contain', opacity:0.7, marginBottom:16 }} />}
+
+              <button onClick={reset} style={{ background:C.amber, color:'#000', width:'100%', padding:'14px 0', borderRadius:16, fontSize:14, fontWeight:700, border:'none', cursor:'pointer' }}>
+                📷 נתח תמונה חדשה
+              </button>
+            </div>
+          </div>
+        );
+      }
+      return null;
+    }
+
+    // ─── APP ──────────────────────────────────────────────────────────────────
+    function App() {
+      const [page, setPage]                     = useState('home');
+      const [selectedChallenge, setSelectedChallenge] = useState(null);
+
+      return (
+        <div style={{ maxWidth:430, margin:'0 auto', minHeight:'100vh', background:C.bg, position:'relative' }}>
+          {page === 'home'      && <HomePage setPage={setPage} setSelectedChallenge={setSelectedChallenge} />}
+          {page === 'challenge' && <ChallengePage challenge={selectedChallenge} setPage={setPage} />}
+          {page === 'scan'      && <SpaceScanPage />}
+          {page === 'library'   && <LibraryPage />}
+          {page === 'guide'     && <GuidePage />}
+          {page === 'coach'     && <LightingCoachPage />}
+          {page !== 'challenge' && <Navbar page={page} setPage={setPage} />}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
