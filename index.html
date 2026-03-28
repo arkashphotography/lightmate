@@ -108,6 +108,13 @@
       { id:6, nameHe:'תאורת חלון',       name:'Window Light Portrait', category:'natural',  diagram:'window',     lights:0, gear:['חלון','Reflector לבן','Diffuser (רשות)'],               suitable:['פורטרט','טבעי','מינימליסטי'], description:'תאורה טבעית מחלון – פשוטה ויפה.' },
       { id:7, nameHe:'Ring Light',       name:'Ring Light',            category:'fashion',  diagram:'ring',       lights:1, gear:['Ring Light','Tripod','Phone Mount'],                       suitable:['אופנה','יוצרי תוכן','וידאו'], description:'Ring light עגול עם catchlight מושלם בעיניים.' },
       { id:8, nameHe:'High Key מוצר',   name:'High Key Product',      category:'product',  diagram:'highkey',    lights:3, gear:['3× Strobe','Large Softbox','White Backdrop'],              suitable:['מוצר','קטלוג','נקי'],      description:'תאורה בהירה ואחידה עם רקע לבן – סגנון קטלוג.' },
+
+      // ── חתונות ──
+      { id:9,  nameHe:'חופה',            name:'Wedding Ceremony',      category:'wedding',  diagram:'threepoint', lights:3, gear:['2× Strobe על סטנד','1× On-Camera Flash','Diffuser','Wireless Trigger'],          suitable:['חופה','טקס','ריגש'],        description:'תאורה לטקס החופה. Key light מצד שמאל של המסדר, fill מהצד השני, ו-on-camera flash כגיבוי. חשוב להכין מראש ולהסכים עם המסדר.', tips:['הגע שעה לפני לבדיקת תאורת המקום','תאם עם המסדר על מיקום הסטנדים','השתמש ב-rear curtain sync ל-fill עדין','שים לב לנרות ואורות רקע – פחות ISO'] },
+      { id:10, nameHe:'כתובה',           name:'Ketubah Signing',       category:'wedding',  diagram:'window',     lights:1, gear:['1× Softbox גדול','Reflector לבן','LED Panel (רשות)'],                          suitable:['כתובה','אינטימי','דוקומנטרי'], description:'רגע אינטימי ומרגש. softbox גדול מהצד כחלון, רפלקטור להבהרת הצל. אווירה רכה ורומנטית שמאפשרת טבעיות.', tips:['הצב softbox מחוץ לפריים מהצד','השתמש ב-LED חם לאווירה נרות','ISO גבוה + f/2.8 לעומק שדה רדוד','צלם גם details: ידיים, עט, הכתובה עצמה'] },
+      { id:11, nameHe:'צילומי משפחה',   name:'Family Portraits',      category:'wedding',  diagram:'highkey',    lights:3, gear:['2× Strobe','1× Fill Light','Umbrella לבנה','Reflector'],                       suitable:['משפחה','קבוצה','פורמלי'],   description:'תאורה שטוחה ואחידה לקבוצות גדולות. שני softbox/umbrella סימטריים + fill קל מלמטה. מונעת צללים קשים על פנים.', tips:['ודא שהתאורה פרוסה שווה על כל הקבוצה','בקש מהמשפחה לעמוד צפוף – מקל על ה-exposure','ירה ריבוי תמונות – תמיד מישהו עוצם עיניים','f/5.6-f/8 לחדות על כל השורות'] },
+      { id:12, nameHe:'צילומי זוג',     name:'Couple Session',        category:'wedding',  diagram:'rembrandt',  lights:2, gear:['1× Strobe/Flash','1× Reflector/Fill','CTO Gel','Wireless Trigger'],               suitable:['זוג','רומנטי','דרמטי'],     description:'תאורה מחמיאה לשניים. key light ב-45° עם CTO gel לאווירה חמה, רפלקטור להרמת הצל. אפשר לשלב עם backlight.', tips:['CTO gel = אווירה זהב/שקיעה','backlight מאחורי הזוג = rim רומנטי','שוחח עם הזוג על פוזות לפני','השתמש בשעת הזהב (שעה לפני שקיעה)'] },
+      { id:13, nameHe:'מסיבה וריקודים', name:'Reception & Dance Floor',category:'wedding',  diagram:'ring',       lights:2, gear:['On-Camera Flash','Bounce Card','High ISO Camera','Wide Lens f/2.8'],              suitable:['מסיבה','ריקודים','אנרגיה'], description:'זמן ריקודים = אתגר. bounce flash לתקרה לאור רך, או drag shutter לאפקט תנועה. ISO גבוה עם עדשת f/2.8.', tips:['Bounce flash לתקרה לבנה = אור רך ונעים','Drag Shutter (1/30) + flash = תנועה+חדות','ISO 3200-6400 עם גוף מלא','הישאר על רצפת הריקודים, אל תצלם מהצד'] },
     ];
 
     const GUIDE_RESULTS = {
@@ -982,6 +989,7 @@
 
       const filters = [
         { id:'all',     label:'הכל' },
+        { id:'wedding', label:'💍 חתונות' },
         { id:'portrait',label:'פורטרט' },
         { id:'product', label:'מוצר' },
         { id:'fashion', label:'אופנה' },
@@ -1011,11 +1019,20 @@
                 </div>
               ))}
               <div style={{ color:'#fff', fontSize:14, fontWeight:600, marginTop:16, marginBottom:10 }}>מתאים ל</div>
-              <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
+              <div style={{ display:'flex', gap:8, flexWrap:'wrap', marginBottom: selected.tips ? 16 : 0 }}>
                 {selected.suitable.map((s,i) => (
                   <span key={i} style={{ background:'#1A1000', border:`1px solid ${C.amber}33`, color:C.amber, fontSize:12, padding:'4px 12px', borderRadius:20 }}>{s}</span>
                 ))}
               </div>
+              {selected.tips && <>
+                <div style={{ color:'#fff', fontSize:14, fontWeight:600, marginBottom:10 }}>💡 טיפים לשטח</div>
+                {selected.tips.map((tip,i) => (
+                  <div key={i} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:10, padding:'10px 14px', marginBottom:8, display:'flex', gap:10 }}>
+                    <span style={{ color:C.amber, fontSize:12, fontWeight:700, flexShrink:0 }}>{i+1}.</span>
+                    <span style={{ color:'#D1D5DB', fontSize:13, lineHeight:1.6 }}>{tip}</span>
+                  </div>
+                ))}
+              </>}
             </div>
           </div>
         );
