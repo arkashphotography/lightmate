@@ -49,8 +49,11 @@
     const CHALLENGES = [
       {
         id: 1, day: 1,
-        title: 'תאורת רמברנדט', duration: "15 דק'", category: 'פורטרט',
-        difficulty: 'מתחיל', diagram: 'rembrandt',
+        title: 'תאורת רמברנדט', titleEn: 'Rembrandt Lighting',
+        duration: "15 דק'", durationEn: '15 min',
+        category: 'פורטרט', categoryEn: 'Portrait',
+        difficulty: 'מתחיל', difficultyEn: 'Beginner',
+        diagram: 'rembrandt',
         description: 'צור תאורת פורטרט קלאסית בסגנון רמברנדט, המאופיינת במשולש אור קטן על הלחי בצד הצל. הצב מקור אור אחד בזווית של 45° מהצד ו-45° למעלה מפניו של הנושא.',
         tips: [
           'הצב את האור ב-45° לצד ו-45° למעלה מהנושא',
@@ -61,8 +64,11 @@
       },
       {
         id: 2, day: 2,
-        title: 'תאורה דרמטית – אור אחד', duration: "20 דק'", category: 'פורטרט',
-        difficulty: 'מתחיל', diagram: 'split',
+        title: 'תאורה דרמטית – אור אחד', titleEn: 'Dramatic One-Light',
+        duration: "20 דק'", durationEn: '20 min',
+        category: 'פורטרט', categoryEn: 'Portrait',
+        difficulty: 'מתחיל', difficultyEn: 'Beginner',
+        diagram: 'split',
         description: 'השתמש במקור אור יחיד ליצירת תאורה דרמטית ועוצמתית. אור צדדי קשה יוצר צללים חזקים שמוסיפים עומק ואופי לפורטרט.',
         tips: [
           'הצב אור אחד בדיוק לצד הנושא (90°)',
@@ -73,8 +79,11 @@
       },
       {
         id: 3, day: 3,
-        title: 'תאורת חלון בלבד', duration: "10 דק'", category: 'טבעי',
-        difficulty: 'מתחיל', diagram: 'window',
+        title: 'תאורת חלון בלבד', titleEn: 'Window Light Only',
+        duration: "10 דק'", durationEn: '10 min',
+        category: 'טבעי', categoryEn: 'Natural',
+        difficulty: 'מתחיל', difficultyEn: 'Beginner',
+        diagram: 'window',
         description: 'אחד מסוגי התאורה הקלים ביותר לעבודה – חלון. אור טבעי מחלון יוצר תאורה רכה ויפה במיוחד לפורטרטים.',
         tips: [
           'שב את הנושא מולאלת החלון, לא מולו',
@@ -85,8 +94,11 @@
       },
       {
         id: 4, day: 4,
-        title: 'תאורת פרפר (Beauty)', duration: "25 דק'", category: 'פורטרט',
-        difficulty: 'בינוני', diagram: 'butterfly',
+        title: 'תאורת פרפר (Beauty)', titleEn: 'Butterfly (Beauty)',
+        duration: "25 דק'", durationEn: '25 min',
+        category: 'פורטרט', categoryEn: 'Portrait',
+        difficulty: 'בינוני', difficultyEn: 'Intermediate',
+        diagram: 'butterfly',
         description: 'תאורת butterfly היא תאורת הביוטי הקלאסית. האור ממוקם ישירות מעל המצלמה וגורם לצל בצורת פרפר מתחת לאף.',
         tips: [
           'הצב את האור גבוה, ישירות מעל ומאחורי המצלמה',
@@ -97,8 +109,11 @@
       },
       {
         id: 5, day: 5,
-        title: 'תאורה שלוש נקודות', duration: "35 דק'", category: 'פורטרט',
-        difficulty: 'מתקדם', diagram: 'threepoint',
+        title: 'תאורה שלוש נקודות', titleEn: 'Three-Point Lighting',
+        duration: "35 דק'", durationEn: '35 min',
+        category: 'פורטרט', categoryEn: 'Portrait',
+        difficulty: 'מתקדם', difficultyEn: 'Intermediate',
+        diagram: 'threepoint',
         description: 'הסטנדרט של עולם הסרטים ופורטרטים מקצועיים. שלושה מקורות אור: key light, fill light ו-rim/hair light.',
         tips: [
           'Key light: 45° שמאל/ימין, 45° למעלה – זה האור הראשי',
@@ -128,39 +143,39 @@
     ];
 
     const GUIDE_RESULTS = {
-      'portrait-1-dramatic': { sid:3, exp:'לפורטרט דרמטי עם אור אחד, Split Lighting הוא האידיאלי. אור צדדי יוצר קונטרסט עמוק ואופי עז.' },
-      'portrait-1-soft':     { sid:2, exp:'לפורטרט רך עם אור אחד, Butterfly Lighting עם Reflector נותן תאורה מחמיאה ורכה.' },
-      'portrait-1-natural':  { sid:6, exp:'לתאורה טבעית, חלון עם Reflector הוא הפתרון הפשוט והיפה ביותר.' },
-      'portrait-2-dramatic': { sid:1, exp:'Rembrandt Lighting עם שני מקורות אור נותן דרמטיות עם שליטה מדויקת על הצללים.' },
-      'portrait-2-soft':     { sid:1, exp:'Rembrandt עם Fill Light חלש יוצר תאורה מאוזנת עם עומק.' },
-      'portrait-2-natural':  { sid:6, exp:'חלון + רפלקטור ליצירת תאורה טבעית ומאוזנת.' },
-      'portrait-3-dramatic': { sid:4, exp:'Three-Point עם Rim חזק ו-Fill מינימלי יוצר מראה קולנועי עוצמתי.' },
-      'portrait-3-soft':     { sid:4, exp:'Three-Point הקלאסי עם Fill שווה ל-Key יוצר תאורה מקצועית ורכה.' },
-      'portrait-3-natural':  { sid:4, exp:'Three-Point עם LED חמים מדמה תאורה טבעית עשירה.' },
-      'product-1-dramatic':  { sid:3, exp:'מקור אור יחיד בזווית חדה יוצר צללים דרמטיים – אפקטיבי לשעונים ותכשיטים.' },
-      'product-1-soft':      { sid:5, exp:'Softbox גדול ממרחק למוצר עם Reflector מהצד השני.' },
-      'product-1-natural':   { sid:6, exp:'חלון גדול עם Diffuser לתאורה טבעית ורכה על המוצר.' },
-      'product-2-dramatic':  { sid:5, exp:'שני Softboxes בזווית א-סימטרית ליצירת צללים מובנים במוצר.' },
-      'product-2-soft':      { sid:5, exp:'Flat Lay: שני Softboxes סימטריים לתאורה אחידה לחלוטין.' },
-      'product-2-natural':   { sid:5, exp:'שני מקורות אור חמים המדמים תאורה טבעית על המוצר.' },
-      'product-3-soft':      { sid:8, exp:'High Key עם שלושה מקורות – רקע לבן עם תאורה מלאה ואחידה.' },
-      'product-3-dramatic':  { sid:8, exp:'שלושה מקורות עם RIM חזק ליצירת "גלו" מסביב למוצר.' },
-      'product-3-natural':   { sid:8, exp:'שלושה LED חמים לתאורה natural-looking עשירה.' },
-      'fashion-1-dramatic':  { sid:3, exp:'Split Light עם Rim נפרד ליצירת סגנון אופנה דרמטי.' },
-      'fashion-1-soft':      { sid:7, exp:'Ring Light לתאורה אחידה ומחמיאה – האהוב על יוצרי תוכן.' },
-      'fashion-1-natural':   { sid:6, exp:'חלון גדול לאופנה בסגנון editorial טבעי.' },
-      'fashion-2-dramatic':  { sid:1, exp:'Rembrandt עם Rim חזק לאופנה עם עומק ודרמה.' },
-      'fashion-2-soft':      { sid:2, exp:'Butterfly עם Fill Light לתאורת ביוטי אופנה מושלמת.' },
-      'fashion-2-natural':   { sid:6, exp:'שני חלונות (corner light) לתאורת editorial טבעית.' },
-      'fashion-3-dramatic':  { sid:4, exp:'Three-Point עם עיצוב קולנועי לאופנה דרמטית.' },
-      'fashion-3-soft':      { sid:4, exp:'Three-Point קלאסי לאופנה מקצועית ורכה.' },
-      'fashion-3-natural':   { sid:4, exp:'שלושה LED חמים לאופנה בסגנון outdoor natural.' },
+      'portrait-1-dramatic': { sid:3, exp:'לפורטרט דרמטי עם אור אחד, Split Lighting הוא האידיאלי. אור צדדי יוצר קונטרסט עמוק ואופי עז.', expEn:'For dramatic portrait with one light, Split Lighting is ideal. Side light creates deep contrast and strong character.' },
+      'portrait-1-soft':     { sid:2, exp:'לפורטרט רך עם אור אחד, Butterfly Lighting עם Reflector נותן תאורה מחמיאה ורכה.', expEn:'For soft portrait with one light, Butterfly Lighting with Reflector gives flattering, gentle illumination.' },
+      'portrait-1-natural':  { sid:6, exp:'לתאורה טבעית, חלון עם Reflector הוא הפתרון הפשוט והיפה ביותר.', expEn:'For natural light, a window with a Reflector is the simplest and most beautiful solution.' },
+      'portrait-2-dramatic': { sid:1, exp:'Rembrandt Lighting עם שני מקורות אור נותן דרמטיות עם שליטה מדויקת על הצללים.', expEn:'Rembrandt Lighting with two sources gives drama with precise shadow control.' },
+      'portrait-2-soft':     { sid:1, exp:'Rembrandt עם Fill Light חלש יוצר תאורה מאוזנת עם עומק.', expEn:'Rembrandt with weak Fill creates balanced lighting with depth.' },
+      'portrait-2-natural':  { sid:6, exp:'חלון + רפלקטור ליצירת תאורה טבעית ומאוזנת.', expEn:'Window + Reflector for natural, balanced lighting.' },
+      'portrait-3-dramatic': { sid:4, exp:'Three-Point עם Rim חזק ו-Fill מינימלי יוצר מראה קולנועי עוצמתי.', expEn:'Three-Point with strong Rim and minimal Fill creates a cinematic, powerful look.' },
+      'portrait-3-soft':     { sid:4, exp:'Three-Point הקלאסי עם Fill שווה ל-Key יוצר תאורה מקצועית ורכה.', expEn:'Classic Three-Point with Fill equal to Key creates professional, soft lighting.' },
+      'portrait-3-natural':  { sid:4, exp:'Three-Point עם LED חמים מדמה תאורה טבעית עשירה.', expEn:'Three-Point with warm LEDs simulates rich natural light.' },
+      'product-1-dramatic':  { sid:3, exp:'מקור אור יחיד בזווית חדה יוצר צללים דרמטיים – אפקטיבי לשעונים ותכשיטים.', expEn:'Single light at a sharp angle creates dramatic shadows — effective for watches and jewelry.' },
+      'product-1-soft':      { sid:5, exp:'Softbox גדול ממרחק למוצר עם Reflector מהצד השני.', expEn:'Large Softbox from a distance with a Reflector on the opposite side.' },
+      'product-1-natural':   { sid:6, exp:'חלון גדול עם Diffuser לתאורה טבעית ורכה על המוצר.', expEn:'Large window with Diffuser for natural, soft product light.' },
+      'product-2-dramatic':  { sid:5, exp:'שני Softboxes בזווית א-סימטרית ליצירת צללים מובנים במוצר.', expEn:'Two Softboxes at asymmetric angles to create structured shadows in the product.' },
+      'product-2-soft':      { sid:5, exp:'Flat Lay: שני Softboxes סימטריים לתאורה אחידה לחלוטין.', expEn:'Flat Lay: two symmetric Softboxes for completely even lighting.' },
+      'product-2-natural':   { sid:5, exp:'שני מקורות אור חמים המדמים תאורה טבעית על המוצר.', expEn:'Two warm light sources simulating natural product light.' },
+      'product-3-soft':      { sid:8, exp:'High Key עם שלושה מקורות – רקע לבן עם תאורה מלאה ואחידה.', expEn:'High Key with three sources — white background with full, even lighting.' },
+      'product-3-dramatic':  { sid:8, exp:'שלושה מקורות עם RIM חזק ליצירת "גלו" מסביב למוצר.', expEn:'Three sources with strong RIM to create a "glow" around the product.' },
+      'product-3-natural':   { sid:8, exp:'שלושה LED חמים לתאורה natural-looking עשירה.', expEn:'Three warm LEDs for rich natural-looking lighting.' },
+      'fashion-1-dramatic':  { sid:3, exp:'Split Light עם Rim נפרד ליצירת סגנון אופנה דרמטי.', expEn:'Split Light with separate Rim for dramatic fashion style.' },
+      'fashion-1-soft':      { sid:7, exp:'Ring Light לתאורה אחידה ומחמיאה – האהוב על יוצרי תוכן.', expEn:'Ring Light for even, flattering lighting — the content creator favorite.' },
+      'fashion-1-natural':   { sid:6, exp:'חלון גדול לאופנה בסגנון editorial טבעי.', expEn:'Large window for natural editorial-style fashion.' },
+      'fashion-2-dramatic':  { sid:1, exp:'Rembrandt עם Rim חזק לאופנה עם עומק ודרמה.', expEn:'Rembrandt with strong Rim for fashion with depth and drama.' },
+      'fashion-2-soft':      { sid:2, exp:'Butterfly עם Fill Light לתאורת ביוטי אופנה מושלמת.', expEn:'Butterfly with Fill Light for perfect beauty fashion lighting.' },
+      'fashion-2-natural':   { sid:6, exp:'שני חלונות (corner light) לתאורת editorial טבעית.', expEn:'Two windows (corner light) for natural editorial lighting.' },
+      'fashion-3-dramatic':  { sid:4, exp:'Three-Point עם עיצוב קולנועי לאופנה דרמטית.', expEn:'Three-Point with cinematic design for dramatic fashion.' },
+      'fashion-3-soft':      { sid:4, exp:'Three-Point קלאסי לאופנה מקצועית ורכה.', expEn:'Classic Three-Point for professional, soft fashion lighting.' },
+      'fashion-3-natural':   { sid:4, exp:'שלושה LED חמים לאופנה בסגנון outdoor natural.', expEn:'Three warm LEDs for fashion in natural outdoor style.' },
     };
 
     function getSetup(sid) { return SETUPS.find(s => s.id === sid) || SETUPS[0]; }
     function diffColor(d) {
-      if (d === 'מתחיל') return C.green;
-      if (d === 'בינוני') return C.yellow;
+      if (d === 'מתחיל' || d === 'Beginner') return C.green;
+      if (d === 'בינוני' || d === 'Intermediate') return C.yellow;
       return C.red;
     }
 
@@ -173,7 +188,9 @@
         ],
         camera: { aperture:'f/8', iso:'ISO 100', shutter:'1/125s' },
         ratio:  'Key:Fill = 3:1',
+        ratioEn: 'Key:Fill = 3:1',
         tip:    "חפש 'משולש' קטן של אור על הלחי בצד הצל – זה סימן ההיכר של רמברנדט",
+        tipEn:  "Look for the small 'triangle' of light on the cheek in the shadow side — that's the Rembrandt signature",
       },
       2: {
         lights: [
@@ -182,7 +199,9 @@
         ],
         camera: { aperture:'f/5.6–8', iso:'ISO 100', shutter:'1/125s' },
         ratio:  'Main:Reflector = 4:1',
+        ratioEn: 'Main:Reflector = 4:1',
         tip:    "ודא שהצל מתחת לאף יוצר צורת פרפר – זה סימן ההיכר של הסט-אפ",
+        tipEn:  "Make sure the shadow under the nose creates a butterfly shape — that's the signature of this setup",
       },
       3: {
         lights: [
@@ -190,7 +209,9 @@
         ],
         camera: { aperture:'f/8', iso:'ISO 100', shutter:'1/160s' },
         ratio:  'Key בלבד – אין Fill (יחס אינסוף)',
+        ratioEn: 'Key only — no Fill (infinite ratio)',
         tip:    "בקש מהנושא לסובב 90° לכיוון האור. Grid מונע פיזור לא רצוי",
+        tipEn:  "Ask the subject to turn 90° toward the light. Grid prevents unwanted spill",
       },
       4: {
         lights: [
@@ -200,7 +221,9 @@
         ],
         camera: { aperture:'f/8', iso:'ISO 100', shutter:'1/125s' },
         ratio:  'Key:Fill = 2:1 · Rim חזק (לא מופיע בפנים)',
+        ratioEn: 'Key:Fill = 2:1 · Strong Rim (not visible on face)',
         tip:    "הוסף בסדר: Key → Fill → Rim. בדוק כל אחד לפני שמוסיפים הבא",
+        tipEn:  "Build in order: Key → Fill → Rim. Check each one before adding the next",
       },
       5: {
         lights: [
@@ -209,7 +232,9 @@
         ],
         camera: { aperture:'f/11–16', iso:'ISO 100', shutter:'1/125s' },
         ratio:  '1:1 – שני האורות שווים (תאורה אחידה לחלוטין)',
+        ratioEn: '1:1 – both lights equal (completely even lighting)',
         tip:    "מצלמה ישר מעל (top-down). ודא שאין צל של ציוד על המוצר",
+        tipEn:  "Camera directly above (top-down). Make sure no equipment shadow falls on the product",
       },
       6: {
         lights: [
@@ -218,7 +243,9 @@
         ],
         camera: { aperture:'f/2.8–4', iso:'ISO 400–800', shutter:'1/100s' },
         ratio:  'תלוי מרחק מהחלון – ככל שרחוק יותר, כהה יותר',
+        ratioEn: 'Depends on distance from window — the further, the darker',
         tip:    "בוקר/ערב = אור רך ויפה. צהריים = קשה. וילון דק = Diffuser מושלם",
+        tipEn:  "Morning/evening = soft, beautiful light. Noon = harsh. A thin curtain = perfect diffuser",
       },
       7: {
         lights: [
@@ -226,7 +253,9 @@
         ],
         camera: { aperture:'f/4–5.6', iso:'ISO 200', shutter:'1/125s' },
         ratio:  'אור אחד ישיר – אין Fill נפרד',
+        ratioEn: 'Single direct light — no separate Fill',
         tip:    "המצלמה חייבת להיות במרכז הרינג. הcatchlight העגול בעיניים = סימן ההיכר",
+        tipEn:  "Camera must be in the ring center. The round catchlight in the eyes = the signature look",
       },
       8: {
         lights: [
@@ -236,7 +265,9 @@
         ],
         camera: { aperture:'f/11', iso:'ISO 100', shutter:'1/125s' },
         ratio:  '1:1:1 – תאורה מלאה ואחידה',
+        ratioEn: '1:1:1 – full, even lighting',
         tip:    "הרקע הלבן חייב לקבל 1–2 stops יותר מהנושא כדי להיות לבן טהור",
+        tipEn:  "The white background must receive 1–2 stops more than the subject to appear pure white",
       },
     };
 
@@ -854,12 +885,12 @@
     }
 
     // ─── NAVBAR ───────────────────────────────────────────────────────────────
-    function Navbar({ page, setPage, lang, setLang }) {
+    function Navbar({ page, setPage, lang }) {
       const tabs = [
-        { id: 'home',    label: lang==='en'?'Home':'הבית',   icon: '🏠' },
-        { id: 'coach',   label: lang==='en'?'Coach':'מאמן',  icon: '🎯' },
-        { id: 'scan',    label: lang==='en'?'Scan':'סריקה',  icon: '📷' },
-        { id: 'guide',   label: lang==='en'?'Guide':'מדריך', icon: '✨' },
+        { id: 'home',    label: lang==='en'?'Home':'הבית',      icon: '🏠' },
+        { id: 'coach',   label: lang==='en'?'Coach':'מאמן',     icon: '🎯' },
+        { id: 'scan',    label: lang==='en'?'Scan':'סריקה',     icon: '📷' },
+        { id: 'guide',   label: lang==='en'?'Guide':'מדריך',    icon: '✨' },
         { id: 'library', label: lang==='en'?'Library':'ספרייה', icon: '📚' },
       ];
       return (
@@ -871,12 +902,27 @@
                 <span style={{ fontSize:10, fontWeight:600 }}>{t.label}</span>
               </button>
             ))}
-            <button onClick={() => setLang(l => l==='he'?'en':'he')} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:2, background:'none', border:'none', cursor:'pointer', color: C.textMuted, minWidth:0, flex:1 }}>
-              <span style={{ fontSize:20 }}>{lang==='he'?'🇺🇸':'🇮🇱'}</span>
-              <span style={{ fontSize:10, fontWeight:600 }}>{lang==='he'?'EN':'HE'}</span>
-            </button>
           </div>
         </nav>
+      );
+    }
+
+    function LangButton({ lang, setLang }) {
+      return (
+        <button
+          onClick={() => setLang(l => l==='he'?'en':'he')}
+          style={{
+            position:'fixed', top:12, right:12, zIndex:100,
+            display:'flex', alignItems:'center', gap:6,
+            background: C.card,
+            border: `1.5px solid ${C.amber}88`,
+            borderRadius:20, padding:'6px 14px',
+            cursor:'pointer', boxShadow:'0 2px 12px #00000055',
+          }}
+        >
+          <span style={{ fontSize:16 }}>{lang==='he'?'🇺🇸':'🇮🇱'}</span>
+          <span style={{ color:C.amber, fontSize:13, fontWeight:700 }}>{lang==='he'?'EN':'עב'}</span>
+        </button>
       );
     }
 
@@ -906,15 +952,15 @@
           >
             <div style={{ display:'flex', gap:8, marginBottom:10 }}>
               <span style={{ background:C.amber, color:'#000', fontSize:11, fontWeight:700, padding:'2px 10px', borderRadius:20 }}>{t('יום', 'Day')} {today.day}</span>
-              <span style={{ color:C.amber, border:`1px solid ${C.amber}40`, fontSize:11, padding:'2px 10px', borderRadius:20 }}>{today.duration}</span>
+              <span style={{ color:C.amber, border:`1px solid ${C.amber}40`, fontSize:11, padding:'2px 10px', borderRadius:20 }}>{lang==='en' ? today.durationEn : today.duration}</span>
             </div>
             <div style={{ color:C.textSub, fontSize:12, marginBottom:2 }}>{t('האתגר של היום', "Today's Challenge")}</div>
-            <div style={{ color:'#fff', fontSize:20, fontWeight:700, marginBottom:8 }}>{today.title}</div>
+            <div style={{ color:'#fff', fontSize:20, fontWeight:700, marginBottom:8 }}>{lang==='en' ? today.titleEn : today.title}</div>
             <div style={{ color:C.textSub, fontSize:13, lineHeight:1.6, marginBottom:14 }}>{today.description.slice(0,90)}…</div>
             <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <div style={{ display:'flex', gap:8 }}>
-                <span style={{ background:'#1F1F1F', color:C.textSub, fontSize:11, padding:'3px 10px', borderRadius:20 }}>{today.category}</span>
-                <span style={{ color:diffColor(today.difficulty), fontSize:11 }}>{today.difficulty}</span>
+                <span style={{ background:'#1F1F1F', color:C.textSub, fontSize:11, padding:'3px 10px', borderRadius:20 }}>{lang==='en' ? today.categoryEn : today.category}</span>
+                <span style={{ color:diffColor(lang==='en' ? today.difficultyEn : today.difficulty), fontSize:11 }}>{lang==='en' ? today.difficultyEn : today.difficulty}</span>
               </div>
               <span style={{ background:C.amber, color:'#000', fontSize:13, fontWeight:700, padding:'8px 18px', borderRadius:12 }}>{t('התחל ←', 'Start →')}</span>
             </div>
@@ -942,7 +988,7 @@
               <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:2 }}>{t('סרוק את החלל שלך', 'Scan Your Space')}</div>
               <div style={{ color:'#38BDF8', fontSize:12, opacity:0.8 }}>{t('Claude Vision מנתח → סט-אפים מותאמים לחלל הזה', 'Claude Vision analyzes → setups tailored to your space')}</div>
             </div>
-            <span style={{ color:'#38BDF8', fontSize:18 }}>←</span>
+            <span style={{ color:'#38BDF8', fontSize:18 }}>{lang==='en'?'→':'←'}</span>
           </div>
 
           {/* Quick Setup CTA */}
@@ -957,7 +1003,7 @@
               <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:2 }}>{t('מצא סט-אפ עכשיו', 'Find a Setup Now')}</div>
               <div style={{ color:C.textMuted, fontSize:12 }}>{t('3 שאלות → מיקום, מצלמה, יחסים – תוך דקה', '3 questions → position, camera, ratio – in 1 minute')}</div>
             </div>
-            <span style={{ color:C.amber, fontSize:20 }}>←</span>
+            <span style={{ color:C.amber, fontSize:20 }}>{lang==='en'?'→':'←'}</span>
           </div>
 
           {/* More Challenges */}
@@ -974,10 +1020,10 @@
                 </div>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ color:C.textMuted, fontSize:11, marginBottom:2 }}>{t('יום', 'Day')} {ch.day}</div>
-                  <div style={{ color:'#fff', fontSize:14, fontWeight:600 }}>{ch.title}</div>
-                  <div style={{ color:C.textMuted, fontSize:12 }}>{ch.duration} · {ch.category}</div>
+                  <div style={{ color:'#fff', fontSize:14, fontWeight:600 }}>{lang==='en' ? ch.titleEn : ch.title}</div>
+                  <div style={{ color:C.textMuted, fontSize:12 }}>{lang==='en' ? ch.durationEn : ch.duration} · {lang==='en' ? ch.categoryEn : ch.category}</div>
                 </div>
-                <span style={{ color:diffColor(ch.difficulty), fontSize:11, fontWeight:500, flexShrink:0 }}>{ch.difficulty}</span>
+                <span style={{ color:diffColor(lang==='en' ? ch.difficultyEn : ch.difficulty), fontSize:11, fontWeight:500, flexShrink:0 }}>{lang==='en' ? ch.difficultyEn : ch.difficulty}</span>
               </div>
             ))}
           </div>
@@ -988,28 +1034,33 @@
     // ─── CHALLENGE ────────────────────────────────────────────────────────────
     function ChallengePage({ challenge, setPage }) {
       const t = useT();
+      const lang = React.useContext(LangContext);
       const [done, setDone] = useState(false);
       if (!challenge) { setPage('home'); return null; }
+      const chTitle = lang==='en' ? challenge.titleEn : challenge.title;
+      const chCat   = lang==='en' ? challenge.categoryEn : challenge.category;
+      const chDiff  = lang==='en' ? challenge.difficultyEn : challenge.difficulty;
+      const chDur   = lang==='en' ? challenge.durationEn : challenge.duration;
       return (
         <div style={{ paddingBottom:24 }}>
           {/* Topbar */}
           <div style={{ background:C.surface, borderBottom:`1px solid ${C.border}`, padding:'14px 18px', display:'flex', alignItems:'center', gap:12 }}>
-            <button onClick={() => setPage('home')} style={{ color:C.amber, fontSize:20, background:'none', border:'none', cursor:'pointer', padding:0 }}>←</button>
+            <button onClick={() => setPage('home')} style={{ color:C.amber, fontSize:20, background:'none', border:'none', cursor:'pointer', padding:0 }}>{lang==='en'?'→':'←'}</button>
             <div>
               <div style={{ color:C.textMuted, fontSize:11 }}>{t('יום', 'Day')} {challenge.day}</div>
-              <div style={{ color:'#fff', fontSize:14, fontWeight:600 }}>{challenge.title}</div>
+              <div style={{ color:'#fff', fontSize:14, fontWeight:600 }}>{chTitle}</div>
             </div>
           </div>
 
           <div style={{ padding:'20px 18px' }}>
             {/* Badges */}
             <div style={{ display:'flex', gap:8, marginBottom:16 }}>
-              {[challenge.category, challenge.difficulty, challenge.duration].map((b,i) => (
-                <span key={i} style={{ background: i===1 ? 'transparent' : '#1A1A1A', border:`1px solid ${i===1 ? diffColor(challenge.difficulty)+'55' : C.border}`, color: i===1 ? diffColor(challenge.difficulty) : C.textSub, fontSize:11, padding:'3px 10px', borderRadius:20 }}>{b}</span>
+              {[chCat, chDiff, chDur].map((b,i) => (
+                <span key={i} style={{ background: i===1 ? 'transparent' : '#1A1A1A', border:`1px solid ${i===1 ? diffColor(chDiff)+'55' : C.border}`, color: i===1 ? diffColor(chDiff) : C.textSub, fontSize:11, padding:'3px 10px', borderRadius:20 }}>{b}</span>
               ))}
             </div>
 
-            <div style={{ color:'#fff', fontSize:22, fontWeight:700, marginBottom:18 }}>{challenge.title}</div>
+            <div style={{ color:'#fff', fontSize:22, fontWeight:700, marginBottom:18 }}>{chTitle}</div>
 
             {/* Diagram */}
             <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:18, padding:16, marginBottom:18, display:'flex', justifyContent:'center' }}>
@@ -1147,7 +1198,9 @@
         const key  = `${shoot}-${lights}-${styleId}`;
         const r    = GUIDE_RESULTS[key];
         const sid  = r ? r.sid : 1;
-        const exp  = r ? r.exp : 'Rembrandt הוא נקודת התחלה מצוינת לכל סוג צילום!';
+        const exp  = r
+          ? (lang==='en' && r.expEn ? r.expEn : r.exp)
+          : (lang==='en' ? 'Rembrandt is an excellent starting point for any type of photography!' : 'Rembrandt הוא נקודת התחלה מצוינת לכל סוג צילום!');
         setResult({ setup: getSetup(sid), specs: SETUP_SPECS[sid], exp });
         setStep(3);
       }
@@ -1188,8 +1241,8 @@
                     <span style={{ color:l.color, fontSize:13, fontWeight:700 }}>{l.name}</span>
                   </div>
                   <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'6px 12px' }}>
-                    {[['זווית', l.angle], ['מרחק', l.dist], ['גובה', l.height]].map(([label, val]) => (
-                      <div key={label} style={{ gridColumn: label === 'גובה' ? '1/-1' : undefined }}>
+                    {[[t('זווית','Angle'), l.angle], [t('מרחק','Distance'), l.dist], [t('גובה','Height'), l.height]].map(([label, val]) => (
+                      <div key={label} style={{ gridColumn: label === t('גובה','Height') ? '1/-1' : undefined }}>
                         <div style={{ color:C.textMuted, fontSize:10, marginBottom:2 }}>{label}</div>
                         <div style={{ color:'#E5E7EB', fontSize:12, fontWeight:500 }}>{val}</div>
                       </div>
@@ -1210,7 +1263,7 @@
                 <span style={{ color:'#fff', fontSize:14, fontWeight:700 }}>{t('הגדרות מצלמה', 'Camera Settings')}</span>
               </div>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
-                {[['צמצם', specs.camera.aperture], ['ISO', specs.camera.iso], ['שאטר', specs.camera.shutter]].map(([label, val]) => (
+                {[[t('צמצם','Aperture'), specs.camera.aperture], ['ISO', specs.camera.iso], [t('שאטר','Shutter'), specs.camera.shutter]].map(([label, val]) => (
                   <div key={label} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:'12px 8px', textAlign:'center' }}>
                     <div style={{ color:C.textMuted, fontSize:10, marginBottom:5 }}>{label}</div>
                     <div style={{ color:C.amber, fontSize:15, fontWeight:800, letterSpacing:'-0.5px' }}>{val}</div>
@@ -1224,7 +1277,7 @@
               <span style={{ fontSize:15, marginTop:1 }}>⚖️</span>
               <div>
                 <div style={{ color:'#fff', fontSize:13, fontWeight:700, marginBottom:4 }}>{t('יחסי תאורה', 'Lighting Ratio')}</div>
-                <div style={{ color:C.textSub, fontSize:13 }}>{specs.ratio}</div>
+                <div style={{ color:C.textSub, fontSize:13 }}>{lang==='en' && specs.ratioEn ? specs.ratioEn : specs.ratio}</div>
               </div>
             </div>
 
@@ -1235,7 +1288,7 @@
                   <span style={{ fontSize:14 }}>💡</span>
                   <span style={{ color:C.amber, fontSize:13, fontWeight:700 }}>{t('טיפ מקצועי', 'Pro Tip')}</span>
                 </div>
-                <div style={{ color:'#D1D5DB', fontSize:13, lineHeight:1.7 }}>{specs.tip}</div>
+                <div style={{ color:'#D1D5DB', fontSize:13, lineHeight:1.7 }}>{lang==='en' && specs.tipEn ? specs.tipEn : specs.tip}</div>
               </div>
             </div>
 
@@ -1281,10 +1334,10 @@
                 <button key={opt.id} onClick={() => { setLights(opt.id); setStep(2); }} style={{ background:C.card, border:`1px solid ${C.border}`, color:'#fff', borderRadius:14, padding:'14px 16px', width:'100%', display:'flex', alignItems:'center', gap:14, cursor:'pointer', marginBottom:10, textAlign:'right' }}>
                   <span style={{ fontSize:18 }}>{opt.icon}</span>
                   <span style={{ fontSize:15, fontWeight:500, flex:1 }}>{opt.label}</span>
-                  <span style={{ color:C.amber }}>←</span>
+                  <span style={{ color:C.amber }}>{lang==='en'?'→':'←'}</span>
                 </button>
               ))}
-              <button onClick={() => setStep(0)} style={{ color:C.textMuted, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginTop:4 }}>{t('← חזור', '← Back')}</button>
+              <button onClick={() => setStep(0)} style={{ color:C.textMuted, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginTop:4 }}>{t('← חזור', 'Back →')}</button>
             </div>
           )}
 
@@ -1300,7 +1353,7 @@
                   <span style={{ color:C.amber }}>←</span>
                 </button>
               ))}
-              <button onClick={() => setStep(1)} style={{ color:C.textMuted, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginTop:4 }}>{t('← חזור', '← Back')}</button>
+              <button onClick={() => setStep(1)} style={{ color:C.textMuted, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginTop:4 }}>{t('← חזור', 'Back →')}</button>
             </div>
           )}
         </div>
@@ -1644,13 +1697,14 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
       return (
         <LangContext.Provider value={lang}>
           <div style={{ maxWidth:430, margin:'0 auto', minHeight:'100vh', background:C.bg, position:'relative' }}>
+            <LangButton lang={lang} setLang={setLang} />
             {page === 'home'      && <HomePage setPage={setPage} setSelectedChallenge={setSelectedChallenge} />}
             {page === 'challenge' && <ChallengePage challenge={selectedChallenge} setPage={setPage} />}
             {page === 'scan'      && <SpaceScanPage />}
             {page === 'library'   && <LibraryPage />}
             {page === 'guide'     && <GuidePage />}
             {page === 'coach'     && <LightingCoachPage />}
-            {page !== 'challenge' && <Navbar page={page} setPage={setPage} lang={lang} setLang={setLang} />}
+            {page !== 'challenge' && <Navbar page={page} setPage={setPage} lang={lang} />}
           </div>
         </LangContext.Provider>
       );
