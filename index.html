@@ -821,7 +821,7 @@
                       <div style={{ color:C.textMuted, fontSize:11 }}>{s.nameEn}</div>
                     </div>
                     <div style={{ display:'flex', flexDirection:'column', gap:4, alignItems:'flex-end', flexShrink:0 }}>
-                      <span style={{ background: s.difficulty==='קל' ? '#14532D' : s.difficulty==='בינוני' ? '#713F12' : '#450A0A', color: s.difficulty==='קל' ? C.green : s.difficulty==='בינוני' ? C.yellow : C.red, fontSize:10, fontWeight:700, padding:'2px 8px', borderRadius:8 }}>{s.difficulty}</span>
+                      <span style={{ background: (s.difficulty==='קל'||s.difficulty==='Easy') ? '#14532D' : (s.difficulty==='בינוני'||s.difficulty==='Medium') ? '#713F12' : '#450A0A', color: (s.difficulty==='קל'||s.difficulty==='Easy') ? C.green : (s.difficulty==='בינוני'||s.difficulty==='Medium') ? C.yellow : C.red, fontSize:10, fontWeight:700, padding:'2px 8px', borderRadius:8 }}>{s.difficulty}</span>
                       <span style={{ background:C.border, color:C.textSub, fontSize:10, padding:'2px 8px', borderRadius:8, whiteSpace:'nowrap' }}>{s.accessibility}</span>
                     </div>
                   </div>
@@ -835,7 +835,7 @@
                     {/* Lights */}
                     {s.lights?.length > 0 && (
                       <div style={{ marginBottom:10 }}>
-                        <div style={{ color:'#fff', fontSize:11, fontWeight:700, marginBottom:5 }}>📍 מיקום</div>
+                        <div style={{ color:'#fff', fontSize:11, fontWeight:700, marginBottom:5 }}>{t('📍 מיקום', '📍 Position')}</div>
                         {s.lights.map((l, li) => (
                           <div key={li} style={{ display:'flex', gap:8, marginBottom:4 }}>
                             <span style={{ color:C.amber, fontSize:11, flexShrink:0 }}>•</span>
@@ -848,7 +848,7 @@
                     {/* Camera */}
                     {s.camera && (
                       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:6, marginBottom:10 }}>
-                        {[['צמצם',s.camera.aperture],['ISO',s.camera.iso],['שאטר',s.camera.shutter]].map(([l,v]) => (
+                        {[[t('צמצם','Aperture'),s.camera.aperture],['ISO',s.camera.iso],[t('שאטר','Shutter'),s.camera.shutter]].map(([l,v]) => (
                           <div key={l} style={{ background:C.surface, borderRadius:8, padding:'6px 4px', textAlign:'center' }}>
                             <div style={{ color:C.textMuted, fontSize:9, marginBottom:2 }}>{l}</div>
                             <div style={{ color:C.amber, fontSize:12, fontWeight:800 }}>{v}</div>
@@ -1108,7 +1108,7 @@
         return (
           <div style={{ paddingBottom:24 }}>
             <div style={{ background:C.surface, borderBottom:`1px solid ${C.border}`, padding:'14px 18px', display:'flex', alignItems:'center', gap:12 }}>
-              <button onClick={() => setSelected(null)} style={{ color:C.amber, fontSize:20, background:'none', border:'none', cursor:'pointer', padding:0 }}>←</button>
+              <button onClick={() => setSelected(null)} style={{ color:C.amber, fontSize:20, background:'none', border:'none', cursor:'pointer', padding:0 }}>{lang==='en'?'→':'←'}</button>
               <div style={{ color:'#fff', fontSize:14, fontWeight:600 }}>{displayName}</div>
             </div>
             <div style={{ padding:'20px 18px' }}>
@@ -1313,7 +1313,7 @@
                 <button key={opt.id} onClick={() => { setShoot(opt.id); setStep(1); }} style={{ background:C.card, border:`1px solid ${C.border}`, color:'#fff', borderRadius:14, padding:'14px 16px', width:'100%', display:'flex', alignItems:'center', gap:14, cursor:'pointer', marginBottom:10, textAlign:'right' }}>
                   <span style={{ fontSize:22 }}>{opt.icon}</span>
                   <span style={{ fontSize:15, fontWeight:500, flex:1 }}>{opt.label}</span>
-                  <span style={{ color:C.amber }}>←</span>
+                  <span style={{ color:C.amber }}>{lang==='en'?'→':'←'}</span>
                 </button>
               ))}
             </div>
@@ -1342,7 +1342,7 @@
                     <div style={{ fontSize:15, fontWeight:500, marginBottom:2 }}>{opt.label}</div>
                     <div style={{ color:C.textMuted, fontSize:12 }}>{opt.desc}</div>
                   </div>
-                  <span style={{ color:C.amber }}>←</span>
+                  <span style={{ color:C.amber }}>{lang==='en'?'→':'←'}</span>
                 </button>
               ))}
               <button onClick={() => setStep(1)} style={{ color:C.textMuted, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginTop:4 }}>{t('← חזור', 'Back →')}</button>
@@ -1501,7 +1501,7 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
       function reset() { clearTimers(); setStep(1); setResults(null); setPreview(null); setImgB64(null); setError(null); setDoneSteps([]); }
 
       const scoreColor = s => s >= 8 ? C.green : s >= 5 ? C.yellow : C.red;
-      const diffColor2 = d => d === 'קל' ? C.green : d === 'בינוני' ? C.yellow : C.red;
+      const diffColor2 = d => (d === 'קל' || d === 'Easy') ? C.green : (d === 'בינוני' || d === 'Medium') ? C.yellow : C.red;
 
       // Step 1
       if (step === 1) return (
