@@ -134,6 +134,20 @@
       { id:7, nameHe:'Ring Light',       name:'Ring Light',            category:'fashion',  diagram:'ring',       lights:1, gear:['Ring Light','Tripod','Phone Mount'],                       suitable:['אופנה','יוצרי תוכן','וידאו'], description:'Ring light עגול עם catchlight מושלם בעיניים.' },
       { id:8, nameHe:'High Key מוצר',   name:'High Key Product',      category:'product',  diagram:'highkey',    lights:3, gear:['3× Strobe','Large Softbox','White Backdrop'],              suitable:['מוצר','קטלוג','נקי'],      description:'תאורה בהירה ואחידה עם רקע לבן – סגנון קטלוג.' },
 
+      // ── ראיונות ──
+      { id:14, nameHe:'ראיון – אדם אחד', name:'Single Interview',
+        category:'interview', diagram:'interview1', lights:3,
+        gear:['1× Key Light – Softbox 60×90','1× Fill Light – Umbrella','1× Background Light'],
+        suitable:['ראיון','פודקאסט','TV','עסקי'],
+        description:'הסט-אפ הקלאסי לראיון אדם אחד. Key light ב-45° מהצד המועדף, fill עדין מהצד הנגדי לרכך צללים, ואור רקע להפרדה מהרקע. רקע אחיד מאחורה.',
+        tips:['Key ב-45° לצד השיחה – כדי שהנושא ייראה כמדבר אל המראיין','Fill חלש מאוד (1:3 עד 1:4) לראיון דרמטי יותר','הדלק אור רקע – מונע שטיחות ומוסיף עומק','f/2.8-f/4 לאפקט bokeh ברקע'] },
+      { id:15, nameHe:'מראיין ומרואיין', name:'Interviewer & Interviewee',
+        category:'interview', diagram:'interview2', lights:4,
+        gear:['2× Key Light – Softbox 60×90','1× Shared Fill – Large Softbox','1× Background Light','2× Wireless Trigger'],
+        suitable:['ראיון זוגי','דוקומנטרי','TV','פודקאסט'],
+        description:'Cross-Key Lighting לשני אנשים מולם. כל אחד מקבל key מהכיוון של השני – זה יוצר catchlight טבעי בעיניים ומדמה תאורת חלון. fill משותף מלמעלה.',
+        tips:['הצב כל key ב-45° בין השניים לכיוון המצלמה – כל אחד מאיר את הצד הפנוי של השני','גובה Key = גובה עיניים +20ס"מ, לא גבוה מדי','Fill אחד משותף מלמעלה ומהצד מספיק לשניים','בדוק שאין צל של מיקרופון על הפנים'] },
+
       // ── חתונות ──
       { id:9,  nameHe:'חופה',            name:'Wedding Ceremony',      category:'wedding',  diagram:'wedding', lights:3, gear:['2× Strobe על סטנד','1× On-Camera Flash','Diffuser','Wireless Trigger'],          suitable:['חופה','טקס','ריגש'],        description:'תאורה לטקס החופה. Key light מצד שמאל של המסדר, fill מהצד השני, ו-on-camera flash כגיבוי. חשוב להכין מראש ולהסכים עם המסדר.', tips:['הגע שעה לפני לבדיקת תאורת המקום','תאם עם המסדר על מיקום הסטנדים','השתמש ב-rear curtain sync ל-fill עדין','שים לב לנרות ואורות רקע – פחות ISO'] },
       { id:10, nameHe:'כתובה',           name:'Ketubah Signing',       category:'wedding',  diagram:'window',     lights:1, gear:['1× Softbox גדול','Reflector לבן','LED Panel (רשות)'],                          suitable:['כתובה','אינטימי','דוקומנטרי'], description:'רגע אינטימי ומרגש. softbox גדול מהצד כחלון, רפלקטור להבהרת הצל. אווירה רכה ורומנטית שמאפשרת טבעיות.', tips:['הצב softbox מחוץ לפריים מהצד','השתמש ב-LED חם לאווירה נרות','ISO גבוה + f/2.8 לעומק שדה רדוד','צלם גם details: ידיים, עט, הכתובה עצמה'] },
@@ -268,6 +282,31 @@
         ratioEn: '1:1:1 – full, even lighting',
         tip:    "הרקע הלבן חייב לקבל 1–2 stops יותר מהנושא כדי להיות לבן טהור",
         tipEn:  "The white background must receive 1–2 stops more than the subject to appear pure white",
+      },
+      14: {
+        lights: [
+          { name:'Key Light',        color:'#F59E0B', angle:"45° שמאל (לכיוון המראיין)", dist:"1.2מ'", height:'+20ס"מ מעיניים', modifier:'Softbox 60×90', power:'1/1 (מלא)' },
+          { name:'Fill Light',       color:'#93C5FD', angle:"45° ימין",                   dist:"1.8מ'", height:'מישור עיניים',   modifier:'Umbrella לבנה',  power:'1/4 מה-Key' },
+          { name:'Background Light', color:'#A78BFA', angle:"ישר לרקע",                   dist:"1.5מ' מהרקע", height:'גובה אמצע הרקע', modifier:'Snoot / Barndoor', power:'1/2 מה-Key' },
+        ],
+        camera: { aperture:'f/2.8–4', iso:'ISO 400', shutter:'1/125s' },
+        ratio:  'Key:Fill = 3:1 · רקע עצמאי',
+        ratioEn: 'Key:Fill = 3:1 · Independent background light',
+        tip:    "הצב את הנושא לפחות 1.5מ' מהרקע – מאפשר bokeh ומונע צל של Key על הקיר",
+        tipEn:  "Place subject at least 1.5m from background — enables bokeh and prevents Key shadow on the wall",
+      },
+      15: {
+        lights: [
+          { name:'Key A (למרואיין)',  color:'#F59E0B', angle:"45° ימין (בין השניים)",     dist:"1.2מ'", height:'+20ס"מ מעיניים', modifier:'Softbox 60×90', power:'1/1 (מלא)' },
+          { name:'Key B (למראיין)',   color:'#FBBF24', angle:"45° שמאל (בין השניים)",     dist:"1.2מ'", height:'+20ס"מ מעיניים', modifier:'Softbox 60×90', power:'1/1 (מלא)' },
+          { name:'Fill משותף',        color:'#93C5FD', angle:"ישר מעל המצלמה",            dist:"2.0מ'", height:'+60ס"מ מעיניים', modifier:'Large Octabox', power:'1/4 מה-Key' },
+          { name:'Background Light', color:'#A78BFA', angle:"ישר לרקע",                   dist:"1.5מ' מהרקע", height:'גובה אמצע', modifier:'Snoot', power:'1/3 מה-Key' },
+        ],
+        camera: { aperture:'f/4', iso:'ISO 400', shutter:'1/125s' },
+        ratio:  'Key A = Key B (1:1) · Fill = 1:4',
+        ratioEn: 'Key A = Key B (1:1) · Fill = 1:4',
+        tip:    "ודא שה-Key של כל אחד לא שופך על השני. Grid בכל softbox פותר זאת",
+        tipEn:  "Make sure each person's Key doesn't spill onto the other. A grid on each softbox solves this",
       },
     };
 
@@ -466,6 +505,64 @@
       );
     }
 
+    // Single interview: subject facing slightly left, key left-front, fill right, bg light back
+    function DiagramInterview1({ size=200 }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 200 200">
+          <BgRect />
+          {/* Background panel */}
+          <rect x={30} y={10} width={140} height={28} rx={3} fill="#1E2533" stroke="#374151" strokeWidth={1} />
+          <text x={100} y={28} textAnchor="middle" fill="#6B7280" fontSize="8">Background</text>
+          {/* Bg light */}
+          <Light cx={100} cy={22} color={C.purple} label="" r={5} />
+          <text x={100} y={8} textAnchor="middle" fill={C.purple} fontSize="7">BG Light</text>
+          {/* Key — front-left */}
+          <DashLine x1={22} y1={128} x2={88} y2={90} color={C.amber} />
+          <Light cx={22} cy={128} color={C.amber} label="Key" labelDy={20} r={9} />
+          {/* Fill — front-right */}
+          <DashLine x1={178} y1={128} x2={112} y2={90} color={C.blue} opacity={0.45} />
+          <Light cx={178} cy={128} color={C.blue} label="Fill" labelDy={20} r={7} />
+          {/* Subject */}
+          <Subject />
+          {/* Interviewer hint (off-frame) */}
+          <text x={168} y={92} fill={C.textMuted} fontSize="7" textAnchor="middle">↔ מראיין</text>
+          <Camera />
+          <text x={100} y={194} textAnchor="middle" fill={C.amber} fontSize="8" fontWeight="bold">Single Interview</text>
+        </svg>
+      );
+    }
+
+    // Two-person cross-key: interviewer left, interviewee right, each key from opposite side
+    function DiagramInterview2({ size=200 }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 200 200">
+          <BgRect />
+          {/* Background */}
+          <rect x={20} y={8} width={160} height={22} rx={3} fill="#1E2533" stroke="#374151" strokeWidth={1} />
+          <text x={100} y={23} textAnchor="middle" fill="#6B7280" fontSize="7.5">Background</text>
+          {/* Interviewer (left subject) */}
+          <ellipse cx={68} cy={90} rx={8} ry={10} fill="#3D4451" stroke="#6B7280" strokeWidth={1} />
+          <circle  cx={68} cy={77} r={8}  fill="#4B5563" stroke="#9CA3AF" strokeWidth={1} />
+          <text x={68} y={106} textAnchor="middle" fill={C.textMuted} fontSize="7">מראיין</text>
+          {/* Interviewee (right subject) */}
+          <ellipse cx={132} cy={90} rx={8} ry={10} fill="#3D4451" stroke="#6B7280" strokeWidth={1} />
+          <circle  cx={132} cy={77} r={8}  fill="#4B5563" stroke="#9CA3AF" strokeWidth={1} />
+          <text x={132} y={106} textAnchor="middle" fill={C.textMuted} fontSize="7">מרואיין</text>
+          {/* Key A → lights the interviewee (right), placed LEFT-front */}
+          <DashLine x1={22} y1={130} x2={122} y2={84} color={C.amber} />
+          <Light cx={22} cy={130} color={C.amber} label="Key A" labelDy={20} r={8} />
+          {/* Key B → lights the interviewer (left), placed RIGHT-front */}
+          <DashLine x1={178} y1={130} x2={78} y2={84} color={C.yellow} />
+          <Light cx={178} cy={130} color={C.yellow} label="Key B" labelDy={20} r={8} />
+          {/* Shared fill — above camera */}
+          <DashLine x1={100} y1={148} x2={100} y2={100} color={C.blue} opacity={0.4} />
+          <Light cx={100} cy={150} color={C.blue} label="Fill" labelDy={-14} r={6} />
+          <Camera />
+          <text x={100} y={196} textAnchor="middle" fill={C.amber} fontSize="8" fontWeight="bold">Cross-Key Interview</text>
+        </svg>
+      );
+    }
+
     function DiagramWedding({ size=200 }) {
       return (
         <svg width={size} height={size} viewBox="0 0 200 200">
@@ -508,6 +605,8 @@
         ring:      DiagramRing,
         highkey:   DiagramHighKey,
         wedding:   DiagramWedding,
+        interview1: DiagramInterview1,
+        interview2: DiagramInterview2,
       };
       const D = map[type] || DiagramRembrandt;
       return <D size={size} />;
@@ -1094,9 +1193,10 @@
       const [selected, setSelected] = useState(null);
 
       const filters = [
-        { id:'all',     label: t('הכל', 'All') },
-        { id:'wedding', label: t('💍 חתונות', '💍 Wedding') },
-        { id:'portrait',label: t('פורטרט', 'Portrait') },
+        { id:'all',       label: t('הכל', 'All') },
+        { id:'interview', label: t('🎙️ ראיון', '🎙️ Interview') },
+        { id:'wedding',   label: t('💍 חתונות', '💍 Wedding') },
+        { id:'portrait',  label: t('פורטרט', 'Portrait') },
         { id:'product', label: t('מוצר', 'Product') },
         { id:'fashion', label: t('אופנה', 'Fashion') },
         { id:'natural', label: t('טבעי', 'Natural') },
