@@ -885,7 +885,7 @@
     }
 
     // ─── NAVBAR ───────────────────────────────────────────────────────────────
-    function Navbar({ page, setPage, lang }) {
+    function Navbar({ page, setPage, lang, setLang }) {
       const tabs = [
         { id: 'home',    label: lang==='en'?'Home':'הבית',      icon: '🏠' },
         { id: 'coach',   label: lang==='en'?'Coach':'מאמן',     icon: '🎯' },
@@ -895,34 +895,26 @@
       ];
       return (
         <nav style={{ background: '#0D0D0D', borderTop: `1px solid ${C.border}`, position:'fixed', bottom:0, left:0, right:0, zIndex:50 }}>
-          <div style={{ display:'flex', justifyContent:'space-around', padding:'8px 0 12px' }}>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-around', padding:'8px 0 12px' }}>
             {tabs.map(t => (
               <button key={t.id} onClick={() => setPage(t.id)} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:2, background:'none', border:'none', cursor:'pointer', color: page===t.id ? C.amber : C.textMuted, minWidth:0, flex:1 }}>
                 <span style={{ fontSize:20 }}>{t.icon}</span>
                 <span style={{ fontSize:10, fontWeight:600 }}>{t.label}</span>
               </button>
             ))}
+            {/* Language toggle pill */}
+            <button
+              onClick={() => setLang(l => l==='he'?'en':'he')}
+              style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:2, background:'none', border:'none', cursor:'pointer', minWidth:0, flex:1 }}
+            >
+              <span style={{ display:'flex', alignItems:'center', gap:4, background:C.card, border:`1.5px solid ${C.amber}88`, borderRadius:14, padding:'3px 8px' }}>
+                <span style={{ fontSize:14 }}>{lang==='he'?'🇺🇸':'🇮🇱'}</span>
+                <span style={{ color:C.amber, fontSize:11, fontWeight:700 }}>{lang==='he'?'EN':'עב'}</span>
+              </span>
+              <span style={{ fontSize:9, fontWeight:600, color:C.textMuted }}>{lang==='he'?'Language':'שפה'}</span>
+            </button>
           </div>
         </nav>
-      );
-    }
-
-    function LangButton({ lang, setLang }) {
-      return (
-        <button
-          onClick={() => setLang(l => l==='he'?'en':'he')}
-          style={{
-            position:'fixed', top:12, right:12, zIndex:100,
-            display:'flex', alignItems:'center', gap:6,
-            background: C.card,
-            border: `1.5px solid ${C.amber}88`,
-            borderRadius:20, padding:'6px 14px',
-            cursor:'pointer', boxShadow:'0 2px 12px #00000055',
-          }}
-        >
-          <span style={{ fontSize:16 }}>{lang==='he'?'🇺🇸':'🇮🇱'}</span>
-          <span style={{ color:C.amber, fontSize:13, fontWeight:700 }}>{lang==='he'?'EN':'עב'}</span>
-        </button>
       );
     }
 
@@ -1697,14 +1689,13 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
       return (
         <LangContext.Provider value={lang}>
           <div style={{ maxWidth:430, margin:'0 auto', minHeight:'100vh', background:C.bg, position:'relative' }}>
-            <LangButton lang={lang} setLang={setLang} />
             {page === 'home'      && <HomePage setPage={setPage} setSelectedChallenge={setSelectedChallenge} />}
             {page === 'challenge' && <ChallengePage challenge={selectedChallenge} setPage={setPage} />}
             {page === 'scan'      && <SpaceScanPage />}
             {page === 'library'   && <LibraryPage />}
             {page === 'guide'     && <GuidePage />}
             {page === 'coach'     && <LightingCoachPage />}
-            {page !== 'challenge' && <Navbar page={page} setPage={setPage} lang={lang} />}
+            {page !== 'challenge' && <Navbar page={page} setPage={setPage} lang={lang} setLang={setLang} />}
           </div>
         </LangContext.Provider>
       );
