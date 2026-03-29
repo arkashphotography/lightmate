@@ -26,6 +26,12 @@
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
 
+    const LangContext = React.createContext('he');
+    function useT() {
+      const lang = React.useContext(LangContext);
+      return (he, en) => lang === 'en' ? (en || he) : he;
+    }
+
     // ─── COLORS ───────────────────────────────────────────────────────────────
     const C = {
       bg: '#0D0D0D', surface: '#141414', card: '#1C1C1C',
@@ -33,6 +39,10 @@
       text: '#FFFFFF', textSub: '#9CA3AF', textMuted: '#4B5563',
       green: '#4ADE80', yellow: '#FACC15', red: '#F87171',
       blue: '#93C5FD', purple: '#A78BFA',
+    };
+
+    const TRANSLATIONS = {
+      nav: { home:['הבית','Home'], coach:['מאמן','Coach'], scan:['סריקה','Scan'], guide:['מדריך','Guide'], library:['ספרייה','Library'] },
     };
 
     // ─── MOCK DATA ────────────────────────────────────────────────────────────
@@ -436,12 +446,10 @@
     }
 
     // ─── SPACE SCAN ───────────────────────────────────────────────────────────
-    const SCAN_STEPS_TEXT = [
-      '📷 מזהה מקורות אור...',
-      '📐 מנתח גודל ואופי החלל...',
-      '🎨 בודק רקעים ופוטנציאל...',
-      '✨ מכין המלצות תאורה...',
-    ];
+    const SCAN_STEPS = {
+      he: ['📷 מזהה מקורות אור...', '📐 מנתח גודל ואופי החלל...', '🎨 בודק רקעים ופוטנציאל...', '✨ מכין המלצות תאורה...'],
+      en: ['📷 Identifying light sources...', '📐 Analyzing space size and character...', '🎨 Checking backgrounds and potential...', '✨ Preparing lighting recommendations...'],
+    };
 
     const SCAN_PROMPT = `אתה מומחה תאורה מקצועי לצילום. נתח את תמונת החלל והחזר JSON בלבד, ללא טקסט נוסף.
 
@@ -474,6 +482,8 @@
 החזר 2-3 סט-אפים. diagram חייב להיות בדיוק מהרשימה הנ"ל. JSON תקין בלבד.`;
 
     function SpaceScanPage() {
+      const t    = useT();
+      const lang = React.useContext(LangContext);
       const [step, setStep]           = useState(1);
       const [imgB64, setImgB64]       = useState(null);
       const [imgType, setImgType]     = useState('image/jpeg');
@@ -556,10 +566,12 @@
 
       async function analyze() {
         setStep(2); setError(null); setDoneSteps([]); clearTimers();
-        SCAN_STEPS_TEXT.forEach((txt, i) => {
-          const t = setTimeout(() => setDoneSteps(prev => [...prev, txt]), i * 1600 + 400);
-          timers.current.push(t);
+        const scanStepsText = SCAN_STEPS[lang];
+        scanStepsText.forEach((txt, i) => {
+          const timer = setTimeout(() => setDoneSteps(prev => [...prev, txt]), i * 1600 + 400);
+          timers.current.push(timer);
         });
+        const scanPromptLang = lang === 'en' ? SCAN_PROMPT + '\nRespond with all text values in English.' : SCAN_PROMPT;
 
         try {
           const resp = await fetch('/api/analyze', {
@@ -573,7 +585,7 @@
                 role: 'user',
                 content: [
                   { type: 'image', source: { type: 'base64', media_type: imgType, data: imgB64 } },
-                  { type: 'text', text: SCAN_PROMPT },
+                  { type: 'text', text: scanPromptLang },
                 ],
               }],
             }),
@@ -612,14 +624,14 @@
       // ── Step 1: Upload ────────────────────────────────────────────────────
       if (step === 1) return (
         <div style={{ padding:'24px 18px 100px' }}>
-          <div style={{ color:'#fff', fontSize:24, fontWeight:800, marginBottom:2 }}>סריקת חלל</div>
+          <div style={{ color:'#fff', fontSize:24, fontWeight:800, marginBottom:2 }}>{t('סריקת חלל', 'Space Scan')}</div>
           <div style={{ color:C.textMuted, fontSize:13, marginBottom:20 }}>
-            העלה תמונה של החלל → Claude מנתח → סט-אפים מותאמים לך
+            {t('העלה תמונה של החלל → Claude מנתח → סט-אפים מותאמים לך', 'Upload a photo → Claude analyzes → setups tailored to you')}
           </div>
 
           {/* Steps bar */}
           <div style={{ display:'flex', alignItems:'center', gap:0, marginBottom:24 }}>
-            {['צילום חלל','ניתוח AI','סט-אפים'].map((s, i) => (
+            {[t('צילום חלל','Space Photo'), t('ניתוח AI','AI Analysis'), t('סט-אפים','Setups')].map((s, i) => (
               <React.Fragment key={i}>
                 <div style={{ textAlign:'center', flexShrink:0 }}>
                   <div style={{ width:28, height:28, borderRadius:'50%', background: i===0 ? C.amber : C.border, display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 4px' }}>
@@ -637,15 +649,15 @@
             <label style={{ display:'block', background:C.card, border:`2px dashed ${C.border}`, borderRadius:18, padding:'44px 20px', textAlign:'center', cursor:'pointer', marginBottom:16 }}>
               <input type="file" accept="image/*" capture="environment" style={{ display:'none' }} onChange={e => e.target.files[0] && handleFile(e.target.files[0])} />
               <div style={{ fontSize:44, marginBottom:12 }}>📷</div>
-              <div style={{ color:'#fff', fontSize:15, fontWeight:600, marginBottom:5 }}>צלם את החלל</div>
-              <div style={{ color:C.textMuted, fontSize:12 }}>נייד: פותח מצלמה · מחשב: בחר קובץ</div>
+              <div style={{ color:'#fff', fontSize:15, fontWeight:600, marginBottom:5 }}>{t('צלם את החלל', 'Photograph the Space')}</div>
+              <div style={{ color:C.textMuted, fontSize:12 }}>{t('נייד: פותח מצלמה · מחשב: בחר קובץ', 'Mobile: opens camera · Desktop: choose file')}</div>
             </label>
           ) : (
             <div style={{ marginBottom:16 }}>
               <img src={preview} style={{ width:'100%', borderRadius:16, maxHeight:320, objectFit:'contain', marginBottom:8 }} />
               <label style={{ display:'block', textAlign:'center', cursor:'pointer', color:C.textMuted, fontSize:12 }}>
                 <input type="file" accept="image/*" style={{ display:'none' }} onChange={e => e.target.files[0] && handleFile(e.target.files[0])} />
-                🔄 החלף תמונה
+                🔄 {t('החלף תמונה', 'Replace photo')}
               </label>
             </div>
           )}
@@ -661,58 +673,61 @@
             disabled={!preview}
             style={{ background: preview ? C.amber : C.border, color: preview ? '#000' : C.textMuted, width:'100%', padding:'16px 0', borderRadius:16, fontSize:15, fontWeight:700, border:'none', cursor: preview ? 'pointer' : 'default' }}
           >
-            {!preview ? 'העלה תמונה תחילה' : '⚡ נתח את החלל עם Claude'}
+            {!preview ? t('העלה תמונה תחילה', 'Upload a photo first') : t('⚡ נתח את החלל עם Claude', '⚡ Analyze Space with Claude')}
           </button>
         </div>
       );
 
       // ── Step 2: Analyzing ─────────────────────────────────────────────────
-      if (step === 2) return (
-        <div style={{ padding:'32px 18px 100px' }}>
-          <div style={{ color:'#fff', fontSize:22, fontWeight:800, marginBottom:20 }}>Claude מנתח...</div>
+      if (step === 2) {
+        const scanStepsText2 = SCAN_STEPS[lang];
+        return (
+          <div style={{ padding:'32px 18px 100px' }}>
+            <div style={{ color:'#fff', fontSize:22, fontWeight:800, marginBottom:20 }}>{t('Claude מנתח...', 'Claude Analyzing...')}</div>
 
-          {preview && (
-            <div style={{ position:'relative', marginBottom:24 }}>
-              <img src={preview} style={{ width:'100%', borderRadius:16, maxHeight:280, objectFit:'contain', opacity:0.5 }} />
-              <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
-                <div style={{ width:56, height:56, border:`4px solid ${C.border}`, borderTopColor:C.amber, borderRadius:'50%', animation:'spin 0.9s linear infinite' }} />
-              </div>
-            </div>
-          )}
-
-          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-            {doneSteps.map((txt, i) => (
-              <div key={i} className="fade-up" style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:'12px 16px', display:'flex', alignItems:'center', gap:10, color:'#fff', fontSize:13 }}>
-                <span style={{ color:C.green }}>✓</span> {txt}
-              </div>
-            ))}
-            {doneSteps.length < SCAN_STEPS_TEXT.length && (
-              <div style={{ background:C.card, border:`1px solid ${C.amber}22`, borderRadius:12, padding:'12px 16px', display:'flex', alignItems:'center', gap:10, color:C.textSub, fontSize:13 }}>
-                <div style={{ width:14, height:14, border:`2px solid ${C.border}`, borderTopColor:C.amber, borderRadius:'50%', animation:'spin 0.8s linear infinite', flexShrink:0 }} />
-                {SCAN_STEPS_TEXT[doneSteps.length]}
+            {preview && (
+              <div style={{ position:'relative', marginBottom:24 }}>
+                <img src={preview} style={{ width:'100%', borderRadius:16, maxHeight:280, objectFit:'contain', opacity:0.5 }} />
+                <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+                  <div style={{ width:56, height:56, border:`4px solid ${C.border}`, borderTopColor:C.amber, borderRadius:'50%', animation:'spin 0.9s linear infinite' }} />
+                </div>
               </div>
             )}
+
+            <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+              {doneSteps.map((txt, i) => (
+                <div key={i} className="fade-up" style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:'12px 16px', display:'flex', alignItems:'center', gap:10, color:'#fff', fontSize:13 }}>
+                  <span style={{ color:C.green }}>✓</span> {txt}
+                </div>
+              ))}
+              {doneSteps.length < scanStepsText2.length && (
+                <div style={{ background:C.card, border:`1px solid ${C.amber}22`, borderRadius:12, padding:'12px 16px', display:'flex', alignItems:'center', gap:10, color:C.textSub, fontSize:13 }}>
+                  <div style={{ width:14, height:14, border:`2px solid ${C.border}`, borderTopColor:C.amber, borderRadius:'50%', animation:'spin 0.8s linear infinite', flexShrink:0 }} />
+                  {scanStepsText2[doneSteps.length]}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
 
       // ── Step 3: Results ───────────────────────────────────────────────────
       if (step === 3 && results) {
         const { conditions, setups } = results;
-        const qLabel = conditions.lightQuality === 'soft' ? '🌤 רך' : conditions.lightQuality === 'hard' ? '☀️ קשה' : '⛅ מעורב';
+        const qLabel = conditions.lightQuality === 'soft' ? (t('🌤 רך','🌤 Soft')) : conditions.lightQuality === 'hard' ? (t('☀️ קשה','☀️ Hard')) : (t('⛅ מעורב','⛅ Mixed'));
         return (
           <div style={{ paddingBottom:100 }}>
             {/* Conditions header */}
             <div style={{ background:'linear-gradient(160deg,#050F1A,#071520)', borderBottom:`1px solid #0EA5E933`, padding:'14px 18px 18px' }}>
-              <button onClick={reset} style={{ color:'#38BDF8', background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginBottom:12 }}>← סריקה חדשה</button>
+              <button onClick={reset} style={{ color:'#38BDF8', background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginBottom:12 }}>{t('← סריקה חדשה', 'New Scan →')}</button>
               <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
                 <span style={{ background:'#0EA5E922', color:'#38BDF8', border:'1px solid #0EA5E944', fontSize:10, fontWeight:700, padding:'2px 10px', borderRadius:20 }}>Claude Vision ✦</span>
                 <span style={{ background:'#0EA5E922', color:'#38BDF8', fontSize:10, padding:'2px 10px', borderRadius:20, border:'1px solid #0EA5E933' }}>{qLabel}</span>
               </div>
-              <div style={{ color:'#fff', fontSize:18, fontWeight:800, marginBottom:12 }}>תנאי החלל שזוהו</div>
+              <div style={{ color:'#fff', fontSize:18, fontWeight:800, marginBottom:12 }}>{t('תנאי החלל שזוהו', 'Detected Space Conditions')}</div>
               {preview && <img src={preview} style={{ width:'100%', borderRadius:12, maxHeight:200, objectFit:'contain', marginBottom:12, opacity:0.8 }} />}
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
-                {[['💡 אור',conditions.light],['📐 חלל',conditions.space],['🎨 רקע',conditions.background],['⚠️ אתגר',conditions.challenges]].map(([lbl,val]) => (
+                {[[t('💡 אור','💡 Light'),conditions.light],[t('📐 חלל','📐 Space'),conditions.space],[t('🎨 רקע','🎨 Background'),conditions.background],[t('⚠️ אתגר','⚠️ Challenge'),conditions.challenges]].map(([lbl,val]) => (
                   <div key={lbl} style={{ background:'#ffffff0A', borderRadius:10, padding:'8px 10px' }}>
                     <div style={{ color:'#38BDF8', fontSize:10, fontWeight:600, marginBottom:3 }}>{lbl}</div>
                     <div style={{ color:'#CBD5E1', fontSize:12, lineHeight:1.5 }}>{val}</div>
@@ -723,8 +738,8 @@
 
             {/* Setups */}
             <div style={{ padding:'18px 18px 8px' }}>
-              <div style={{ color:'#fff', fontSize:16, fontWeight:700, marginBottom:4 }}>סט-אפים מומלצים לחלל הזה</div>
-              <div style={{ color:C.textMuted, fontSize:12, marginBottom:14 }}>{setups.length} אפשרויות מותאמות לתנאים שנמצאו</div>
+              <div style={{ color:'#fff', fontSize:16, fontWeight:700, marginBottom:4 }}>{t('סט-אפים מומלצים לחלל הזה', 'Recommended Setups for This Space')}</div>
+              <div style={{ color:C.textMuted, fontSize:12, marginBottom:14 }}>{setups.length} {t('אפשרויות מותאמות לתנאים שנמצאו', 'options tailored to detected conditions')}</div>
 
               {setups.map((s, idx) => (
                 <div key={idx} className="fade-up" style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:18, overflow:'hidden', marginBottom:14 }}>
@@ -791,7 +806,7 @@
 
             <div style={{ padding:'0 18px' }}>
               <button onClick={reset} style={{ background:C.amber, color:'#000', width:'100%', padding:'14px 0', borderRadius:16, fontSize:14, fontWeight:700, border:'none', cursor:'pointer' }}>
-                📷 סרוק חלל חדש
+                {t('📷 סרוק חלל חדש', '📷 Scan New Space')}
               </button>
             </div>
           </div>
@@ -802,28 +817,36 @@
     }
 
     // ─── NAVBAR ───────────────────────────────────────────────────────────────
-    function Navbar({ page, setPage }) {
+    function Navbar({ page, setPage, lang, setLang }) {
       const tabs = [
-        { id: 'home',    label: 'הבית',   icon: '🏠' },
-        { id: 'coach',   label: 'מאמן',   icon: '🎯' },
-        { id: 'scan',    label: 'סריקה',  icon: '📷' },
-        { id: 'guide',   label: 'מדריך',  icon: '✨' },
-        { id: 'library', label: 'ספרייה', icon: '📚' },
+        { id: 'home',    label: lang==='en'?'Home':'הבית',   icon: '🏠' },
+        { id: 'coach',   label: lang==='en'?'Coach':'מאמן',  icon: '🎯' },
+        { id: 'scan',    label: lang==='en'?'Scan':'סריקה',  icon: '📷' },
+        { id: 'guide',   label: lang==='en'?'Guide':'מדריך', icon: '✨' },
+        { id: 'library', label: lang==='en'?'Library':'ספרייה', icon: '📚' },
       ];
       return (
-        <nav style={{ background: '#0D0D0D', borderTop: `1px solid ${C.border}`, position:'fixed', bottom:0, left:0, right:0, display:'flex', justifyContent:'space-around', padding:'10px 0 14px', zIndex:50 }}>
-          {tabs.map(t => (
-            <button key={t.id} onClick={() => setPage(t.id)} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:3, background:'none', border:'none', cursor:'pointer', color: page===t.id ? C.amber : C.textMuted }}>
-              <span style={{ fontSize:22 }}>{t.icon}</span>
-              <span style={{ fontSize:11, fontWeight:600 }}>{t.label}</span>
+        <nav style={{ background: '#0D0D0D', borderTop: `1px solid ${C.border}`, position:'fixed', bottom:0, left:0, right:0, zIndex:50 }}>
+          <div style={{ display:'flex', justifyContent:'space-around', padding:'8px 0 12px' }}>
+            {tabs.map(t => (
+              <button key={t.id} onClick={() => setPage(t.id)} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:2, background:'none', border:'none', cursor:'pointer', color: page===t.id ? C.amber : C.textMuted, minWidth:0, flex:1 }}>
+                <span style={{ fontSize:20 }}>{t.icon}</span>
+                <span style={{ fontSize:10, fontWeight:600 }}>{t.label}</span>
+              </button>
+            ))}
+            <button onClick={() => setLang(l => l==='he'?'en':'he')} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:2, background:'none', border:'none', cursor:'pointer', color: C.textMuted, minWidth:0, flex:1 }}>
+              <span style={{ fontSize:20 }}>{lang==='he'?'🇺🇸':'🇮🇱'}</span>
+              <span style={{ fontSize:10, fontWeight:600 }}>{lang==='he'?'EN':'HE'}</span>
             </button>
-          ))}
+          </div>
         </nav>
       );
     }
 
     // ─── HOME ─────────────────────────────────────────────────────────────────
     function HomePage({ setPage, setSelectedChallenge }) {
+      const t    = useT();
+      const lang = React.useContext(LangContext);
       const today = CHALLENGES[0];
       return (
         <div style={{ padding:'24px 18px 100px' }}>
@@ -831,11 +854,11 @@
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:24 }}>
             <div>
               <div style={{ color:C.amber, fontSize:26, fontWeight:800, letterSpacing:'-0.5px' }}>LightMate</div>
-              <div style={{ color:C.textMuted, fontSize:13, marginTop:2 }}>למד תאורה בצעדים קטנים</div>
+              <div style={{ color:C.textMuted, fontSize:13, marginTop:2 }}>{t('למד תאורה בצעדים קטנים', 'Learn lighting step by step')}</div>
             </div>
             <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:14, padding:'8px 16px', textAlign:'center' }}>
               <div style={{ fontSize:20 }}>🔥</div>
-              <div style={{ color:C.amber, fontSize:13, fontWeight:700 }}>7 ימים</div>
+              <div style={{ color:C.amber, fontSize:13, fontWeight:700 }}>7 {t('ימים', 'days')}</div>
             </div>
           </div>
 
@@ -845,10 +868,10 @@
             style={{ background:'linear-gradient(135deg,#1A1100,#261800)', border:`1px solid ${C.amber}28`, borderRadius:20, padding:'18px 16px', marginBottom:20, cursor:'pointer' }}
           >
             <div style={{ display:'flex', gap:8, marginBottom:10 }}>
-              <span style={{ background:C.amber, color:'#000', fontSize:11, fontWeight:700, padding:'2px 10px', borderRadius:20 }}>יום {today.day}</span>
+              <span style={{ background:C.amber, color:'#000', fontSize:11, fontWeight:700, padding:'2px 10px', borderRadius:20 }}>{t('יום', 'Day')} {today.day}</span>
               <span style={{ color:C.amber, border:`1px solid ${C.amber}40`, fontSize:11, padding:'2px 10px', borderRadius:20 }}>{today.duration}</span>
             </div>
-            <div style={{ color:C.textSub, fontSize:12, marginBottom:2 }}>האתגר של היום</div>
+            <div style={{ color:C.textSub, fontSize:12, marginBottom:2 }}>{t('האתגר של היום', "Today's Challenge")}</div>
             <div style={{ color:'#fff', fontSize:20, fontWeight:700, marginBottom:8 }}>{today.title}</div>
             <div style={{ color:C.textSub, fontSize:13, lineHeight:1.6, marginBottom:14 }}>{today.description.slice(0,90)}…</div>
             <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
@@ -856,13 +879,13 @@
                 <span style={{ background:'#1F1F1F', color:C.textSub, fontSize:11, padding:'3px 10px', borderRadius:20 }}>{today.category}</span>
                 <span style={{ color:diffColor(today.difficulty), fontSize:11 }}>{today.difficulty}</span>
               </div>
-              <span style={{ background:C.amber, color:'#000', fontSize:13, fontWeight:700, padding:'8px 18px', borderRadius:12 }}>התחל ←</span>
+              <span style={{ background:C.amber, color:'#000', fontSize:13, fontWeight:700, padding:'8px 18px', borderRadius:12 }}>{t('התחל ←', 'Start →')}</span>
             </div>
           </div>
 
           {/* Stats */}
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:24 }}>
-            {[['7','ימי רצף'],['12','אתגרים הושלמו']].map(([n,l]) => (
+            {[['7', t('ימי רצף', 'Day Streak')],['12', t('אתגרים הושלמו', 'Challenges Done')]].map(([n,l]) => (
               <div key={l} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:14, padding:'14px 16px' }}>
                 <div style={{ color:C.amber, fontSize:26, fontWeight:800 }}>{n}</div>
                 <div style={{ color:C.textMuted, fontSize:12, marginTop:2 }}>{l}</div>
@@ -879,8 +902,8 @@
               <span style={{ fontSize:22 }}>📷</span>
             </div>
             <div style={{ flex:1 }}>
-              <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:2 }}>סרוק את החלל שלך</div>
-              <div style={{ color:'#38BDF8', fontSize:12, opacity:0.8 }}>Claude Vision מנתח → סט-אפים מותאמים לחלל הזה</div>
+              <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:2 }}>{t('סרוק את החלל שלך', 'Scan Your Space')}</div>
+              <div style={{ color:'#38BDF8', fontSize:12, opacity:0.8 }}>{t('Claude Vision מנתח → סט-אפים מותאמים לחלל הזה', 'Claude Vision analyzes → setups tailored to your space')}</div>
             </div>
             <span style={{ color:'#38BDF8', fontSize:18 }}>←</span>
           </div>
@@ -894,14 +917,14 @@
               <span style={{ fontSize:22 }}>⚡</span>
             </div>
             <div style={{ flex:1 }}>
-              <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:2 }}>מצא סט-אפ עכשיו</div>
-              <div style={{ color:C.textMuted, fontSize:12 }}>3 שאלות → מיקום, מצלמה, יחסים – תוך דקה</div>
+              <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:2 }}>{t('מצא סט-אפ עכשיו', 'Find a Setup Now')}</div>
+              <div style={{ color:C.textMuted, fontSize:12 }}>{t('3 שאלות → מיקום, מצלמה, יחסים – תוך דקה', '3 questions → position, camera, ratio – in 1 minute')}</div>
             </div>
             <span style={{ color:C.amber, fontSize:20 }}>←</span>
           </div>
 
           {/* More Challenges */}
-          <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:12 }}>אתגרים נוספים</div>
+          <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:12 }}>{t('אתגרים נוספים', 'More Challenges')}</div>
           <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
             {CHALLENGES.slice(1).map(ch => (
               <div
@@ -913,7 +936,7 @@
                   <LightingDiagram type={ch.diagram} size={44} />
                 </div>
                 <div style={{ flex:1, minWidth:0 }}>
-                  <div style={{ color:C.textMuted, fontSize:11, marginBottom:2 }}>יום {ch.day}</div>
+                  <div style={{ color:C.textMuted, fontSize:11, marginBottom:2 }}>{t('יום', 'Day')} {ch.day}</div>
                   <div style={{ color:'#fff', fontSize:14, fontWeight:600 }}>{ch.title}</div>
                   <div style={{ color:C.textMuted, fontSize:12 }}>{ch.duration} · {ch.category}</div>
                 </div>
@@ -927,6 +950,7 @@
 
     // ─── CHALLENGE ────────────────────────────────────────────────────────────
     function ChallengePage({ challenge, setPage }) {
+      const t = useT();
       const [done, setDone] = useState(false);
       if (!challenge) { setPage('home'); return null; }
       return (
@@ -935,7 +959,7 @@
           <div style={{ background:C.surface, borderBottom:`1px solid ${C.border}`, padding:'14px 18px', display:'flex', alignItems:'center', gap:12 }}>
             <button onClick={() => setPage('home')} style={{ color:C.amber, fontSize:20, background:'none', border:'none', cursor:'pointer', padding:0 }}>←</button>
             <div>
-              <div style={{ color:C.textMuted, fontSize:11 }}>יום {challenge.day}</div>
+              <div style={{ color:C.textMuted, fontSize:11 }}>{t('יום', 'Day')} {challenge.day}</div>
               <div style={{ color:'#fff', fontSize:14, fontWeight:600 }}>{challenge.title}</div>
             </div>
           </div>
@@ -956,11 +980,11 @@
             </div>
 
             {/* Description */}
-            <div style={{ color:'#fff', fontSize:14, fontWeight:600, marginBottom:8 }}>על האתגר</div>
+            <div style={{ color:'#fff', fontSize:14, fontWeight:600, marginBottom:8 }}>{t('על האתגר', 'About This Challenge')}</div>
             <div style={{ color:C.textSub, fontSize:13, lineHeight:1.7, marginBottom:20 }}>{challenge.description}</div>
 
             {/* Tips */}
-            <div style={{ color:'#fff', fontSize:14, fontWeight:600, marginBottom:10 }}>טיפים</div>
+            <div style={{ color:'#fff', fontSize:14, fontWeight:600, marginBottom:10 }}>{t('טיפים', 'Tips')}</div>
             <div style={{ display:'flex', flexDirection:'column', gap:8, marginBottom:24 }}>
               {challenge.tips.map((tip,i) => (
                 <div key={i} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:'10px 14px', display:'flex', gap:10 }}>
@@ -975,7 +999,7 @@
               onClick={() => setDone(true)}
               style={{ background: done ? '#15803D' : C.amber, color: done ? '#fff' : '#000', width:'100%', padding:'16px 0', borderRadius:16, fontSize:15, fontWeight:700, border:'none', cursor:'pointer' }}
             >
-              {done ? '✓ הושלם! כל הכבוד!' : 'סמן כהושלם'}
+              {done ? t('✓ הושלם! כל הכבוד!', '✓ Done! Great job!') : t('סמן כהושלם', 'Mark as Done')}
             </button>
           </div>
         </div>
@@ -984,48 +1008,51 @@
 
     // ─── LIBRARY ──────────────────────────────────────────────────────────────
     function LibraryPage() {
+      const t    = useT();
+      const lang = React.useContext(LangContext);
       const [filter, setFilter]   = useState('all');
       const [selected, setSelected] = useState(null);
 
       const filters = [
-        { id:'all',     label:'הכל' },
-        { id:'wedding', label:'💍 חתונות' },
-        { id:'portrait',label:'פורטרט' },
-        { id:'product', label:'מוצר' },
-        { id:'fashion', label:'אופנה' },
-        { id:'natural', label:'טבעי' },
+        { id:'all',     label: t('הכל', 'All') },
+        { id:'wedding', label: t('💍 חתונות', '💍 Wedding') },
+        { id:'portrait',label: t('פורטרט', 'Portrait') },
+        { id:'product', label: t('מוצר', 'Product') },
+        { id:'fashion', label: t('אופנה', 'Fashion') },
+        { id:'natural', label: t('טבעי', 'Natural') },
       ];
       const filtered = filter === 'all' ? SETUPS : SETUPS.filter(s => s.category === filter);
 
       if (selected) {
+        const displayName = lang === 'en' ? selected.name : selected.nameHe;
         return (
           <div style={{ paddingBottom:24 }}>
             <div style={{ background:C.surface, borderBottom:`1px solid ${C.border}`, padding:'14px 18px', display:'flex', alignItems:'center', gap:12 }}>
               <button onClick={() => setSelected(null)} style={{ color:C.amber, fontSize:20, background:'none', border:'none', cursor:'pointer', padding:0 }}>←</button>
-              <div style={{ color:'#fff', fontSize:14, fontWeight:600 }}>{selected.nameHe}</div>
+              <div style={{ color:'#fff', fontSize:14, fontWeight:600 }}>{displayName}</div>
             </div>
             <div style={{ padding:'20px 18px' }}>
-              <div style={{ color:'#fff', fontSize:22, fontWeight:700, marginBottom:2 }}>{selected.nameHe}</div>
-              <div style={{ color:C.textMuted, fontSize:13, marginBottom:16 }}>{selected.name}</div>
+              <div style={{ color:'#fff', fontSize:22, fontWeight:700, marginBottom:2 }}>{displayName}</div>
+              <div style={{ color:C.textMuted, fontSize:13, marginBottom:16 }}>{lang === 'en' ? selected.nameHe : selected.name}</div>
               <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:18, padding:16, marginBottom:16, display:'flex', justifyContent:'center' }}>
                 <LightingDiagram type={selected.diagram} size={200} />
               </div>
               <div style={{ color:C.textSub, fontSize:13, lineHeight:1.7, marginBottom:18 }}>{selected.description}</div>
-              <div style={{ color:'#fff', fontSize:14, fontWeight:600, marginBottom:10 }}>ציוד נדרש</div>
+              <div style={{ color:'#fff', fontSize:14, fontWeight:600, marginBottom:10 }}>{t('ציוד נדרש', 'Equipment Needed')}</div>
               {selected.gear.map((g,i) => (
                 <div key={i} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:10, padding:'9px 14px', marginBottom:8, display:'flex', gap:10, alignItems:'center' }}>
                   <span style={{ color:C.amber }}>•</span>
                   <span style={{ color:'#D1D5DB', fontSize:13 }}>{g}</span>
                 </div>
               ))}
-              <div style={{ color:'#fff', fontSize:14, fontWeight:600, marginTop:16, marginBottom:10 }}>מתאים ל</div>
+              <div style={{ color:'#fff', fontSize:14, fontWeight:600, marginTop:16, marginBottom:10 }}>{t('מתאים ל', 'Suitable For')}</div>
               <div style={{ display:'flex', gap:8, flexWrap:'wrap', marginBottom: selected.tips ? 16 : 0 }}>
                 {selected.suitable.map((s,i) => (
                   <span key={i} style={{ background:'#1A1000', border:`1px solid ${C.amber}33`, color:C.amber, fontSize:12, padding:'4px 12px', borderRadius:20 }}>{s}</span>
                 ))}
               </div>
               {selected.tips && <>
-                <div style={{ color:'#fff', fontSize:14, fontWeight:600, marginBottom:10 }}>💡 טיפים לשטח</div>
+                <div style={{ color:'#fff', fontSize:14, fontWeight:600, marginBottom:10 }}>{t('💡 טיפים לשטח', '💡 Field Tips')}</div>
                 {selected.tips.map((tip,i) => (
                   <div key={i} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:10, padding:'10px 14px', marginBottom:8, display:'flex', gap:10 }}>
                     <span style={{ color:C.amber, fontSize:12, fontWeight:700, flexShrink:0 }}>{i+1}.</span>
@@ -1040,8 +1067,8 @@
 
       return (
         <div style={{ padding:'24px 18px 100px' }}>
-          <div style={{ color:'#fff', fontSize:24, fontWeight:800, marginBottom:2 }}>ספריית סט-אפים</div>
-          <div style={{ color:C.textMuted, fontSize:13, marginBottom:18 }}>תרשימי תאורה מקצועיים</div>
+          <div style={{ color:'#fff', fontSize:24, fontWeight:800, marginBottom:2 }}>{t('ספריית סט-אפים', 'Setup Library')}</div>
+          <div style={{ color:C.textMuted, fontSize:13, marginBottom:18 }}>{t('תרשימי תאורה מקצועיים', 'Professional lighting diagrams')}</div>
 
           {/* Filters */}
           <div className="scroll-hide" style={{ display:'flex', gap:8, overflowX:'auto', paddingBottom:12, marginBottom:16 }}>
@@ -1057,8 +1084,8 @@
                 <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, height:90, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:8, overflow:'hidden' }}>
                   <LightingDiagram type={setup.diagram} size={80} />
                 </div>
-                <div style={{ color:'#fff', fontSize:12, fontWeight:600, marginBottom:3 }}>{setup.nameHe}</div>
-                <div style={{ color:C.textMuted, fontSize:11 }}>{setup.lights === 0 ? 'טבעי' : `${setup.lights} אורות`}</div>
+                <div style={{ color:'#fff', fontSize:12, fontWeight:600, marginBottom:3 }}>{lang === 'en' ? setup.name : setup.nameHe}</div>
+                <div style={{ color:C.textMuted, fontSize:11 }}>{setup.lights === 0 ? t('טבעי', 'Natural') : `${setup.lights} ${t('אורות', 'lights')}`}</div>
               </div>
             ))}
           </div>
@@ -1068,14 +1095,16 @@
 
     // ─── GUIDE ────────────────────────────────────────────────────────────────
     function GuidePage() {
+      const t    = useT();
+      const lang = React.useContext(LangContext);
       const [step, setStep]     = useState(0);
       const [shoot, setShoot]   = useState('');
       const [lights, setLights] = useState('');
       const [result, setResult] = useState(null);
 
-      const shootTypes   = [{ id:'portrait',label:'פורטרט',icon:'👤' },{ id:'product',label:'מוצר',icon:'📦' },{ id:'fashion',label:'אופנה',icon:'👗' }];
-      const lightOptions = [{ id:'1',label:'אור אחד',icon:'💡' },{ id:'2',label:'שני אורות',icon:'💡💡' },{ id:'3',label:'שלושה+',icon:'💡💡💡' }];
-      const styleOptions = [{ id:'dramatic',label:'דרמטי',desc:'צללים חזקים, קונטרסט' },{ id:'soft',label:'רך',desc:'אור פרוש, מחמיא' },{ id:'natural',label:'טבעי',desc:'דמוי אור יום' }];
+      const shootTypes   = [{ id:'portrait',label:t('פורטרט','Portrait'),icon:'👤' },{ id:'product',label:t('מוצר','Product'),icon:'📦' },{ id:'fashion',label:t('אופנה','Fashion'),icon:'👗' }];
+      const lightOptions = [{ id:'1',label:t('אור אחד','One Light'),icon:'💡' },{ id:'2',label:t('שני אורות','Two Lights'),icon:'💡💡' },{ id:'3',label:t('שלושה+','Three+'),icon:'💡💡💡' }];
+      const styleOptions = [{ id:'dramatic',label:t('דרמטי','Dramatic'),desc:t('צללים חזקים, קונטרסט','Strong shadows, contrast') },{ id:'soft',label:t('רך','Soft'),desc:t('אור פרוש, מחמיא','Spread light, flattering') },{ id:'natural',label:t('טבעי','Natural'),desc:t('דמוי אור יום','Daylight-like') }];
 
       function pickStyle(styleId) {
         const key  = `${shoot}-${lights}-${styleId}`;
@@ -1087,19 +1116,20 @@
       }
       function reset() { setStep(0); setShoot(''); setLights(''); setResult(null); }
 
-      const stepLabels = ['סוג צילום','מקורות אור','סגנון'];
+      const stepLabels = [t('סוג צילום','Shoot Type'), t('מקורות אור','Light Sources'), t('סגנון','Style')];
 
       // Result screen
       if (step === 3 && result) {
         const { setup, specs, exp } = result;
+        const setupDisplayName = lang === 'en' ? setup.name : setup.nameHe;
         return (
           <div style={{ paddingBottom:100 }}>
 
             {/* ── Header ── */}
             <div style={{ background:'linear-gradient(160deg,#1A1100,#100D00)', borderBottom:`1px solid ${C.amber}22`, padding:'14px 18px 16px' }}>
-              <button onClick={reset} style={{ color:C.amber, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginBottom:12 }}>← סט-אפ חדש</button>
-              <div style={{ color:C.amber, fontSize:11, fontWeight:700, letterSpacing:1, marginBottom:4 }}>✨ ההמלצה שלנו</div>
-              <div style={{ color:'#fff', fontSize:22, fontWeight:800, marginBottom:4 }}>{setup.nameHe}</div>
+              <button onClick={reset} style={{ color:C.amber, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginBottom:12 }}>{t('← סט-אפ חדש', 'New Setup →')}</button>
+              <div style={{ color:C.amber, fontSize:11, fontWeight:700, letterSpacing:1, marginBottom:4 }}>{t('✨ ההמלצה שלנו', '✨ Our Recommendation')}</div>
+              <div style={{ color:'#fff', fontSize:22, fontWeight:800, marginBottom:4 }}>{setupDisplayName}</div>
               <div style={{ color:C.textSub, fontSize:13, lineHeight:1.6 }}>{exp}</div>
             </div>
 
@@ -1112,7 +1142,7 @@
             <div style={{ padding:'16px 18px', borderBottom:`1px solid ${C.border}` }}>
               <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12 }}>
                 <span style={{ fontSize:15 }}>📍</span>
-                <span style={{ color:'#fff', fontSize:14, fontWeight:700 }}>מיקום פנסים</span>
+                <span style={{ color:'#fff', fontSize:14, fontWeight:700 }}>{t('מיקום פנסים', 'Light Positions')}</span>
               </div>
               {specs.lights.map((l, i) => (
                 <div key={i} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:14, padding:'12px 14px', marginBottom:8 }}>
@@ -1140,7 +1170,7 @@
             <div style={{ padding:'16px 18px', borderBottom:`1px solid ${C.border}` }}>
               <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12 }}>
                 <span style={{ fontSize:15 }}>📷</span>
-                <span style={{ color:'#fff', fontSize:14, fontWeight:700 }}>הגדרות מצלמה</span>
+                <span style={{ color:'#fff', fontSize:14, fontWeight:700 }}>{t('הגדרות מצלמה', 'Camera Settings')}</span>
               </div>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
                 {[['צמצם', specs.camera.aperture], ['ISO', specs.camera.iso], ['שאטר', specs.camera.shutter]].map(([label, val]) => (
@@ -1156,7 +1186,7 @@
             <div style={{ padding:'14px 18px', borderBottom:`1px solid ${C.border}`, display:'flex', alignItems:'flex-start', gap:10 }}>
               <span style={{ fontSize:15, marginTop:1 }}>⚖️</span>
               <div>
-                <div style={{ color:'#fff', fontSize:13, fontWeight:700, marginBottom:4 }}>יחסי תאורה</div>
+                <div style={{ color:'#fff', fontSize:13, fontWeight:700, marginBottom:4 }}>{t('יחסי תאורה', 'Lighting Ratio')}</div>
                 <div style={{ color:C.textSub, fontSize:13 }}>{specs.ratio}</div>
               </div>
             </div>
@@ -1166,14 +1196,14 @@
               <div style={{ background:'#1A1000', border:`1px solid ${C.amber}30`, borderRadius:14, padding:'14px 16px' }}>
                 <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:6 }}>
                   <span style={{ fontSize:14 }}>💡</span>
-                  <span style={{ color:C.amber, fontSize:13, fontWeight:700 }}>טיפ מקצועי</span>
+                  <span style={{ color:C.amber, fontSize:13, fontWeight:700 }}>{t('טיפ מקצועי', 'Pro Tip')}</span>
                 </div>
                 <div style={{ color:'#D1D5DB', fontSize:13, lineHeight:1.7 }}>{specs.tip}</div>
               </div>
             </div>
 
             <div style={{ padding:'0 18px' }}>
-              <button onClick={reset} style={{ background:C.amber, color:'#000', width:'100%', padding:'14px 0', borderRadius:16, fontSize:14, fontWeight:700, border:'none', cursor:'pointer' }}>צור סט-אפ חדש</button>
+              <button onClick={reset} style={{ background:C.amber, color:'#000', width:'100%', padding:'14px 0', borderRadius:16, fontSize:14, fontWeight:700, border:'none', cursor:'pointer' }}>{t('צור סט-אפ חדש', 'Create New Setup')}</button>
             </div>
           </div>
         );
@@ -1181,8 +1211,8 @@
 
       return (
         <div style={{ padding:'24px 18px 100px' }}>
-          <div style={{ color:'#fff', fontSize:24, fontWeight:800, marginBottom:2 }}>מדריך חכם</div>
-          <div style={{ color:C.textMuted, fontSize:13, marginBottom:20 }}>קבל המלצת סט-אפ מותאמת אישית</div>
+          <div style={{ color:'#fff', fontSize:24, fontWeight:800, marginBottom:2 }}>{t('מדריך תאורה חכם', 'Smart Lighting Guide')}</div>
+          <div style={{ color:C.textMuted, fontSize:13, marginBottom:20 }}>{t('3 שאלות → סט-אפ מושלם', '3 questions → perfect setup')}</div>
 
           {/* Progress */}
           <div style={{ display:'flex', gap:6, marginBottom:24 }}>
@@ -1196,11 +1226,11 @@
 
           {step === 0 && (
             <div>
-              <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:14 }}>מה תצלם?</div>
-              {shootTypes.map(t => (
-                <button key={t.id} onClick={() => { setShoot(t.id); setStep(1); }} style={{ background:C.card, border:`1px solid ${C.border}`, color:'#fff', borderRadius:14, padding:'14px 16px', width:'100%', display:'flex', alignItems:'center', gap:14, cursor:'pointer', marginBottom:10, textAlign:'right' }}>
-                  <span style={{ fontSize:22 }}>{t.icon}</span>
-                  <span style={{ fontSize:15, fontWeight:500, flex:1 }}>{t.label}</span>
+              <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:14 }}>{t('מה תצלם?', 'What will you shoot?')}</div>
+              {shootTypes.map(opt => (
+                <button key={opt.id} onClick={() => { setShoot(opt.id); setStep(1); }} style={{ background:C.card, border:`1px solid ${C.border}`, color:'#fff', borderRadius:14, padding:'14px 16px', width:'100%', display:'flex', alignItems:'center', gap:14, cursor:'pointer', marginBottom:10, textAlign:'right' }}>
+                  <span style={{ fontSize:22 }}>{opt.icon}</span>
+                  <span style={{ fontSize:15, fontWeight:500, flex:1 }}>{opt.label}</span>
                   <span style={{ color:C.amber }}>←</span>
                 </button>
               ))}
@@ -1209,31 +1239,31 @@
 
           {step === 1 && (
             <div>
-              <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:14 }}>כמה מקורות אור יש לך?</div>
-              {lightOptions.map(t => (
-                <button key={t.id} onClick={() => { setLights(t.id); setStep(2); }} style={{ background:C.card, border:`1px solid ${C.border}`, color:'#fff', borderRadius:14, padding:'14px 16px', width:'100%', display:'flex', alignItems:'center', gap:14, cursor:'pointer', marginBottom:10, textAlign:'right' }}>
-                  <span style={{ fontSize:18 }}>{t.icon}</span>
-                  <span style={{ fontSize:15, fontWeight:500, flex:1 }}>{t.label}</span>
+              <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:14 }}>{t('כמה מקורות אור יש לך?', 'How many light sources?')}</div>
+              {lightOptions.map(opt => (
+                <button key={opt.id} onClick={() => { setLights(opt.id); setStep(2); }} style={{ background:C.card, border:`1px solid ${C.border}`, color:'#fff', borderRadius:14, padding:'14px 16px', width:'100%', display:'flex', alignItems:'center', gap:14, cursor:'pointer', marginBottom:10, textAlign:'right' }}>
+                  <span style={{ fontSize:18 }}>{opt.icon}</span>
+                  <span style={{ fontSize:15, fontWeight:500, flex:1 }}>{opt.label}</span>
                   <span style={{ color:C.amber }}>←</span>
                 </button>
               ))}
-              <button onClick={() => setStep(0)} style={{ color:C.textMuted, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginTop:4 }}>← חזור</button>
+              <button onClick={() => setStep(0)} style={{ color:C.textMuted, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginTop:4 }}>{t('← חזור', '← Back')}</button>
             </div>
           )}
 
           {step === 2 && (
             <div>
-              <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:14 }}>איזה סגנון תאורה?</div>
-              {styleOptions.map(t => (
-                <button key={t.id} onClick={() => pickStyle(t.id)} style={{ background:C.card, border:`1px solid ${C.border}`, color:'#fff', borderRadius:14, padding:'14px 16px', width:'100%', display:'flex', alignItems:'center', gap:14, cursor:'pointer', marginBottom:10, textAlign:'right' }}>
+              <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:14 }}>{t('איזה סגנון תאורה?', 'Which lighting style?')}</div>
+              {styleOptions.map(opt => (
+                <button key={opt.id} onClick={() => pickStyle(opt.id)} style={{ background:C.card, border:`1px solid ${C.border}`, color:'#fff', borderRadius:14, padding:'14px 16px', width:'100%', display:'flex', alignItems:'center', gap:14, cursor:'pointer', marginBottom:10, textAlign:'right' }}>
                   <div style={{ flex:1 }}>
-                    <div style={{ fontSize:15, fontWeight:500, marginBottom:2 }}>{t.label}</div>
-                    <div style={{ color:C.textMuted, fontSize:12 }}>{t.desc}</div>
+                    <div style={{ fontSize:15, fontWeight:500, marginBottom:2 }}>{opt.label}</div>
+                    <div style={{ color:C.textMuted, fontSize:12 }}>{opt.desc}</div>
                   </div>
                   <span style={{ color:C.amber }}>←</span>
                 </button>
               ))}
-              <button onClick={() => setStep(1)} style={{ color:C.textMuted, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginTop:4 }}>← חזור</button>
+              <button onClick={() => setStep(1)} style={{ color:C.textMuted, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginTop:4 }}>{t('← חזור', '← Back')}</button>
             </div>
           )}
         </div>
@@ -1258,6 +1288,8 @@
 score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues. JSON תקין בלבד.`;
 
     function LightingCoachPage() {
+      const t    = useT();
+      const lang = React.useContext(LangContext);
       const [step, setStep]           = useState(1);
       const [imgB64, setImgB64]       = useState(null);
       const [imgType, setImgType]     = useState('image/jpeg');
@@ -1269,7 +1301,10 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
       const frontRef = useRef(null);
       const backRef  = useRef(null);
 
-      const STEPS_TEXT = ['🔍 מזהה תבנית תאורה...','💡 מנתח איכות האור...','🎯 מזהה בעיות ספציפיות...','✨ מכין המלצות שיפור...'];
+      const STEPS_TEXT = {
+        he: ['🔍 מזהה תבנית תאורה...','💡 מנתח איכות האור...','🎯 מזהה בעיות ספציפיות...','✨ מכין המלצות שיפור...'],
+        en: ['🔍 Identifying lighting pattern...','💡 Analyzing light quality...','🎯 Detecting specific issues...','✨ Preparing improvement tips...'],
+      };
 
       function clearTimers() { timers.current.forEach(clearTimeout); timers.current = []; }
 
@@ -1343,10 +1378,12 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
 
       async function analyze() {
         setStep(2); setError(null); setDoneSteps([]); clearTimers();
-        STEPS_TEXT.forEach((txt, i) => {
-          const t = setTimeout(() => setDoneSteps(prev => [...prev, txt]), i * 1500 + 400);
-          timers.current.push(t);
+        const stepsText = STEPS_TEXT[lang];
+        stepsText.forEach((txt, i) => {
+          const timer = setTimeout(() => setDoneSteps(prev => [...prev, txt]), i * 1500 + 400);
+          timers.current.push(timer);
         });
+        const coachPromptLang = lang === 'en' ? COACH_PROMPT + '\nRespond with all text values in English.' : COACH_PROMPT;
         try {
           const resp = await fetch('/api/analyze', {
             method: 'POST',
@@ -1357,7 +1394,7 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
               system: 'You are a professional photography lighting coach. Always respond with valid JSON only, no markdown, no code blocks. Just raw JSON.',
               messages: [{ role: 'user', content: [
                 { type: 'image', source: { type: 'base64', media_type: imgType, data: imgB64 } },
-                { type: 'text', text: COACH_PROMPT },
+                { type: 'text', text: coachPromptLang },
               ]}],
             }),
           });
@@ -1387,8 +1424,8 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
       // Step 1
       if (step === 1) return (
         <div style={{ padding:'24px 18px 100px' }}>
-          <div style={{ color:'#fff', fontSize:24, fontWeight:800, marginBottom:4 }}>מאמן תאורה</div>
-          <div style={{ color:C.textMuted, fontSize:13, marginBottom:24 }}>צלם תמונה → AI מנתח את התאורה → טיפים לשיפור מיידי</div>
+          <div style={{ color:'#fff', fontSize:24, fontWeight:800, marginBottom:4 }}>{t('מאמן תאורה', 'Lighting Coach')}</div>
+          <div style={{ color:C.textMuted, fontSize:13, marginBottom:24 }}>{t('צלם תמונה → AI מנתח את התאורה → טיפים לשיפור מיידי', 'Take a photo → AI analyzes lighting → instant improvement tips')}</div>
 
           {/* Camera buttons */}
           {!preview ? (
@@ -1400,8 +1437,8 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
                   <span style={{ fontSize:26 }}>🤳</span>
                 </div>
                 <div>
-                  <div style={{ color:'#fff', fontSize:15, fontWeight:700 }}>צלם פורטרט</div>
-                  <div style={{ color:C.textMuted, fontSize:12 }}>מצלמה קדמית – לניתוח תאורת פנים</div>
+                  <div style={{ color:'#fff', fontSize:15, fontWeight:700 }}>{t('צלם פורטרט', 'Take Portrait')}</div>
+                  <div style={{ color:C.textMuted, fontSize:12 }}>{t('מצלמה קדמית – לניתוח תאורת פנים', 'Front camera – for face/portrait lighting')}</div>
                 </div>
               </label>
 
@@ -1412,8 +1449,8 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
                   <span style={{ fontSize:26 }}>📷</span>
                 </div>
                 <div>
-                  <div style={{ color:'#fff', fontSize:15, fontWeight:700 }}>צלם סצנה</div>
-                  <div style={{ color:C.textMuted, fontSize:12 }}>מצלמה אחורית – לניתוח תאורת חלל</div>
+                  <div style={{ color:'#fff', fontSize:15, fontWeight:700 }}>{t('צלם סצנה', 'Shoot Scene')}</div>
+                  <div style={{ color:C.textMuted, fontSize:12 }}>{t('מצלמה אחורית – לניתוח תאורת חלל', 'Back camera – for space lighting')}</div>
                 </div>
               </label>
 
@@ -1424,8 +1461,8 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
                   <span style={{ fontSize:26 }}>🖼️</span>
                 </div>
                 <div>
-                  <div style={{ color:'#fff', fontSize:15, fontWeight:700 }}>בחר מהגלריה</div>
-                  <div style={{ color:C.textMuted, fontSize:12 }}>העלה תמונה קיימת</div>
+                  <div style={{ color:'#fff', fontSize:15, fontWeight:700 }}>{t('בחר מהגלריה', 'Pick from Gallery')}</div>
+                  <div style={{ color:C.textMuted, fontSize:12 }}>{t('העלה תמונה קיימת', 'Upload an existing photo')}</div>
                 </div>
               </label>
             </div>
@@ -1434,7 +1471,7 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
               <img src={preview} style={{ width:'100%', borderRadius:16, maxHeight:340, objectFit:'contain', marginBottom:8 }} />
               <label style={{ display:'block', textAlign:'center', cursor:'pointer', color:C.textMuted, fontSize:12 }}>
                 <input type="file" accept="image/*" style={{ display:'none' }} onChange={e => e.target.files[0] && handleFile(e.target.files[0])} />
-                🔄 החלף תמונה
+                🔄 {t('החלף תמונה', 'Replace photo')}
               </label>
             </div>
           )}
@@ -1443,38 +1480,41 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
 
           <button onClick={analyze} disabled={!preview}
             style={{ background: preview ? C.amber : C.border, color: preview ? '#000' : C.textMuted, width:'100%', padding:'18px 0', borderRadius:16, fontSize:16, fontWeight:700, border:'none', cursor: preview ? 'pointer' : 'default' }}>
-            {!preview ? 'צלם תמונה תחילה' : '⚡ נתח תאורה עם AI'}
+            {!preview ? t('צלם תמונה תחילה', 'Take a photo first') : t('⚡ נתח תאורה עם AI', '⚡ Analyze Lighting with AI')}
           </button>
         </div>
       );
 
       // Step 2
-      if (step === 2) return (
-        <div style={{ padding:'32px 18px 100px' }}>
-          <div style={{ color:'#fff', fontSize:22, fontWeight:800, marginBottom:20 }}>מנתח תאורה...</div>
-          {preview && (
-            <div style={{ position:'relative', marginBottom:24 }}>
-              <img src={preview} style={{ width:'100%', borderRadius:16, maxHeight:280, objectFit:'contain', opacity:0.5 }} />
-              <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
-                <div style={{ width:56, height:56, border:`4px solid ${C.border}`, borderTopColor:C.amber, borderRadius:'50%', animation:'spin 0.9s linear infinite' }} />
-              </div>
-            </div>
-          )}
-          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-            {doneSteps.map((txt, i) => (
-              <div key={i} className="fade-up" style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:'12px 16px', display:'flex', alignItems:'center', gap:10, color:'#fff', fontSize:13 }}>
-                <span style={{ color:C.green }}>✓</span> {txt}
-              </div>
-            ))}
-            {doneSteps.length < STEPS_TEXT.length && (
-              <div style={{ background:C.card, border:`1px solid ${C.amber}22`, borderRadius:12, padding:'12px 16px', display:'flex', alignItems:'center', gap:10, color:C.textSub, fontSize:13 }}>
-                <div style={{ width:14, height:14, border:`2px solid ${C.border}`, borderTopColor:C.amber, borderRadius:'50%', animation:'spin 0.8s linear infinite', flexShrink:0 }} />
-                {STEPS_TEXT[doneSteps.length]}
+      if (step === 2) {
+        const stepsText2 = STEPS_TEXT[lang];
+        return (
+          <div style={{ padding:'32px 18px 100px' }}>
+            <div style={{ color:'#fff', fontSize:22, fontWeight:800, marginBottom:20 }}>{t('מנתח תאורה...', 'Analyzing lighting...')}</div>
+            {preview && (
+              <div style={{ position:'relative', marginBottom:24 }}>
+                <img src={preview} style={{ width:'100%', borderRadius:16, maxHeight:280, objectFit:'contain', opacity:0.5 }} />
+                <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+                  <div style={{ width:56, height:56, border:`4px solid ${C.border}`, borderTopColor:C.amber, borderRadius:'50%', animation:'spin 0.9s linear infinite' }} />
+                </div>
               </div>
             )}
+            <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+              {doneSteps.map((txt, i) => (
+                <div key={i} className="fade-up" style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:'12px 16px', display:'flex', alignItems:'center', gap:10, color:'#fff', fontSize:13 }}>
+                  <span style={{ color:C.green }}>✓</span> {txt}
+                </div>
+              ))}
+              {doneSteps.length < stepsText2.length && (
+                <div style={{ background:C.card, border:`1px solid ${C.amber}22`, borderRadius:12, padding:'12px 16px', display:'flex', alignItems:'center', gap:10, color:C.textSub, fontSize:13 }}>
+                  <div style={{ width:14, height:14, border:`2px solid ${C.border}`, borderTopColor:C.amber, borderRadius:'50%', animation:'spin 0.8s linear infinite', flexShrink:0 }} />
+                  {stepsText2[doneSteps.length]}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
 
       // Step 3
       if (step === 3 && results) {
@@ -1483,17 +1523,17 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
           <div style={{ paddingBottom:100 }}>
             {/* Score header */}
             <div style={{ background:'linear-gradient(160deg,#0D0D0D,#141414)', borderBottom:`1px solid ${C.border}`, padding:'20px 18px 24px' }}>
-              <button onClick={reset} style={{ color:C.amber, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginBottom:16 }}>← ניתוח חדש</button>
+              <button onClick={reset} style={{ color:C.amber, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginBottom:16 }}>{t('← ניתוח חדש', 'New Analysis →')}</button>
               <div style={{ display:'flex', alignItems:'center', gap:20 }}>
                 {/* Score circle */}
                 <div style={{ width:80, height:80, borderRadius:'50%', border:`4px solid ${scoreColor(score)}`, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
                   <div style={{ color:scoreColor(score), fontSize:28, fontWeight:900, lineHeight:1 }}>{score}</div>
-                  <div style={{ color:C.textMuted, fontSize:10 }}>מתוך 10</div>
+                  <div style={{ color:C.textMuted, fontSize:10 }}>{t('מתוך 10', 'out of 10')}</div>
                 </div>
                 <div>
-                  <div style={{ color:'#fff', fontSize:18, fontWeight:800, marginBottom:4 }}>ניתוח תאורה</div>
-                  {pattern && <div style={{ color:C.amber, fontSize:13, fontWeight:600, marginBottom:4 }}>תבנית: {pattern}</div>}
-                  {mood && <div style={{ color:C.textMuted, fontSize:12 }}>אווירה: {mood}</div>}
+                  <div style={{ color:'#fff', fontSize:18, fontWeight:800, marginBottom:4 }}>{t('ניתוח תאורה', 'Lighting Analysis')}</div>
+                  {pattern && <div style={{ color:C.amber, fontSize:13, fontWeight:600, marginBottom:4 }}>{t('תבנית:', 'Pattern:')} {pattern}</div>}
+                  {mood && <div style={{ color:C.textMuted, fontSize:12 }}>{t('אווירה:', 'Mood:')} {mood}</div>}
                 </div>
               </div>
             </div>
@@ -1502,7 +1542,7 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
               {/* Quick fix */}
               {quickFix && (
                 <div style={{ background:'linear-gradient(135deg,#1A1000,#1A1200)', border:`1px solid ${C.amber}44`, borderRadius:16, padding:'14px 16px', marginBottom:16 }}>
-                  <div style={{ color:C.amber, fontSize:12, fontWeight:700, marginBottom:6 }}>⚡ תיקון מהיר – עכשיו</div>
+                  <div style={{ color:C.amber, fontSize:12, fontWeight:700, marginBottom:6 }}>{t('⚡ תיקון מהיר – עכשיו', '⚡ Quick Fix – Right Now')}</div>
                   <div style={{ color:'#fff', fontSize:14, lineHeight:1.6 }}>{quickFix}</div>
                 </div>
               )}
@@ -1510,7 +1550,7 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
               {/* Positives */}
               {positives?.length > 0 && (
                 <div style={{ marginBottom:16 }}>
-                  <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:10 }}>✅ מה עובד טוב</div>
+                  <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:10 }}>{t('✅ מה עובד טוב', '✅ What Works Well')}</div>
                   {positives.map((p, i) => (
                     <div key={i} style={{ display:'flex', gap:10, alignItems:'flex-start', marginBottom:8 }}>
                       <span style={{ color:C.green, fontSize:14, flexShrink:0 }}>•</span>
@@ -1523,7 +1563,7 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
               {/* Issues */}
               {issues?.length > 0 && (
                 <div style={{ marginBottom:16 }}>
-                  <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:10 }}>🔧 מה לשפר</div>
+                  <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:10 }}>{t('🔧 מה לשפר', '🔧 What to Improve')}</div>
                   {issues.map((issue, i) => (
                     <div key={i} className="fade-up" style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:16, overflow:'hidden', marginBottom:10 }}>
                       <div style={{ background:C.surface, padding:'10px 14px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
@@ -1543,7 +1583,7 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
               {preview && <img src={preview} style={{ width:'100%', borderRadius:14, maxHeight:220, objectFit:'contain', opacity:0.7, marginBottom:16 }} />}
 
               <button onClick={reset} style={{ background:C.amber, color:'#000', width:'100%', padding:'14px 0', borderRadius:16, fontSize:14, fontWeight:700, border:'none', cursor:'pointer' }}>
-                📷 נתח תמונה חדשה
+                {t('📷 נתח תמונה חדשה', '📷 Analyze New Photo')}
               </button>
             </div>
           </div>
@@ -1556,17 +1596,26 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
     function App() {
       const [page, setPage]                     = useState('home');
       const [selectedChallenge, setSelectedChallenge] = useState(null);
+      const [lang, setLang] = useState(() => localStorage.getItem('lm_lang') || 'he');
+
+      useEffect(() => {
+        document.documentElement.dir = lang === 'en' ? 'ltr' : 'rtl';
+        document.documentElement.lang = lang;
+        localStorage.setItem('lm_lang', lang);
+      }, [lang]);
 
       return (
-        <div style={{ maxWidth:430, margin:'0 auto', minHeight:'100vh', background:C.bg, position:'relative' }}>
-          {page === 'home'      && <HomePage setPage={setPage} setSelectedChallenge={setSelectedChallenge} />}
-          {page === 'challenge' && <ChallengePage challenge={selectedChallenge} setPage={setPage} />}
-          {page === 'scan'      && <SpaceScanPage />}
-          {page === 'library'   && <LibraryPage />}
-          {page === 'guide'     && <GuidePage />}
-          {page === 'coach'     && <LightingCoachPage />}
-          {page !== 'challenge' && <Navbar page={page} setPage={setPage} />}
-        </div>
+        <LangContext.Provider value={lang}>
+          <div style={{ maxWidth:430, margin:'0 auto', minHeight:'100vh', background:C.bg, position:'relative' }}>
+            {page === 'home'      && <HomePage setPage={setPage} setSelectedChallenge={setSelectedChallenge} />}
+            {page === 'challenge' && <ChallengePage challenge={selectedChallenge} setPage={setPage} />}
+            {page === 'scan'      && <SpaceScanPage />}
+            {page === 'library'   && <LibraryPage />}
+            {page === 'guide'     && <GuidePage />}
+            {page === 'coach'     && <LightingCoachPage />}
+            {page !== 'challenge' && <Navbar page={page} setPage={setPage} lang={lang} setLang={setLang} />}
+          </div>
+        </LangContext.Provider>
       );
     }
 
