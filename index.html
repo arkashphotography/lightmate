@@ -120,7 +120,7 @@
       { id:8, nameHe:'High Key מוצר',   name:'High Key Product',      category:'product',  diagram:'highkey',    lights:3, gear:['3× Strobe','Large Softbox','White Backdrop'],              suitable:['מוצר','קטלוג','נקי'],      description:'תאורה בהירה ואחידה עם רקע לבן – סגנון קטלוג.' },
 
       // ── חתונות ──
-      { id:9,  nameHe:'חופה',            name:'Wedding Ceremony',      category:'wedding',  diagram:'threepoint', lights:3, gear:['2× Strobe על סטנד','1× On-Camera Flash','Diffuser','Wireless Trigger'],          suitable:['חופה','טקס','ריגש'],        description:'תאורה לטקס החופה. Key light מצד שמאל של המסדר, fill מהצד השני, ו-on-camera flash כגיבוי. חשוב להכין מראש ולהסכים עם המסדר.', tips:['הגע שעה לפני לבדיקת תאורת המקום','תאם עם המסדר על מיקום הסטנדים','השתמש ב-rear curtain sync ל-fill עדין','שים לב לנרות ואורות רקע – פחות ISO'] },
+      { id:9,  nameHe:'חופה',            name:'Wedding Ceremony',      category:'wedding',  diagram:'wedding', lights:3, gear:['2× Strobe על סטנד','1× On-Camera Flash','Diffuser','Wireless Trigger'],          suitable:['חופה','טקס','ריגש'],        description:'תאורה לטקס החופה. Key light מצד שמאל של המסדר, fill מהצד השני, ו-on-camera flash כגיבוי. חשוב להכין מראש ולהסכים עם המסדר.', tips:['הגע שעה לפני לבדיקת תאורת המקום','תאם עם המסדר על מיקום הסטנדים','השתמש ב-rear curtain sync ל-fill עדין','שים לב לנרות ואורות רקע – פחות ISO'] },
       { id:10, nameHe:'כתובה',           name:'Ketubah Signing',       category:'wedding',  diagram:'window',     lights:1, gear:['1× Softbox גדול','Reflector לבן','LED Panel (רשות)'],                          suitable:['כתובה','אינטימי','דוקומנטרי'], description:'רגע אינטימי ומרגש. softbox גדול מהצד כחלון, רפלקטור להבהרת הצל. אווירה רכה ורומנטית שמאפשרת טבעיות.', tips:['הצב softbox מחוץ לפריים מהצד','השתמש ב-LED חם לאווירה נרות','ISO גבוה + f/2.8 לעומק שדה רדוד','צלם גם details: ידיים, עט, הכתובה עצמה'] },
       { id:11, nameHe:'צילומי משפחה',   name:'Family Portraits',      category:'wedding',  diagram:'highkey',    lights:3, gear:['2× Strobe','1× Fill Light','Umbrella לבנה','Reflector'],                       suitable:['משפחה','קבוצה','פורמלי'],   description:'תאורה שטוחה ואחידה לקבוצות גדולות. שני softbox/umbrella סימטריים + fill קל מלמטה. מונעת צללים קשים על פנים.', tips:['ודא שהתאורה פרוסה שווה על כל הקבוצה','בקש מהמשפחה לעמוד צפוף – מקל על ה-exposure','ירה ריבוי תמונות – תמיד מישהו עוצם עיניים','f/5.6-f/8 לחדות על כל השורות'] },
       { id:12, nameHe:'צילומי זוג',     name:'Couple Session',        category:'wedding',  diagram:'rembrandt',  lights:2, gear:['1× Strobe/Flash','1× Reflector/Fill','CTO Gel','Wireless Trigger'],               suitable:['זוג','רומנטי','דרמטי'],     description:'תאורה מחמיאה לשניים. key light ב-45° עם CTO gel לאווירה חמה, רפלקטור להרמת הצל. אפשר לשלב עם backlight.', tips:['CTO gel = אווירה זהב/שקיעה','backlight מאחורי הזוג = rim רומנטי','שוחח עם הזוג על פוזות לפני','השתמש בשעת הזהב (שעה לפני שקיעה)'] },
@@ -291,11 +291,13 @@
       return (
         <svg width={size} height={size} viewBox="0 0 200 200">
           <BgRect />
-          <DashLine x1={30} y1={46} x2={90} y2={82} color={C.amber} />
-          <DashLine x1={170} y1={88} x2={114} y2={88} color={C.blue} opacity={0.35} />
+          {/* Key: front-left 45° (between camera and subject) */}
+          <DashLine x1={30} y1={130} x2={88} y2={92} color={C.amber} />
+          {/* Fill: right side, slightly in front */}
+          <DashLine x1={172} y1={110} x2={114} y2={88} color={C.blue} opacity={0.35} />
           <Subject />
-          <Light cx={30} cy={46} color={C.amber} label="Key" labelDy={20} />
-          <Light cx={170} cy={88} color={C.blue} label="Fill" labelDy={18} r={7} />
+          <Light cx={30} cy={130} color={C.amber} label="Key" labelDy={20} />
+          <Light cx={172} cy={110} color={C.blue} label="Fill" labelDy={18} r={7} />
           <Camera />
           <text x={108} y={106} fill={C.amber} fontSize="8" opacity={0.8}>▲ triangle</text>
         </svg>
@@ -334,13 +336,16 @@
       return (
         <svg width={size} height={size} viewBox="0 0 200 200">
           <BgRect />
-          <DashLine x1={30} y1={46} x2={88} y2={80} color={C.amber} />
-          <DashLine x1={170} y1={68} x2={115} y2={84} color={C.blue} opacity={0.35} />
-          <DashLine x1={24} y1={132} x2={88} y2={100} color={C.purple} opacity={0.45} />
+          {/* Key: front-left 45° */}
+          <DashLine x1={24} y1={132} x2={88} y2={92} color={C.amber} />
+          {/* Fill: front-right 45° */}
+          <DashLine x1={176} y1={132} x2={112} y2={92} color={C.blue} opacity={0.35} />
+          {/* Rim: behind subject, upper-left */}
+          <DashLine x1={30} y1={44} x2={88} y2={78} color={C.purple} opacity={0.45} />
           <Subject />
-          <Light cx={30} cy={46} color={C.amber} label="Key" labelDy={-14} r={9} />
-          <Light cx={170} cy={68} color={C.blue} label="Fill" labelDy={18} r={7} />
-          <Light cx={24} cy={132} color={C.purple} label="Rim" labelDy={18} r={7} />
+          <Light cx={24} cy={132} color={C.amber} label="Key" labelDy={20} r={9} />
+          <Light cx={176} cy={132} color={C.blue} label="Fill" labelDy={20} r={7} />
+          <Light cx={30} cy={44} color={C.purple} label="Rim" labelDy={-14} r={7} />
           <Camera />
         </svg>
       );
@@ -430,6 +435,37 @@
       );
     }
 
+    function DiagramWedding({ size=200 }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 200 200">
+          <BgRect />
+          {/* Chuppah canopy */}
+          <rect x={52} y={14} width={96} height={44} rx={3} fill="#1E2533" stroke={C.amber} strokeWidth={1.2} strokeDasharray="4,2" />
+          <text x={100} y={33} textAnchor="middle" fill={C.amber} fontSize="8" fontWeight="bold">חופה</text>
+          <text x={100} y={46} textAnchor="middle" fill={C.textMuted} fontSize="7">Chuppah</text>
+          {/* Chuppah poles */}
+          <line x1={52} y1={14} x2={52} y2={68} stroke={C.amber} strokeWidth={1} opacity={0.5} />
+          <line x1={148} y1={14} x2={148} y2={68} stroke={C.amber} strokeWidth={1} opacity={0.5} />
+          {/* Couple (two subjects) */}
+          <ellipse cx={88} cy={82} rx={7} ry={9} fill="#3D4451" stroke="#6B7280" strokeWidth={1} />
+          <circle cx={88} cy={70} r={7} fill="#4B5563" stroke="#9CA3AF" strokeWidth={1} />
+          <ellipse cx={112} cy={82} rx={7} ry={9} fill="#3D4451" stroke="#6B7280" strokeWidth={1} />
+          <circle cx={112} cy={70} r={7} fill="#4B5563" stroke="#9CA3AF" strokeWidth={1} />
+          <text x={100} y={97} textAnchor="middle" fill={C.textMuted} fontSize="7">זוג</text>
+          {/* Key light — left stand, front-left */}
+          <DashLine x1={18} y1={128} x2={85} y2={82} color={C.amber} />
+          <Light cx={18} cy={128} color={C.amber} label="Key" labelDy={20} r={8} />
+          {/* Fill light — right stand, front-right */}
+          <DashLine x1={182} y1={128} x2={115} y2={82} color={C.blue} opacity={0.5} />
+          <Light cx={182} cy={128} color={C.blue} label="Fill" labelDy={20} r={7} />
+          {/* On-camera flash indicator */}
+          <rect x={85} y={152} width={30} height={6} rx={2} fill={C.amber} opacity={0.4} />
+          <text x={100} y={148} textAnchor="middle" fill={C.amber} fontSize="7">On-cam flash</text>
+          <Camera />
+        </svg>
+      );
+    }
+
     function LightingDiagram({ type, size=200 }) {
       const map = {
         rembrandt: DiagramRembrandt,
@@ -440,6 +476,7 @@
         flatlay:   DiagramFlatLay,
         ring:      DiagramRing,
         highkey:   DiagramHighKey,
+        wedding:   DiagramWedding,
       };
       const D = map[type] || DiagramRembrandt;
       return <D size={size} />;
