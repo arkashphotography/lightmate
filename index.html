@@ -128,11 +128,11 @@
       { id:1, nameHe:'פורטרט רמברנדט',   name:'Rembrandt Portrait',    category:'portrait', diagram:'rembrandt',  lights:2, gear:['Strobe/Flash','Softbox 60×90','Reflector'],                    suitable:['פורטרט','דרמטי','קלאסי'],   description:'תאורה קלאסית עם משולש אור על הלחי. מייצרת עומק ואופי.' },
       { id:2, nameHe:'ביוטי פרפר',       name:'Butterfly / Beauty',    category:'portrait', diagram:'butterfly',  lights:1, gear:['Strobe/Flash','Beauty Dish','Reflector'],                   suitable:['ביוטי','פורטרט','אופנה'],   description:'אור מעל המצלמה ליצירת צל פרפר. תאורת ביוטי קלאסית.' },
       { id:3, nameHe:'ספליט דרמטי',      name:'Split Dramatic',        category:'portrait', diagram:'split',      lights:1, gear:['Flash','Grid/Snoot'],                                      suitable:['דרמטי','אמנותי','עוצמתי'], description:'אור מהצד הגורם לחצי הפנים להיות בצל. עוצמתי ודרמטי.' },
-      { id:4, nameHe:'תאורה שלוש נקודות',name:'Three-Point Portrait',  category:'portrait', diagram:'threepoint', lights:3, gear:['2× Strobe','1× LED','Softbox 60×90','Octabox'],            suitable:['פורטרט','מקצועי','סרטים'],  description:'הסטנדרט הקלאסי – key, fill ו-rim.' },
+      { id:4, nameHe:'תאורה שלוש נקודות',name:'Three-Point Portrait',  category:'portrait', diagram:'threepoint', lights:3, premium:true, gear:['2× Strobe','1× LED','Softbox 60×90','Octabox'],            suitable:['פורטרט','מקצועי','סרטים'],  description:'הסטנדרט הקלאסי – key, fill ו-rim.' },
       { id:5, nameHe:'מוצר Flat Lay',    name:'Product Flat Lay',      category:'product',  diagram:'flatlay',    lights:2, gear:['2× Softbox','White Background','Diffuser'],                suitable:['מוצר','אינסטגרם','e-commerce'], description:'שני softboxes סימטריים לתאורה אחידה על המוצר.' },
       { id:6, nameHe:'תאורת חלון',       name:'Window Light Portrait', category:'natural',  diagram:'window',     lights:0, gear:['חלון','Reflector לבן','Diffuser (רשות)'],               suitable:['פורטרט','טבעי','מינימליסטי'], description:'תאורה טבעית מחלון – פשוטה ויפה.' },
       { id:7, nameHe:'Ring Light',       name:'Ring Light',            category:'fashion',  diagram:'ring',       lights:1, gear:['Ring Light','Tripod','Phone Mount'],                       suitable:['אופנה','יוצרי תוכן','וידאו'], description:'Ring light עגול עם catchlight מושלם בעיניים.' },
-      { id:8, nameHe:'High Key מוצר',   name:'High Key Product',      category:'product',  diagram:'highkey',    lights:3, gear:['3× Strobe','Large Softbox','White Backdrop'],              suitable:['מוצר','קטלוג','נקי'],      description:'תאורה בהירה ואחידה עם רקע לבן – סגנון קטלוג.' },
+      { id:8, nameHe:'High Key מוצר',   name:'High Key Product',      category:'product',  diagram:'highkey',    lights:3, premium:true, gear:['3× Strobe','Large Softbox','White Backdrop'],              suitable:['מוצר','קטלוג','נקי'],      description:'תאורה בהירה ואחידה עם רקע לבן – סגנון קטלוג.' },
 
       // ── ראיונות ──
       { id:14, nameHe:'ראיון – אדם אחד', name:'Single Interview',
@@ -142,48 +142,91 @@
         description:'הסט-אפ הקלאסי לראיון אדם אחד. Key light ב-45° מהצד המועדף, fill עדין מהצד הנגדי לרכך צללים, ואור רקע להפרדה מהרקע. רקע אחיד מאחורה.',
         tips:['Key ב-45° לצד השיחה – כדי שהנושא ייראה כמדבר אל המראיין','Fill חלש מאוד (1:3 עד 1:4) לראיון דרמטי יותר','הדלק אור רקע – מונע שטיחות ומוסיף עומק','f/2.8-f/4 לאפקט bokeh ברקע'] },
       { id:15, nameHe:'מראיין ומרואיין', name:'Interviewer & Interviewee',
-        category:'interview', diagram:'interview2', lights:4,
+        category:'interview', diagram:'interview2', lights:4, premium:true,
         gear:['2× Key Light – Softbox 60×90','1× Shared Fill – Large Softbox','1× Background Light','2× Wireless Trigger'],
         suitable:['ראיון זוגי','דוקומנטרי','TV','פודקאסט'],
         description:'Cross-Key Lighting לשני אנשים מולם. כל אחד מקבל key מהכיוון של השני – זה יוצר catchlight טבעי בעיניים ומדמה תאורת חלון. fill משותף מלמעלה.',
         tips:['הצב כל key ב-45° בין השניים לכיוון המצלמה – כל אחד מאיר את הצד הפנוי של השני','גובה Key = גובה עיניים +20ס"מ, לא גבוה מדי','Fill אחד משותף מלמעלה ומהצד מספיק לשניים','בדוק שאין צל של מיקרופון על הפנים'] },
 
       // ── חתונות ──
-      { id:9,  nameHe:'חופה',            name:'Wedding Ceremony',      category:'wedding',  diagram:'wedding', lights:3, gear:['2× Strobe על סטנד','1× On-Camera Flash','Diffuser','Wireless Trigger'],          suitable:['חופה','טקס','ריגש'],        description:'תאורה לטקס החופה. Key light מצד שמאל של המסדר, fill מהצד השני, ו-on-camera flash כגיבוי. חשוב להכין מראש ולהסכים עם המסדר.', tips:['הגע שעה לפני לבדיקת תאורת המקום','תאם עם המסדר על מיקום הסטנדים','השתמש ב-rear curtain sync ל-fill עדין','שים לב לנרות ואורות רקע – פחות ISO'] },
+      { id:9,  nameHe:'חופה',            name:'Wedding Ceremony',      category:'wedding',  diagram:'wedding', lights:3, premium:true, gear:['2× Strobe על סטנד','1× On-Camera Flash','Diffuser','Wireless Trigger'],          suitable:['חופה','טקס','ריגש'],        description:'תאורה לטקס החופה. Key light מצד שמאל של המסדר, fill מהצד השני, ו-on-camera flash כגיבוי. חשוב להכין מראש ולהסכים עם המסדר.', tips:['הגע שעה לפני לבדיקת תאורת המקום','תאם עם המסדר על מיקום הסטנדים','השתמש ב-rear curtain sync ל-fill עדין','שים לב לנרות ואורות רקע – פחות ISO'] },
       { id:10, nameHe:'כתובה',           name:'Ketubah Signing',       category:'wedding',  diagram:'window',     lights:1, gear:['1× Softbox גדול','Reflector לבן','LED Panel (רשות)'],                          suitable:['כתובה','אינטימי','דוקומנטרי'], description:'רגע אינטימי ומרגש. softbox גדול מהצד כחלון, רפלקטור להבהרת הצל. אווירה רכה ורומנטית שמאפשרת טבעיות.', tips:['הצב softbox מחוץ לפריים מהצד','השתמש ב-LED חם לאווירה נרות','ISO גבוה + f/2.8 לעומק שדה רדוד','צלם גם details: ידיים, עט, הכתובה עצמה'] },
-      { id:11, nameHe:'צילומי משפחה',   name:'Family Portraits',      category:'wedding',  diagram:'highkey',    lights:3, gear:['2× Strobe','1× Fill Light','Umbrella לבנה','Reflector'],                       suitable:['משפחה','קבוצה','פורמלי'],   description:'תאורה שטוחה ואחידה לקבוצות גדולות. שני softbox/umbrella סימטריים + fill קל מלמטה. מונעת צללים קשים על פנים.', tips:['ודא שהתאורה פרוסה שווה על כל הקבוצה','בקש מהמשפחה לעמוד צפוף – מקל על ה-exposure','ירה ריבוי תמונות – תמיד מישהו עוצם עיניים','f/5.6-f/8 לחדות על כל השורות'] },
+      { id:11, nameHe:'צילומי משפחה',   name:'Family Portraits',      category:'wedding',  diagram:'highkey',    lights:3, premium:true, gear:['2× Strobe','1× Fill Light','Umbrella לבנה','Reflector'],                       suitable:['משפחה','קבוצה','פורמלי'],   description:'תאורה שטוחה ואחידה לקבוצות גדולות. שני softbox/umbrella סימטריים + fill קל מלמטה. מונעת צללים קשים על פנים.', tips:['ודא שהתאורה פרוסה שווה על כל הקבוצה','בקש מהמשפחה לעמוד צפוף – מקל על ה-exposure','ירה ריבוי תמונות – תמיד מישהו עוצם עיניים','f/5.6-f/8 לחדות על כל השורות'] },
       { id:12, nameHe:'צילומי זוג',     name:'Couple Session',        category:'wedding',  diagram:'rembrandt',  lights:2, gear:['1× Strobe/Flash','1× Reflector/Fill','CTO Gel','Wireless Trigger'],               suitable:['זוג','רומנטי','דרמטי'],     description:'תאורה מחמיאה לשניים. key light ב-45° עם CTO gel לאווירה חמה, רפלקטור להרמת הצל. אפשר לשלב עם backlight.', tips:['CTO gel = אווירה זהב/שקיעה','backlight מאחורי הזוג = rim רומנטי','שוחח עם הזוג על פוזות לפני','השתמש בשעת הזהב (שעה לפני שקיעה)'] },
       { id:13, nameHe:'מסיבה וריקודים', name:'Reception & Dance Floor',category:'wedding',  diagram:'ring',       lights:2, gear:['On-Camera Flash','Bounce Card','High ISO Camera','Wide Lens f/2.8'],              suitable:['מסיבה','ריקודים','אנרגיה'], description:'זמן ריקודים = אתגר. bounce flash לתקרה לאור רך, או drag shutter לאפקט תנועה. ISO גבוה עם עדשת f/2.8.', tips:['Bounce flash לתקרה לבנה = אור רך ונעים','Drag Shutter (1/30) + flash = תנועה+חדות','ISO 3200-6400 עם גוף מלא','הישאר על רצפת הריקודים, אל תצלם מהצד'] },
     ];
 
     const GUIDE_RESULTS = {
-      'portrait-1-dramatic': { sid:3, exp:'לפורטרט דרמטי עם אור אחד, Split Lighting הוא האידיאלי. אור צדדי יוצר קונטרסט עמוק ואופי עז.', expEn:'For dramatic portrait with one light, Split Lighting is ideal. Side light creates deep contrast and strong character.' },
-      'portrait-1-soft':     { sid:2, exp:'לפורטרט רך עם אור אחד, Butterfly Lighting עם Reflector נותן תאורה מחמיאה ורכה.', expEn:'For soft portrait with one light, Butterfly Lighting with Reflector gives flattering, gentle illumination.' },
-      'portrait-1-natural':  { sid:6, exp:'לתאורה טבעית, חלון עם Reflector הוא הפתרון הפשוט והיפה ביותר.', expEn:'For natural light, a window with a Reflector is the simplest and most beautiful solution.' },
-      'portrait-2-dramatic': { sid:1, exp:'Rembrandt Lighting עם שני מקורות אור נותן דרמטיות עם שליטה מדויקת על הצללים.', expEn:'Rembrandt Lighting with two sources gives drama with precise shadow control.' },
-      'portrait-2-soft':     { sid:1, exp:'Rembrandt עם Fill Light חלש יוצר תאורה מאוזנת עם עומק.', expEn:'Rembrandt with weak Fill creates balanced lighting with depth.' },
-      'portrait-2-natural':  { sid:6, exp:'חלון + רפלקטור ליצירת תאורה טבעית ומאוזנת.', expEn:'Window + Reflector for natural, balanced lighting.' },
-      'portrait-3-dramatic': { sid:4, exp:'Three-Point עם Rim חזק ו-Fill מינימלי יוצר מראה קולנועי עוצמתי.', expEn:'Three-Point with strong Rim and minimal Fill creates a cinematic, powerful look.' },
-      'portrait-3-soft':     { sid:4, exp:'Three-Point הקלאסי עם Fill שווה ל-Key יוצר תאורה מקצועית ורכה.', expEn:'Classic Three-Point with Fill equal to Key creates professional, soft lighting.' },
-      'portrait-3-natural':  { sid:4, exp:'Three-Point עם LED חמים מדמה תאורה טבעית עשירה.', expEn:'Three-Point with warm LEDs simulates rich natural light.' },
-      'product-1-dramatic':  { sid:3, exp:'מקור אור יחיד בזווית חדה יוצר צללים דרמטיים – אפקטיבי לשעונים ותכשיטים.', expEn:'Single light at a sharp angle creates dramatic shadows — effective for watches and jewelry.' },
-      'product-1-soft':      { sid:5, exp:'Softbox גדול ממרחק למוצר עם Reflector מהצד השני.', expEn:'Large Softbox from a distance with a Reflector on the opposite side.' },
-      'product-1-natural':   { sid:6, exp:'חלון גדול עם Diffuser לתאורה טבעית ורכה על המוצר.', expEn:'Large window with Diffuser for natural, soft product light.' },
-      'product-2-dramatic':  { sid:5, exp:'שני Softboxes בזווית א-סימטרית ליצירת צללים מובנים במוצר.', expEn:'Two Softboxes at asymmetric angles to create structured shadows in the product.' },
-      'product-2-soft':      { sid:5, exp:'Flat Lay: שני Softboxes סימטריים לתאורה אחידה לחלוטין.', expEn:'Flat Lay: two symmetric Softboxes for completely even lighting.' },
-      'product-2-natural':   { sid:5, exp:'שני מקורות אור חמים המדמים תאורה טבעית על המוצר.', expEn:'Two warm light sources simulating natural product light.' },
-      'product-3-soft':      { sid:8, exp:'High Key עם שלושה מקורות – רקע לבן עם תאורה מלאה ואחידה.', expEn:'High Key with three sources — white background with full, even lighting.' },
-      'product-3-dramatic':  { sid:8, exp:'שלושה מקורות עם RIM חזק ליצירת "גלו" מסביב למוצר.', expEn:'Three sources with strong RIM to create a "glow" around the product.' },
-      'product-3-natural':   { sid:8, exp:'שלושה LED חמים לתאורה natural-looking עשירה.', expEn:'Three warm LEDs for rich natural-looking lighting.' },
-      'fashion-1-dramatic':  { sid:3, exp:'Split Light עם Rim נפרד ליצירת סגנון אופנה דרמטי.', expEn:'Split Light with separate Rim for dramatic fashion style.' },
-      'fashion-1-soft':      { sid:7, exp:'Ring Light לתאורה אחידה ומחמיאה – האהוב על יוצרי תוכן.', expEn:'Ring Light for even, flattering lighting — the content creator favorite.' },
-      'fashion-1-natural':   { sid:6, exp:'חלון גדול לאופנה בסגנון editorial טבעי.', expEn:'Large window for natural editorial-style fashion.' },
-      'fashion-2-dramatic':  { sid:1, exp:'Rembrandt עם Rim חזק לאופנה עם עומק ודרמה.', expEn:'Rembrandt with strong Rim for fashion with depth and drama.' },
-      'fashion-2-soft':      { sid:2, exp:'Butterfly עם Fill Light לתאורת ביוטי אופנה מושלמת.', expEn:'Butterfly with Fill Light for perfect beauty fashion lighting.' },
-      'fashion-2-natural':   { sid:6, exp:'שני חלונות (corner light) לתאורת editorial טבעית.', expEn:'Two windows (corner light) for natural editorial lighting.' },
-      'fashion-3-dramatic':  { sid:4, exp:'Three-Point עם עיצוב קולנועי לאופנה דרמטית.', expEn:'Three-Point with cinematic design for dramatic fashion.' },
-      'fashion-3-soft':      { sid:4, exp:'Three-Point קלאסי לאופנה מקצועית ורכה.', expEn:'Classic Three-Point for professional, soft fashion lighting.' },
-      'fashion-3-natural':   { sid:4, exp:'שלושה LED חמים לאופנה בסגנון outdoor natural.', expEn:'Three warm LEDs for fashion in natural outdoor style.' },
+      // ── Portrait ──
+      'portrait-dramatic-1': { sid:3,  exp:'ספליט לייטינג עם אור אחד – קונטרסט עמוק ואופי עז.',           expEn:'Split Lighting with one light — deep contrast and strong character.' },
+      'portrait-dramatic-2': { sid:1,  exp:'רמברנדט עם שני אורות – דרמה עם שליטה מדויקת על הצללים.',      expEn:'Rembrandt with two lights — drama with precise shadow control.' },
+      'portrait-dramatic-3': { sid:4,  exp:'Three-Point קולנועי עם Rim חזק ו-Fill מינימלי.',              expEn:'Cinematic Three-Point with strong Rim and minimal Fill.' },
+      'portrait-soft-1':     { sid:2,  exp:'Butterfly עם רפלקטור – תאורה מחמיאה ורכה לפורטרט.',          expEn:'Butterfly with reflector — flattering, soft portrait light.' },
+      'portrait-soft-2':     { sid:1,  exp:'רמברנדט עם Fill חלש – מאוזן, עם עומק ואופי.',                expEn:'Rembrandt with gentle Fill — balanced, with depth and character.' },
+      'portrait-soft-3':     { sid:4,  exp:'Three-Point קלאסי עם Fill שווה ל-Key – מקצועי ורך.',         expEn:'Classic Three-Point with Fill equal to Key — professional and soft.' },
+      'portrait-natural-1':  { sid:6,  exp:'חלון עם רפלקטור – הפתרון הפשוט והיפה ביותר.',               expEn:'Window with reflector — the simplest and most beautiful solution.' },
+      'portrait-natural-2':  { sid:6,  exp:'חלון + רפלקטור לתאורה טבעית ומאוזנת.',                       expEn:'Window + reflector for natural, balanced light.' },
+      'portrait-natural-3':  { sid:6,  exp:'חלון גדול עם רפלקטורים משני הצדדים – תאורה טבעית מלאה.',    expEn:'Large window with reflectors on both sides — full natural light.' },
+      // ── Interview ──
+      'interview-dramatic-1':{ sid:3,  exp:'ספליט לאיש אחד – קונטרסט עמוק לראיון דרמטי.',               expEn:'Split for one person — deep contrast for a dramatic interview.' },
+      'interview-dramatic-2':{ sid:14, exp:'סט-אפ ראיון עם Key חזק ו-Fill מינימלי – מראה מקצועי ועוצמתי.',expEn:'Interview setup with strong Key and minimal Fill — professional and powerful.' },
+      'interview-dramatic-3':{ sid:15, exp:'Cross-Key לשניים – כל אחד מאיר את השני, נראה טבעי מאוד.',  expEn:'Cross-Key for two — each light illuminates the other person naturally.' },
+      'interview-soft-1':    { sid:2,  exp:'Butterfly לאדם אחד – אור נעים ומחמיא לראיון.',              expEn:'Butterfly for one person — pleasant, flattering interview light.' },
+      'interview-soft-2':    { sid:14, exp:'סט-אפ ראיון קלאסי עם Fill מאוזן – מראה טלוויזיוני.',       expEn:'Classic interview setup with balanced Fill — TV-ready look.' },
+      'interview-soft-3':    { sid:15, exp:'Cross-Key לשניים עם Fill משותף רך – מראה מקצועי וחם.',     expEn:'Cross-Key for two with soft shared Fill — professional and warm.' },
+      'interview-natural-1': { sid:6,  exp:'חלון לראיון אחד – אווירה אינטימית וטבעית.',                  expEn:'Window light for solo interview — intimate and natural atmosphere.' },
+      'interview-natural-2': { sid:14, exp:'ראיון עם Key מרוך + אור חלון מדומה.',                        expEn:'Interview with softened Key simulating window light.' },
+      'interview-natural-3': { sid:15, exp:'Cross-Key לשניים בסגנון טבעי – מדמה אור חלון.',             expEn:'Natural-style Cross-Key for two — simulates window light.' },
+      // ── Product ──
+      'product-dramatic-1':  { sid:3,  exp:'אור צדדי יחיד – צללים מוגדרים לשעונים, בשמים ותכשיטים.',   expEn:'Single side light — defined shadows for watches, perfumes and jewelry.' },
+      'product-dramatic-2':  { sid:5,  exp:'שני Softboxes א-סימטריים – צללים מובנים ומרשימים.',         expEn:'Two asymmetric Softboxes — structured, impressive shadows.' },
+      'product-dramatic-3':  { sid:8,  exp:'High Key עם Rim חזק – "גלו" מסביב למוצר.',                  expEn:'High Key with strong Rim — glowing edge around the product.' },
+      'product-soft-1':      { sid:5,  exp:'Softbox גדול ממרחק + רפלקטור – תאורה רכה ואחידה.',          expEn:'Large Softbox from a distance + reflector — soft, even light.' },
+      'product-soft-2':      { sid:5,  exp:'Flat Lay: שני Softboxes סימטריים לתאורה אחידה לחלוטין.',    expEn:'Flat Lay: two symmetric Softboxes for completely even lighting.' },
+      'product-soft-3':      { sid:8,  exp:'High Key עם שלושה מקורות – רקע לבן עם תאורה מלאה.',        expEn:'High Key with three sources — white background with full, even light.' },
+      'product-natural-1':   { sid:6,  exp:'חלון עם Diffuser לתאורה טבעית ורכה על המוצר.',              expEn:'Window with Diffuser for natural, soft product light.' },
+      'product-natural-2':   { sid:5,  exp:'שני מקורות חמים המדמים אור יום טבעי על המוצר.',             expEn:'Two warm sources simulating natural daylight on the product.' },
+      'product-natural-3':   { sid:8,  exp:'שלושה LED חמים לתאורה natural-looking עשירה.',              expEn:'Three warm LEDs for rich, natural-looking light.' },
+      // ── Family ──
+      'family-dramatic-1':   { sid:1,  exp:'רמברנדט – דרמטי ואישי גם לצילום זוג.',                      expEn:'Rembrandt — dramatic and personal, great for couples too.' },
+      'family-dramatic-2':   { sid:1,  exp:'רמברנדט עם Fill לשני אנשים – עומק ואופי לכולם.',           expEn:'Rembrandt with Fill for two — depth and character for everyone.' },
+      'family-dramatic-3':   { sid:11, exp:'סט-אפ משפחה עם שני Softboxes סימטריים – כולם חדים.',       expEn:'Family setup with two symmetric Softboxes — everyone sharp.' },
+      'family-soft-1':       { sid:2,  exp:'Butterfly לאדם אחד – מחמיא ורך גם לילדים.',                expEn:'Butterfly for one — flattering and gentle, works for kids too.' },
+      'family-soft-2':       { sid:12, exp:'סט-אפ זוג רומנטי – חם ורך לצילומי זוג.',                   expEn:'Couple setup — warm and soft for romantic couple photos.' },
+      'family-soft-3':       { sid:11, exp:'תאורה אחידה לקבוצה – כולם מוארים שווה.',                    expEn:'Even group lighting — everyone lit equally.' },
+      'family-natural-1':    { sid:6,  exp:'חלון – פשוט ויפה לצילום ילדים ומשפחה.',                     expEn:'Window light — simple and beautiful for kids and family.' },
+      'family-natural-2':    { sid:6,  exp:'חלון + רפלקטור לזוג – טבעי ואינטימי.',                      expEn:'Window + reflector for couple — natural and intimate.' },
+      'family-natural-3':    { sid:11, exp:'שלושה מקורות לקבוצה בסגנון טבעי.',                         expEn:'Three sources for group in natural style.' },
+      // ── Influencer ──
+      'influencer-dramatic-1':{ sid:3, exp:'ספליט לקונטנט דרמטי – בולט ועוצמתי.',                       expEn:'Split for dramatic content — bold and powerful.' },
+      'influencer-dramatic-2':{ sid:1, exp:'רמברנדט לאינסטגרם – אסתטי ודרמטי.',                        expEn:'Rembrandt for Instagram — aesthetic and dramatic.' },
+      'influencer-dramatic-3':{ sid:4, exp:'Three-Point קולנועי לתוכן ברמה הגבוהה.',                    expEn:'Cinematic Three-Point for high-end content.' },
+      'influencer-soft-1':   { sid:7,  exp:'Ring Light – catchlight מושלם, האהוב על יוצרי תוכן.',      expEn:'Ring Light — perfect catchlight, the content creator\'s favorite.' },
+      'influencer-soft-2':   { sid:2,  exp:'Butterfly – תאורת ביוטי מחמיאה לסלפי ווידאו.',             expEn:'Butterfly — flattering beauty light for selfies and video.' },
+      'influencer-soft-3':   { sid:4,  exp:'Three-Point רך לתוכן מקצועי ומלוטש.',                       expEn:'Soft Three-Point for professional, polished content.' },
+      'influencer-natural-1':{ sid:7,  exp:'Ring Light טבעי לצילום בסגנון יומיומי.',                    expEn:'Ring Light in natural style for everyday content.' },
+      'influencer-natural-2':{ sid:6,  exp:'חלון לסגנון lifestyle טבעי ואותנטי.',                        expEn:'Window light for natural, authentic lifestyle style.' },
+      'influencer-natural-3':{ sid:6,  exp:'שלושה מקורות טבעיים – נראה כמו יום מושלם.',                expEn:'Three natural sources — looks like a perfect natural day.' },
+      // ── Food ──
+      'food-dramatic-1':     { sid:5,  exp:'Flat Lay עם צל חד – בולט לאינסטגרם.',                       expEn:'Flat Lay with sharp shadows — stands out on Instagram.' },
+      'food-dramatic-2':     { sid:5,  exp:'שני Softboxes א-סימטריים – טקסטורה ועומק לאוכל.',           expEn:'Two asymmetric Softboxes — texture and depth for food.' },
+      'food-dramatic-3':     { sid:8,  exp:'High Key לאוכל – רקע לבן נקי עם הדגשת מוצר.',              expEn:'High Key for food — clean white background with product emphasis.' },
+      'food-soft-1':         { sid:5,  exp:'Softbox ממרחק + רפלקטור – אור רך ומחמיא לאוכל.',            expEn:'Softbox from distance + reflector — soft, flattering food light.' },
+      'food-soft-2':         { sid:5,  exp:'Flat Lay: שני Softboxes סימטריים – תאורה מושלמת לתמונות אוכל.',expEn:'Flat Lay: two symmetric Softboxes — perfect for food photography.' },
+      'food-soft-3':         { sid:8,  exp:'תאורה מלאה ואחידה לצילום אוכל קטלוגי.',                    expEn:'Full, even lighting for catalog food photography.' },
+      'food-natural-1':      { sid:6,  exp:'חלון לאוכל – הכי טרנדי, אור טבעי ומזמין.',                 expEn:'Window light for food — most trendy, natural and inviting.' },
+      'food-natural-2':      { sid:5,  exp:'שני מקורות חמים המדמים שמש עדינה לאוכל.',                   expEn:'Two warm sources simulating gentle sunlight for food.' },
+      'food-natural-3':      { sid:5,  exp:'שלושה מקורות טבעיים – editorial food photography.',         expEn:'Three natural sources — editorial food photography.' },
+      // ── Event ──
+      'event-dramatic-1':    { sid:3,  exp:'ספליט דרמטי לאירוע – בולט ועוצמתי.',                        expEn:'Dramatic split for events — bold and powerful.' },
+      'event-dramatic-2':    { sid:13, exp:'Flash לאירוע עם Drag Shutter – אנרגיה ותנועה.',              expEn:'Event flash with Drag Shutter — energy and motion.' },
+      'event-dramatic-3':    { sid:9,  exp:'סט-אפ חופה מקצועי עם Key, Fill ו-Flash לגיבוי.',            expEn:'Professional ceremony setup with Key, Fill and backup Flash.' },
+      'event-soft-1':        { sid:2,  exp:'Butterfly לאירוע אינטימי – אור נעים ומחמיא.',               expEn:'Butterfly for intimate events — pleasant and flattering.' },
+      'event-soft-2':        { sid:13, exp:'Bounce Flash לאירוע – אור רך ומפוזר.',                      expEn:'Bounce Flash for events — soft, diffused light.' },
+      'event-soft-3':        { sid:11, exp:'תאורה אחידה לקבוצה גדולה באירוע.',                          expEn:'Even lighting for large groups at events.' },
+      'event-natural-1':     { sid:6,  exp:'חלון לאירוע קטן – אינטימי וטבעי.',                          expEn:'Window light for small events — intimate and natural.' },
+      'event-natural-2':     { sid:6,  exp:'אור טבעי + רפלקטורים לאירוע חיצוני.',                      expEn:'Natural light + reflectors for outdoor events.' },
+      'event-natural-3':     { sid:13, exp:'שלושה מקורות לאירוע ברמה גבוהה.',                          expEn:'Three sources for high-end event coverage.' },
     };
 
     function getSetup(sid) { return SETUPS.find(s => s.id === sid) || SETUPS[0]; }
@@ -308,6 +351,44 @@
         tip:    "ודא שה-Key של כל אחד לא שופך על השני. Grid בכל softbox פותר זאת",
         tipEn:  "Make sure each person's Key doesn't spill onto the other. A grid on each softbox solves this",
       },
+    };
+
+    // ─── SETUP STEPS ──────────────────────────────────────────────────────────
+    const SETUP_STEPS = {
+      1: { he:['מקם את אור המפתח ב-45° שמאל, גובה עיניים +15ס"מ','הוסף פיל ב-45° ימין בעוצמה שליש מה-Key','מצא את משולש האור הקטן על הלחי','שחק עם המרחק לשליטה בחדות הצל'], en:['Place key light at 45° left, 15cm above eye level','Add fill at 45° right at 1/3 key power','Find the small light triangle on the cheek','Adjust distance to control shadow hardness'] },
+      2: { he:['מקם את האור ישר מעל המצלמה ומעט גבוה יותר','הצב רפלקטור לבן מתחת לפנים','בדוק צל בצורת פרפר מתחת לאף','הוסף fill עדין מהצד לשליטה בצל'], en:['Place light directly above camera, slightly higher','Put white reflector below the face','Check for butterfly shadow under nose','Add gentle side fill to control shadows'] },
+      3: { he:['הצב את האור בדיוק 90° מהצד','הנושא מוסב 3/4 לכיוון האור','ודא שחצי מהפנים בצל מלא','נסה grid/snoot למניעת spill'], en:['Place light exactly 90° to the side','Subject turns 3/4 toward the light','Ensure half the face is in full shadow','Use grid/snoot to prevent spill'] },
+      4: { he:['Key ב-45° שמאל, גובה עיניים +20ס"מ','Fill ב-45° ימין, 1/2 מעוצמת ה-Key','Rim מאחורי הנושא ב-45°, גבוה','בדוק שה-Rim יוצר קו על הכתף'], en:['Key at 45° left, 20cm above eye level','Fill at 45° right, half key power','Rim behind subject at 45°, high','Check Rim creates edge line on shoulder'] },
+      5: { he:['הצב את המוצר על משטח לבן/ניטרלי','שני softboxes ב-45° משני הצדדים, גובה שווה','ודא שאין רפלקסיות על המוצר','צלם מלמעלה (90°) עם מצלמה על tripod'], en:['Place product on white/neutral surface','Two softboxes at 45° from both sides, equal height','Ensure no reflections on product','Shoot from above (90°) with camera on tripod'] },
+      6: { he:['מצא חלון עם אור עקיף (לא שמש ישירה)','הצב את הנושא במרחק 1–2 מטר מהחלון','שים רפלקטור לבן בצד הנגדי','וילון שיר = אור רך, ללא וילון = אור קשה יותר'], en:['Find window with indirect light (not direct sun)','Place subject 1–2 meters from window','Put white reflector on opposite side','Sheer curtain = soft light; no curtain = harder light'] },
+      7: { he:['הצב את ה-Ring Light ישר מול הנושא','המצלמה דרך מרכז ה-Ring','מרחק אידיאלי: 60–90 ס"מ','הסתכל על ה-catchlight העגול בעיניים'], en:['Position Ring Light directly facing subject','Camera through center of ring','Ideal distance: 60–90cm','Check for round catchlight in the eyes'] },
+      8: { he:['שים backdrop לבן ואחיד','שני softboxes סימטריים מהצדדים','אור שלישי לרקע – ווידא חשיפה','כוון exposure לחשיפת יתר קלה (+1EV)'], en:['Use clean white backdrop','Two symmetric softboxes from sides','Third light on background – verify exposure','Slightly overexpose (+1EV) for clean white'] },
+      9: { he:['הגע שעה לפני – בדוק מיקום ותאורה','הצב Key מצד שמאל המסדר, Fill מימין','On-camera flash לגיבוי עם rear curtain sync','תאם עם המסדר על מיקום הסטנדים'], en:['Arrive 1 hour early to check placement','Key left of officiant, Fill right','On-camera flash backup with rear curtain sync','Coordinate with officiant about stand placement'] },
+      10: { he:['Softbox גדול מהצד כחלון','רפלקטור לבן בצד הנגדי','ISO גבוה + f/2.8 לאווירה אינטימית','צלם details: ידיים, עט, הכתובה'], en:['Large softbox from side as window light','White reflector on opposite side','High ISO + f/2.8 for intimate atmosphere','Shoot details: hands, pen, the ketubah'] },
+      11: { he:['שני umbrellas/softboxes סימטריים','בקש מהמשפחה לעמוד צפוף','f/5.6-f/8 לחדות על כל השורות','צלם סדרה – תמיד מישהו עוצם עיניים'], en:['Two symmetric umbrellas/softboxes','Ask family to stand close together','f/5.6-f/8 for sharpness across all rows','Shoot burst – someone always blinks'] },
+      12: { he:['Key ב-45° עם CTO gel לאווירה חמה','Rim מאחורי הזוג לקו רומנטי','שוחח עם הזוג על פוזות לפני','שעת הזהב = אור מושלם (שעה לפני שקיעה)'], en:['Key at 45° with CTO gel for warm mood','Rim behind couple for romantic edge','Discuss poses with couple beforehand','Golden hour (1hr before sunset) = perfect light'] },
+      13: { he:['Bounce flash לתקרה לבנה = אור רך','Drag Shutter 1/30s + flash = תנועה+חדות','ISO 3200–6400 עם גוף full frame','הישאר על רצפת הריקודים'], en:['Bounce flash off white ceiling = soft light','Drag Shutter 1/30s + flash = motion+sharp','ISO 3200–6400 with full frame body','Stay on the dance floor'] },
+      14: { he:['Key ב-45° לצד השיחה (נראה כמדבר אל המראיין)','Fill 1:3-1:4 מה-Key לצד הנגדי','הדלק אור רקע להפרדה מהרקע','f/2.8-f/4 ל-bokeh ברקע'], en:['Key at 45° toward interview side (looks natural)','Fill 1:3–1:4 key power on opposite side','Add background light for depth separation','f/2.8–f/4 for background bokeh'] },
+      15: { he:['Key A מצד שמאל מכוון לאיש הימין','Key B מצד ימין מכוון לאיש השמאל','Fill אחד משותף מלמעלה ומהצד','Grid על כל softbox למניעת spill'], en:['Key A from left aimed at right person','Key B from right aimed at left person','One shared fill from above and side','Grid on each softbox to prevent spill'] },
+    };
+
+    // ─── AFFILIATE DATA ────────────────────────────────────────────────────────
+    const AFFILIATE_DATA = {
+      1:  { budget:{name:'Godox SL60W',          price:'₪380'},  pro:{name:'Aputure 120D II',       price:'₪1,200'} },
+      2:  { budget:{name:'Godox QT600',           price:'₪420'},  pro:{name:'Profoto A1X',           price:'₪2,800'} },
+      3:  { budget:{name:'Godox SL60W + Grid',    price:'₪450'},  pro:{name:'Aputure 120D II + Snoot',price:'₪1,400'} },
+      4:  { budget:{name:'2× Godox SL60W',        price:'₪750'},  pro:{name:'2× Aputure 300D',       price:'₪4,000'} },
+      5:  { budget:{name:'2× Neewer 660 LED',     price:'₪600'},  pro:{name:'2× Godox SL200W',       price:'₪2,200'} },
+      6:  { budget:{name:'Reflector 5-in-1',      price:'₪80'},   pro:{name:'Westcott Diffuser Panel',price:'₪450'} },
+      7:  { budget:{name:'Neewer Ring Light 18"', price:'₪200'},  pro:{name:'Godox LR150',           price:'₪550'} },
+      8:  { budget:{name:'3× Godox SL60W',        price:'₪1,100'},pro:{name:'3× Profoto B10',        price:'₪9,000'} },
+      9:  { budget:{name:'2× Godox AD200 + Flash',price:'₪1,400'},pro:{name:'2× Profoto B1X + B2',   price:'₪12,000'} },
+      10: { budget:{name:'Godox SL60W + Softbox', price:'₪500'},  pro:{name:'Aputure 120D II Kit',   price:'₪1,500'} },
+      11: { budget:{name:'2× Godox QT600',        price:'₪850'},  pro:{name:'2× Broncolor Siros',    price:'₪8,000'} },
+      12: { budget:{name:'Godox AD200 + CTO Gel', price:'₪800'},  pro:{name:'Profoto A10',           price:'₪3,200'} },
+      13: { budget:{name:'Canon 580EX II',        price:'₪700'},  pro:{name:'Profoto A1X',           price:'₪2,800'} },
+      14: { budget:{name:'2× Godox SL60W',        price:'₪750'},  pro:{name:'2× Aputure 120D II',    price:'₪2,400'} },
+      15: { budget:{name:'3× Godox SL60W',        price:'₪1,100'},pro:{name:'3× Aputure 300D II',    price:'₪6,000'} },
     };
 
     // ─── SVG DIAGRAMS ─────────────────────────────────────────────────────────
@@ -1018,48 +1099,53 @@
     }
 
     // ─── HOME ─────────────────────────────────────────────────────────────────
-    function HomePage({ setPage, setSelectedChallenge }) {
+    function HomePage({ setPage, setSelectedChallenge, setGuideInitCategory }) {
       const t    = useT();
       const lang = React.useContext(LangContext);
-      const today = CHALLENGES[0];
+
+      const quickCategories = [
+        { id:'portrait',   label:t('פורטרט','Portrait'),   icon:'👤' },
+        { id:'interview',  label:t('ראיון','Interview'),   icon:'🎙️' },
+        { id:'product',    label:t('מוצר','Product'),     icon:'📦' },
+        { id:'family',     label:t('משפחה','Family'),     icon:'👨‍👩‍👧' },
+        { id:'influencer', label:t('משפיען','Influencer'), icon:'📱' },
+        { id:'food',       label:t('אוכל','Food'),        icon:'🍽️' },
+        { id:'event',      label:t('אירוע','Event'),      icon:'🎉' },
+      ];
+
       return (
         <div style={{ padding:'24px 18px 100px' }}>
           {/* Header */}
-          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:24 }}>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
             <div>
               <div style={{ color:C.amber, fontSize:26, fontWeight:800, letterSpacing:'-0.5px' }}>LightMate</div>
-              <div style={{ color:C.textMuted, fontSize:13, marginTop:2 }}>{t('למד תאורה בצעדים קטנים', 'Learn lighting step by step')}</div>
+              <div style={{ color:C.textMuted, fontSize:13, marginTop:2 }}>{t('תצלם טוב יותר תוך דקות','Shoot better in minutes')}</div>
             </div>
             <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:14, padding:'8px 16px', textAlign:'center' }}>
               <div style={{ fontSize:20 }}>🔥</div>
-              <div style={{ color:C.amber, fontSize:13, fontWeight:700 }}>7 {t('ימים', 'days')}</div>
+              <div style={{ color:C.amber, fontSize:13, fontWeight:700 }}>7 {t('ימים','days')}</div>
             </div>
           </div>
 
-          {/* Today's Challenge Hero */}
-          <div
-            onClick={() => { setSelectedChallenge(today); setPage('challenge'); }}
-            style={{ background:'linear-gradient(135deg,#1A1100,#261800)', border:`1px solid ${C.amber}28`, borderRadius:20, padding:'18px 16px', marginBottom:20, cursor:'pointer' }}
-          >
-            <div style={{ display:'flex', gap:8, marginBottom:10 }}>
-              <span style={{ background:C.amber, color:'#000', fontSize:11, fontWeight:700, padding:'2px 10px', borderRadius:20 }}>{t('יום', 'Day')} {today.day}</span>
-              <span style={{ color:C.amber, border:`1px solid ${C.amber}40`, fontSize:11, padding:'2px 10px', borderRadius:20 }}>{lang==='en' ? today.durationEn : today.duration}</span>
-            </div>
-            <div style={{ color:C.textSub, fontSize:12, marginBottom:2 }}>{t('האתגר של היום', "Today's Challenge")}</div>
-            <div style={{ color:'#fff', fontSize:20, fontWeight:700, marginBottom:8 }}>{lang==='en' ? today.titleEn : today.title}</div>
-            <div style={{ color:C.textSub, fontSize:13, lineHeight:1.6, marginBottom:14 }}>{today.description.slice(0,90)}…</div>
-            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-              <div style={{ display:'flex', gap:8 }}>
-                <span style={{ background:'#1F1F1F', color:C.textSub, fontSize:11, padding:'3px 10px', borderRadius:20 }}>{lang==='en' ? today.categoryEn : today.category}</span>
-                <span style={{ color:diffColor(lang==='en' ? today.difficultyEn : today.difficulty), fontSize:11 }}>{lang==='en' ? today.difficultyEn : today.difficulty}</span>
-              </div>
-              <span style={{ background:C.amber, color:'#000', fontSize:13, fontWeight:700, padding:'8px 18px', borderRadius:12 }}>{t('התחל ←', 'Start →')}</span>
+          {/* Hero — category picker */}
+          <div style={{ background:'linear-gradient(135deg,#1A1100,#261800)', border:`1px solid ${C.amber}33`, borderRadius:20, padding:'20px 16px', marginBottom:20 }}>
+            <div style={{ color:'#fff', fontSize:20, fontWeight:800, marginBottom:4 }}>{t('מה אתה מצלם?','What are you shooting?')}</div>
+            <div style={{ color:C.textMuted, fontSize:13, marginBottom:16 }}>{t('קבל סט-אפ תאורה לצילום הבא שלך','Get a lighting setup for your next shot')}</div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+              {quickCategories.map(cat => (
+                <button key={cat.id}
+                  onClick={() => { setGuideInitCategory(cat.id); setPage('guide'); }}
+                  style={{ background:'rgba(255,255,255,0.06)', border:`1px solid ${C.border}`, color:'#fff', borderRadius:14, padding:'14px 10px', cursor:'pointer', display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
+                  <span style={{ fontSize:26 }}>{cat.icon}</span>
+                  <span style={{ fontSize:12, fontWeight:600 }}>{cat.label}</span>
+                </button>
+              ))}
             </div>
           </div>
 
           {/* Stats */}
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:24 }}>
-            {[['7', t('ימי רצף', 'Day Streak')],['12', t('אתגרים הושלמו', 'Challenges Done')]].map(([n,l]) => (
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:20 }}>
+            {[['7', t('ימי רצף','Day Streak')],['12', t('אתגרים הושלמו','Challenges Done')]].map(([n,l]) => (
               <div key={l} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:14, padding:'14px 16px' }}>
                 <div style={{ color:C.amber, fontSize:26, fontWeight:800 }}>{n}</div>
                 <div style={{ color:C.textMuted, fontSize:12, marginTop:2 }}>{l}</div>
@@ -1068,49 +1154,30 @@
           </div>
 
           {/* Space Scan CTA */}
-          <div
-            onClick={() => setPage('scan')}
-            style={{ background:'linear-gradient(135deg,#050F1A,#071825)', border:'1px solid #0EA5E933', borderRadius:16, padding:'16px 18px', marginBottom:12, cursor:'pointer', display:'flex', alignItems:'center', gap:14 }}
-          >
+          <div onClick={() => setPage('scan')}
+            style={{ background:'linear-gradient(135deg,#050F1A,#071825)', border:'1px solid #0EA5E933', borderRadius:16, padding:'16px 18px', marginBottom:20, cursor:'pointer', display:'flex', alignItems:'center', gap:14 }}>
             <div style={{ background:'#0EA5E911', border:'1px solid #0EA5E933', borderRadius:12, width:46, height:46, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
               <span style={{ fontSize:22 }}>📷</span>
             </div>
             <div style={{ flex:1 }}>
-              <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:2 }}>{t('סרוק את החלל שלך', 'Scan Your Space')}</div>
-              <div style={{ color:'#38BDF8', fontSize:12, opacity:0.8 }}>{t('Claude Vision מנתח → סט-אפים מותאמים לחלל הזה', 'Claude Vision analyzes → setups tailored to your space')}</div>
+              <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:2 }}>{t('סרוק את החלל שלך','Scan Your Space')}</div>
+              <div style={{ color:'#38BDF8', fontSize:12, opacity:0.8 }}>{t('Claude Vision → סט-אפים מותאמים','Claude Vision → tailored setups')}</div>
             </div>
             <span style={{ color:'#38BDF8', fontSize:18 }}>{lang==='en'?'→':'←'}</span>
           </div>
 
-          {/* Quick Setup CTA */}
-          <div
-            onClick={() => setPage('guide')}
-            style={{ background:'linear-gradient(135deg,#141414,#1A1A1A)', border:`1px solid ${C.amber}33`, borderRadius:16, padding:'16px 18px', marginBottom:24, cursor:'pointer', display:'flex', alignItems:'center', gap:14 }}
-          >
-            <div style={{ background:'#1A1000', border:`1px solid ${C.amber}30`, borderRadius:12, width:46, height:46, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-              <span style={{ fontSize:22 }}>⚡</span>
-            </div>
-            <div style={{ flex:1 }}>
-              <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:2 }}>{t('מצא סט-אפ עכשיו', 'Find a Setup Now')}</div>
-              <div style={{ color:C.textMuted, fontSize:12 }}>{t('3 שאלות → מיקום, מצלמה, יחסים – תוך דקה', '3 questions → position, camera, ratio – in 1 minute')}</div>
-            </div>
-            <span style={{ color:C.amber, fontSize:20 }}>{lang==='en'?'→':'←'}</span>
-          </div>
-
-          {/* More Challenges */}
-          <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:12 }}>{t('אתגרים נוספים', 'More Challenges')}</div>
+          {/* Daily Challenges */}
+          <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:12 }}>{t('אתגרי יום','Daily Challenges')}</div>
           <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-            {CHALLENGES.slice(1).map(ch => (
-              <div
-                key={ch.id}
+            {CHALLENGES.map(ch => (
+              <div key={ch.id}
                 onClick={() => { setSelectedChallenge(ch); setPage('challenge'); }}
-                style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:14, padding:'12px 14px', display:'flex', alignItems:'center', gap:12, cursor:'pointer' }}
-              >
+                style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:14, padding:'12px 14px', display:'flex', alignItems:'center', gap:12, cursor:'pointer' }}>
                 <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, width:52, height:52, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, overflow:'hidden' }}>
                   <LightingDiagram type={ch.diagram} size={44} />
                 </div>
                 <div style={{ flex:1, minWidth:0 }}>
-                  <div style={{ color:C.textMuted, fontSize:11, marginBottom:2 }}>{t('יום', 'Day')} {ch.day}</div>
+                  <div style={{ color:C.textMuted, fontSize:11, marginBottom:2 }}>{t('יום','Day')} {ch.day}</div>
                   <div style={{ color:'#fff', fontSize:14, fontWeight:600 }}>{lang==='en' ? ch.titleEn : ch.title}</div>
                   <div style={{ color:C.textMuted, fontSize:12 }}>{lang==='en' ? ch.durationEn : ch.duration} · {lang==='en' ? ch.categoryEn : ch.category}</div>
                 </div>
@@ -1186,11 +1253,12 @@
     }
 
     // ─── LIBRARY ──────────────────────────────────────────────────────────────
-    function LibraryPage() {
+    function LibraryPage({ initSetup, onInitSetupUsed }) {
       const t    = useT();
       const lang = React.useContext(LangContext);
       const [filter, setFilter]   = useState('all');
-      const [selected, setSelected] = useState(null);
+      const [selected, setSelected] = useState(initSetup || null);
+      useEffect(() => { if (initSetup) { setSelected(initSetup); onInitSetupUsed && onInitSetupUsed(); } }, []);
 
       const filters = [
         { id:'all',       label: t('הכל', 'All') },
@@ -1218,6 +1286,16 @@
                 <LightingDiagram type={selected.diagram} size={200} />
               </div>
               <div style={{ color:C.textSub, fontSize:13, lineHeight:1.7, marginBottom:18 }}>{selected.description}</div>
+              {selected.premium && (
+                <div style={{ background:'#1A1000', border:`1px solid ${C.amber}44`, borderRadius:14, padding:'16px', marginBottom:16, display:'flex', flexDirection:'column', alignItems:'center', gap:8, textAlign:'center' }}>
+                  <div style={{ fontSize:24 }}>🔒</div>
+                  <div style={{ color:'#fff', fontWeight:700 }}>{t('סט-אפ Pro','Pro Setup')}</div>
+                  <div style={{ color:C.textMuted, fontSize:12 }}>{t('שדרג לפרו לגישה להוראות המלאות','Upgrade to Pro for full instructions & gear list')}</div>
+                  <button style={{ background:C.amber, color:'#000', padding:'8px 20px', borderRadius:20, border:'none', fontWeight:700, cursor:'pointer', marginTop:4 }}>
+                    {t('שדרג ל-Pro ←','Upgrade to Pro →')}
+                  </button>
+                </div>
+              )}
               <div style={{ color:'#fff', fontSize:14, fontWeight:600, marginBottom:10 }}>{t('ציוד נדרש', 'Equipment Needed')}</div>
               {selected.gear.map((g,i) => (
                 <div key={i} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:10, padding:'9px 14px', marginBottom:8, display:'flex', gap:10, alignItems:'center' }}>
@@ -1260,7 +1338,8 @@
           {/* Grid */}
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
             {filtered.map(setup => (
-              <div key={setup.id} onClick={() => setSelected(setup)} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:14, padding:10, cursor:'pointer' }}>
+              <div key={setup.id} onClick={() => setSelected(setup)} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:14, padding:10, cursor:'pointer', position:'relative' }}>
+                {setup.premium && <div style={{ position:'absolute', top:6, right:6, background:'rgba(0,0,0,0.75)', borderRadius:8, padding:'2px 7px', fontSize:11, zIndex:1 }}>🔒</div>}
                 <div style={{ background:C.surface, border:`1px solid ${C.border}`, borderRadius:10, height:90, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:8, overflow:'hidden' }}>
                   <LightingDiagram type={setup.diagram} size={80} />
                 </div>
@@ -1274,178 +1353,229 @@
     }
 
     // ─── GUIDE ────────────────────────────────────────────────────────────────
-    function GuidePage() {
+    function GuidePage({ initCategory, onCategoryUsed, setPage, onTrySetup }) {
       const t    = useT();
       const lang = React.useContext(LangContext);
-      const [step, setStep]     = useState(0);
-      const [shoot, setShoot]   = useState('');
-      const [lights, setLights] = useState('');
-      const [result, setResult] = useState(null);
+      const [step, setStep]         = useState(initCategory ? 1 : 0);
+      const [category, setCategory] = useState(initCategory || '');
+      const [look, setLook]         = useState('');
+      const [result, setResult]     = useState(null);
 
-      const shootTypes   = [{ id:'portrait',label:t('פורטרט','Portrait'),icon:'👤' },{ id:'product',label:t('מוצר','Product'),icon:'📦' },{ id:'fashion',label:t('אופנה','Fashion'),icon:'👗' }];
-      const lightOptions = [{ id:'1',label:t('אור אחד','One Light'),icon:'💡' },{ id:'2',label:t('שני אורות','Two Lights'),icon:'💡💡' },{ id:'3',label:t('שלושה+','Three+'),icon:'💡💡💡' }];
-      const styleOptions = [{ id:'dramatic',label:t('דרמטי','Dramatic'),desc:t('צללים חזקים, קונטרסט','Strong shadows, contrast') },{ id:'soft',label:t('רך','Soft'),desc:t('אור פרוש, מחמיא','Spread light, flattering') },{ id:'natural',label:t('טבעי','Natural'),desc:t('דמוי אור יום','Daylight-like') }];
+      useEffect(() => { if (initCategory) onCategoryUsed && onCategoryUsed(); }, []);
 
-      function pickStyle(styleId) {
-        const key  = `${shoot}-${lights}-${styleId}`;
-        const r    = GUIDE_RESULTS[key];
-        const sid  = r ? r.sid : 1;
-        const exp  = r
+      const categories = [
+        { id:'portrait',   label:t('פורטרט','Portrait'),   icon:'👤' },
+        { id:'interview',  label:t('ראיון','Interview'),   icon:'🎙️' },
+        { id:'product',    label:t('מוצר','Product'),     icon:'📦' },
+        { id:'family',     label:t('משפחה','Family'),     icon:'👨‍👩‍👧' },
+        { id:'influencer', label:t('משפיען','Influencer'), icon:'📱' },
+        { id:'food',       label:t('אוכל','Food'),        icon:'🍽️' },
+        { id:'event',      label:t('אירוע','Event'),      icon:'🎉' },
+      ];
+      const looks = [
+        { id:'dramatic', icon:'⚡', label:t('דרמטי','Dramatic'), desc:t('צללים חזקים, קונטרסט','Strong shadows, contrast') },
+        { id:'soft',     icon:'🌸', label:t('רך','Soft'),        desc:t('אור פרוש, מחמיא','Spread light, flattering') },
+        { id:'natural',  icon:'🌿', label:t('טבעי','Natural'),   desc:t('דמוי אור יום','Daylight-like') },
+      ];
+      const lightCounts = [
+        { id:'1', icon:'☀️',  label:t('אור אחד','One Light'),    desc:t('מינימלי ועוצמתי','Minimal and powerful') },
+        { id:'2', icon:'💡',  label:t('שני אורות','Two Lights'),  desc:t('שליטה טובה','Good control') },
+        { id:'3', icon:'✨',  label:t('שלושה+','Three+'),         desc:t('מקצועי ומדויק','Professional precision') },
+      ];
+
+      function pickLights(lightId) {
+        const key = `${category}-${look}-${lightId}`;
+        const r   = GUIDE_RESULTS[key];
+        const sid = r ? r.sid : 1;
+        const exp = r
           ? (lang==='en' && r.expEn ? r.expEn : r.exp)
-          : (lang==='en' ? 'Rembrandt is an excellent starting point for any type of photography!' : 'Rembrandt הוא נקודת התחלה מצוינת לכל סוג צילום!');
-        setResult({ setup: getSetup(sid), specs: SETUP_SPECS[sid], exp });
+          : (lang==='en' ? 'Rembrandt is an excellent starting point!' : 'רמברנדט הוא נקודת התחלה מצוינת!');
+        setResult({ setup:getSetup(sid), specs:SETUP_SPECS[sid], steps:SETUP_STEPS[sid], affiliate:AFFILIATE_DATA[sid], exp });
         setStep(3);
       }
-      function reset() { setStep(0); setShoot(''); setLights(''); setResult(null); }
+      function reset() { setStep(0); setCategory(''); setLook(''); setResult(null); }
 
-      const stepLabels = [t('סוג צילום','Shoot Type'), t('מקורות אור','Light Sources'), t('סגנון','Style')];
+      const stepLabels = [t('מה לצלם','What'), t('איזה לוק','Look'), t('כמה אורות','Lights')];
 
-      // Result screen
+      // ── Result Screen ──
       if (step === 3 && result) {
-        const { setup, specs, exp } = result;
-        const setupDisplayName = lang === 'en' ? setup.name : setup.nameHe;
+        const { setup, specs, steps, affiliate, exp } = result;
+        const isPremium = !!setup.premium;
+        const name = lang === 'en' ? setup.name : setup.nameHe;
         return (
           <div style={{ paddingBottom:100 }}>
 
-            {/* ── Header ── */}
-            <div style={{ background:'linear-gradient(160deg,#1A1100,#100D00)', borderBottom:`1px solid ${C.amber}22`, padding:'14px 18px 16px' }}>
-              <button onClick={reset} style={{ color:C.amber, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginBottom:12 }}>{t('← סט-אפ חדש', 'New Setup →')}</button>
-              <div style={{ color:C.amber, fontSize:11, fontWeight:700, letterSpacing:1, marginBottom:4 }}>{t('✨ ההמלצה שלנו', '✨ Our Recommendation')}</div>
-              <div style={{ color:'#fff', fontSize:22, fontWeight:800, marginBottom:4 }}>{setupDisplayName}</div>
+            {/* Header */}
+            <div style={{ background:'linear-gradient(160deg,#1A1100,#100D00)', borderBottom:`1px solid ${C.amber}22`, padding:'14px 18px 18px' }}>
+              <button onClick={reset} style={{ color:C.amber, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginBottom:10 }}>
+                {lang==='en'?'→':'←'} {t('סט-אפ חדש','New Setup')}
+              </button>
+              <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
+                <div style={{ color:C.amber, fontSize:11, fontWeight:700, letterSpacing:1 }}>{t('✨ ההמלצה שלנו','✨ Our Recommendation')}</div>
+                {isPremium && <span style={{ background:`${C.amber}22`, color:C.amber, fontSize:10, padding:'2px 8px', borderRadius:10, fontWeight:700 }}>PRO 🔒</span>}
+              </div>
+              <div style={{ color:'#fff', fontSize:22, fontWeight:800, marginBottom:4 }}>{name}</div>
               <div style={{ color:C.textSub, fontSize:13, lineHeight:1.6 }}>{exp}</div>
             </div>
 
-            {/* ── Diagram ── */}
+            {/* Diagram */}
             <div style={{ background:C.surface, borderBottom:`1px solid ${C.border}`, padding:'20px 0', display:'flex', justifyContent:'center' }}>
               <LightingDiagram type={setup.diagram} size={220} />
             </div>
 
-            {/* ── 📍 Positions ── */}
+            {/* Steps */}
             <div style={{ padding:'16px 18px', borderBottom:`1px solid ${C.border}` }}>
-              <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12 }}>
-                <span style={{ fontSize:15 }}>📍</span>
-                <span style={{ color:'#fff', fontSize:14, fontWeight:700 }}>{t('מיקום פנסים', 'Light Positions')}</span>
+              <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:12 }}>
+                📋 {t('שלבי הכנה','Setup Steps')}
               </div>
-              {specs.lights.map((l, i) => (
-                <div key={i} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:14, padding:'12px 14px', marginBottom:8 }}>
-                  <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
-                    <div style={{ width:9, height:9, borderRadius:'50%', background:l.color, flexShrink:0 }} />
-                    <span style={{ color:l.color, fontSize:13, fontWeight:700 }}>{l.name}</span>
+              {isPremium ? (
+                <div style={{ background:C.card, border:`1px solid ${C.amber}33`, borderRadius:14, padding:'20px 16px', textAlign:'center' }}>
+                  <div style={{ fontSize:28, marginBottom:8 }}>🔒</div>
+                  <div style={{ color:'#fff', fontWeight:700, fontSize:15, marginBottom:6 }}>{t('פתח את הסט-אפ המלא','Unlock Full Setup')}</div>
+                  <div style={{ color:C.textMuted, fontSize:12, marginBottom:14 }}>{t('הוראות מפורטות, הגדרות מצלמה, טיפים ועוד','Detailed instructions, camera settings, tips & more')}</div>
+                  <button style={{ background:C.amber, color:'#000', padding:'10px 28px', borderRadius:20, border:'none', fontWeight:700, cursor:'pointer', fontSize:14 }}>
+                    {t('שדרג ל-Pro ←','Upgrade to Pro →')}
+                  </button>
+                </div>
+              ) : (
+                steps && (lang==='he' ? steps.he : steps.en).map((s, i) => (
+                  <div key={i} style={{ display:'flex', gap:10, marginBottom:10, alignItems:'flex-start' }}>
+                    <div style={{ background:C.amber, color:'#000', borderRadius:'50%', width:22, height:22, display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:800, flexShrink:0 }}>{i+1}</div>
+                    <div style={{ color:'#D1D5DB', fontSize:13, lineHeight:1.6, paddingTop:2 }}>{s}</div>
                   </div>
-                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'6px 12px' }}>
-                    {[[t('זווית','Angle'), l.angle], [t('מרחק','Distance'), l.dist], [t('גובה','Height'), l.height]].map(([label, val]) => (
-                      <div key={label} style={{ gridColumn: label === t('גובה','Height') ? '1/-1' : undefined }}>
-                        <div style={{ color:C.textMuted, fontSize:10, marginBottom:2 }}>{label}</div>
-                        <div style={{ color:'#E5E7EB', fontSize:12, fontWeight:500 }}>{val}</div>
-                      </div>
-                    ))}
+                ))
+              )}
+            </div>
+
+            {/* Camera — free only */}
+            {!isPremium && specs && (
+              <div style={{ padding:'16px 18px', borderBottom:`1px solid ${C.border}` }}>
+                <div style={{ color:'#fff', fontSize:14, fontWeight:700, marginBottom:12 }}>📷 {t('הגדרות מצלמה','Camera Settings')}</div>
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
+                  {[[t('צמצם','Aperture'),specs.camera.aperture],['ISO',specs.camera.iso],[t('שאטר','Shutter'),specs.camera.shutter]].map(([lbl,val]) => (
+                    <div key={lbl} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:'12px 8px', textAlign:'center' }}>
+                      <div style={{ color:C.textMuted, fontSize:10, marginBottom:4 }}>{lbl}</div>
+                      <div style={{ color:C.amber, fontSize:15, fontWeight:800 }}>{val}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Pro Tip — free only */}
+            {!isPremium && specs && (
+              <div style={{ padding:'14px 18px', borderBottom:`1px solid ${C.border}` }}>
+                <div style={{ background:'#1A1000', border:`1px solid ${C.amber}30`, borderRadius:14, padding:'14px 16px' }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:6 }}>
+                    <span>💡</span>
+                    <span style={{ color:C.amber, fontSize:13, fontWeight:700 }}>{t('טיפ מקצועי','Pro Tip')}</span>
                   </div>
-                  <div style={{ display:'flex', gap:6, marginTop:10, flexWrap:'wrap' }}>
-                    <span style={{ background:`${C.amber}18`, color:C.amber, fontSize:11, padding:'3px 10px', borderRadius:10, fontWeight:600 }}>{l.modifier}</span>
-                    {l.power !== 'N/A' && <span style={{ background:C.border, color:C.textSub, fontSize:11, padding:'3px 10px', borderRadius:10 }}>{l.power}</span>}
+                  <div style={{ color:'#D1D5DB', fontSize:13, lineHeight:1.7 }}>{lang==='en' && specs.tipEn ? specs.tipEn : specs.tip}</div>
+                </div>
+              </div>
+            )}
+
+            {/* Affiliate Gear */}
+            {affiliate && (
+              <div style={{ padding:'14px 18px', borderBottom:`1px solid ${C.border}` }}>
+                <div style={{ color:C.textMuted, fontSize:12, marginBottom:10 }}>🛒 {t("אין לך ציוד כזה?","Don't have the gear?")}</div>
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+                  <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:'12px', textAlign:'center' }}>
+                    <div style={{ color:C.textMuted, fontSize:10, marginBottom:4 }}>{t('💰 אופציה זולה','💰 Budget')}</div>
+                    <div style={{ color:'#fff', fontSize:12, fontWeight:600, marginBottom:4 }}>{affiliate.budget.name}</div>
+                    <div style={{ color:C.amber, fontSize:14, fontWeight:700 }}>{affiliate.budget.price}</div>
+                  </div>
+                  <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:'12px', textAlign:'center' }}>
+                    <div style={{ color:C.textMuted, fontSize:10, marginBottom:4 }}>{t('⭐ מקצועי','⭐ Pro')}</div>
+                    <div style={{ color:'#fff', fontSize:12, fontWeight:600, marginBottom:4 }}>{affiliate.pro.name}</div>
+                    <div style={{ color:C.amber, fontSize:14, fontWeight:700 }}>{affiliate.pro.price}</div>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            {/* ── 📷 Camera ── */}
-            <div style={{ padding:'16px 18px', borderBottom:`1px solid ${C.border}` }}>
-              <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12 }}>
-                <span style={{ fontSize:15 }}>📷</span>
-                <span style={{ color:'#fff', fontSize:14, fontWeight:700 }}>{t('הגדרות מצלמה', 'Camera Settings')}</span>
               </div>
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
-                {[[t('צמצם','Aperture'), specs.camera.aperture], ['ISO', specs.camera.iso], [t('שאטר','Shutter'), specs.camera.shutter]].map(([label, val]) => (
-                  <div key={label} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:'12px 8px', textAlign:'center' }}>
-                    <div style={{ color:C.textMuted, fontSize:10, marginBottom:5 }}>{label}</div>
-                    <div style={{ color:C.amber, fontSize:15, fontWeight:800, letterSpacing:'-0.5px' }}>{val}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            )}
 
-            {/* ── ⚖️ Ratio ── */}
-            <div style={{ padding:'14px 18px', borderBottom:`1px solid ${C.border}`, display:'flex', alignItems:'flex-start', gap:10 }}>
-              <span style={{ fontSize:15, marginTop:1 }}>⚖️</span>
-              <div>
-                <div style={{ color:'#fff', fontSize:13, fontWeight:700, marginBottom:4 }}>{t('יחסי תאורה', 'Lighting Ratio')}</div>
-                <div style={{ color:C.textSub, fontSize:13 }}>{lang==='en' && specs.ratioEn ? specs.ratioEn : specs.ratio}</div>
-              </div>
-            </div>
-
-            {/* ── 💡 Pro Tip ── */}
-            <div style={{ padding:'14px 18px', marginBottom:4 }}>
-              <div style={{ background:'#1A1000', border:`1px solid ${C.amber}30`, borderRadius:14, padding:'14px 16px' }}>
-                <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:6 }}>
-                  <span style={{ fontSize:14 }}>💡</span>
-                  <span style={{ color:C.amber, fontSize:13, fontWeight:700 }}>{t('טיפ מקצועי', 'Pro Tip')}</span>
-                </div>
-                <div style={{ color:'#D1D5DB', fontSize:13, lineHeight:1.7 }}>{lang==='en' && specs.tipEn ? specs.tipEn : specs.tip}</div>
-              </div>
-            </div>
-
-            <div style={{ padding:'0 18px' }}>
-              <button onClick={reset} style={{ background:C.amber, color:'#000', width:'100%', padding:'14px 0', borderRadius:16, fontSize:14, fontWeight:700, border:'none', cursor:'pointer' }}>{t('צור סט-אפ חדש', 'Create New Setup')}</button>
+            {/* CTAs */}
+            <div style={{ padding:'16px 18px', display:'flex', flexDirection:'column', gap:10 }}>
+              <button
+                onClick={() => onTrySetup && onTrySetup(setup)}
+                style={{ background:C.amber, color:'#000', width:'100%', padding:'14px 0', borderRadius:16, fontSize:14, fontWeight:700, border:'none', cursor:'pointer' }}
+              >
+                {t('נסה את הסט-אפ הזה ←','Try This Setup →')}
+              </button>
+              <button onClick={reset} style={{ background:'none', color:C.textMuted, width:'100%', padding:'12px 0', borderRadius:16, fontSize:13, fontWeight:600, border:`1px solid ${C.border}`, cursor:'pointer' }}>
+                {t('🔄 חפש סט-אפ אחר','🔄 Find Another Setup')}
+              </button>
             </div>
           </div>
         );
       }
 
+      // ── Question Screens ──
       return (
         <div style={{ padding:'24px 18px 100px' }}>
-          <div style={{ color:'#fff', fontSize:24, fontWeight:800, marginBottom:2 }}>{t('מדריך תאורה חכם', 'Smart Lighting Guide')}</div>
-          <div style={{ color:C.textMuted, fontSize:13, marginBottom:20 }}>{t('3 שאלות → סט-אפ מושלם', '3 questions → perfect setup')}</div>
+          <div style={{ color:'#fff', fontSize:22, fontWeight:800, marginBottom:2 }}>{t('מצא את הסט-אפ שלך','Find Your Setup')}</div>
+          <div style={{ color:C.textMuted, fontSize:13, marginBottom:20 }}>
+            {step === 0 ? t('3 שאלות → סט-אפ מושלם','3 questions → perfect setup') : `${t('שלב','Step')} ${step}/3`}
+          </div>
 
           {/* Progress */}
           <div style={{ display:'flex', gap:6, marginBottom:24 }}>
             {stepLabels.map((s,i) => (
               <div key={i} style={{ flex:1 }}>
-                <div style={{ height:3, background: i<=step ? C.amber : C.border, borderRadius:2, marginBottom:4 }} />
-                <div style={{ color: i<=step ? C.amber : C.textMuted, fontSize:11, textAlign:'center' }}>{s}</div>
+                <div style={{ height:3, background: i < step ? C.amber : C.border, borderRadius:2, marginBottom:4 }} />
+                <div style={{ color: i < step ? C.amber : C.textMuted, fontSize:10, textAlign:'center', overflow:'hidden' }}>{s}</div>
               </div>
             ))}
           </div>
 
           {step === 0 && (
             <div>
-              <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:14 }}>{t('מה תצלם?', 'What will you shoot?')}</div>
-              {shootTypes.map(opt => (
-                <button key={opt.id} onClick={() => { setShoot(opt.id); setStep(1); }} style={{ background:C.card, border:`1px solid ${C.border}`, color:'#fff', borderRadius:14, padding:'14px 16px', width:'100%', display:'flex', alignItems:'center', gap:14, cursor:'pointer', marginBottom:10, textAlign:'right' }}>
-                  <span style={{ fontSize:22 }}>{opt.icon}</span>
-                  <span style={{ fontSize:15, fontWeight:500, flex:1 }}>{opt.label}</span>
-                  <span style={{ color:C.amber }}>{lang==='en'?'→':'←'}</span>
-                </button>
-              ))}
+              <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:14 }}>{t('מה אתה מצלם?','What are you shooting?')}</div>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+                {categories.map(opt => (
+                  <button key={opt.id} onClick={() => { setCategory(opt.id); setStep(1); }}
+                    style={{ background:C.card, border:`1px solid ${C.border}`, color:'#fff', borderRadius:16, padding:'18px 12px', cursor:'pointer', display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
+                    <span style={{ fontSize:28 }}>{opt.icon}</span>
+                    <span style={{ fontSize:13, fontWeight:600 }}>{opt.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
           {step === 1 && (
             <div>
-              <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:14 }}>{t('כמה מקורות אור יש לך?', 'How many light sources?')}</div>
-              {lightOptions.map(opt => (
-                <button key={opt.id} onClick={() => { setLights(opt.id); setStep(2); }} style={{ background:C.card, border:`1px solid ${C.border}`, color:'#fff', borderRadius:14, padding:'14px 16px', width:'100%', display:'flex', alignItems:'center', gap:14, cursor:'pointer', marginBottom:10, textAlign:'right' }}>
-                  <span style={{ fontSize:18 }}>{opt.icon}</span>
-                  <span style={{ fontSize:15, fontWeight:500, flex:1 }}>{opt.label}</span>
-                  <span style={{ color:C.amber }}>{lang==='en'?'→':'←'}</span>
-                </button>
-              ))}
-              <button onClick={() => setStep(0)} style={{ color:C.textMuted, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginTop:4 }}>{t('← חזור', 'Back →')}</button>
-            </div>
-          )}
-
-          {step === 2 && (
-            <div>
-              <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:14 }}>{t('איזה סגנון תאורה?', 'Which lighting style?')}</div>
-              {styleOptions.map(opt => (
-                <button key={opt.id} onClick={() => pickStyle(opt.id)} style={{ background:C.card, border:`1px solid ${C.border}`, color:'#fff', borderRadius:14, padding:'14px 16px', width:'100%', display:'flex', alignItems:'center', gap:14, cursor:'pointer', marginBottom:10, textAlign:'right' }}>
+              <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:14 }}>{t('איזה לוק אתה רוצה?','What look do you want?')}</div>
+              {looks.map(opt => (
+                <button key={opt.id} onClick={() => { setLook(opt.id); setStep(2); }}
+                  style={{ background:C.card, border:`1px solid ${C.border}`, color:'#fff', borderRadius:14, padding:'14px 16px', width:'100%', display:'flex', alignItems:'center', gap:14, cursor:'pointer', marginBottom:10 }}>
+                  <span style={{ fontSize:26 }}>{opt.icon}</span>
                   <div style={{ flex:1 }}>
-                    <div style={{ fontSize:15, fontWeight:500, marginBottom:2 }}>{opt.label}</div>
+                    <div style={{ fontSize:15, fontWeight:600, marginBottom:2 }}>{opt.label}</div>
                     <div style={{ color:C.textMuted, fontSize:12 }}>{opt.desc}</div>
                   </div>
                   <span style={{ color:C.amber }}>{lang==='en'?'→':'←'}</span>
                 </button>
               ))}
-              <button onClick={() => setStep(1)} style={{ color:C.textMuted, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginTop:4 }}>{t('← חזור', 'Back →')}</button>
+              <button onClick={() => setStep(0)} style={{ color:C.textMuted, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginTop:4 }}>{lang==='en'?'← Back':'→ חזור'}</button>
+            </div>
+          )}
+
+          {step === 2 && (
+            <div>
+              <div style={{ color:'#fff', fontSize:16, fontWeight:600, marginBottom:14 }}>{t('כמה אורות יש לך?','How many lights do you have?')}</div>
+              {lightCounts.map(opt => (
+                <button key={opt.id} onClick={() => pickLights(opt.id)}
+                  style={{ background:C.card, border:`1px solid ${C.border}`, color:'#fff', borderRadius:14, padding:'14px 16px', width:'100%', display:'flex', alignItems:'center', gap:14, cursor:'pointer', marginBottom:10 }}>
+                  <span style={{ fontSize:26 }}>{opt.icon}</span>
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontSize:15, fontWeight:600, marginBottom:2 }}>{opt.label}</div>
+                    <div style={{ color:C.textMuted, fontSize:12 }}>{opt.desc}</div>
+                  </div>
+                  <span style={{ color:C.amber }}>{lang==='en'?'→':'←'}</span>
+                </button>
+              ))}
+              <button onClick={() => setStep(1)} style={{ color:C.textMuted, background:'none', border:'none', cursor:'pointer', fontSize:13, padding:0, marginTop:4 }}>{lang==='en'?'← Back':'→ חזור'}</button>
             </div>
           )}
         </div>
@@ -1778,7 +1908,9 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
     function App() {
       const [page, setPage]                     = useState('home');
       const [selectedChallenge, setSelectedChallenge] = useState(null);
-      const [lang, setLang] = useState(() => localStorage.getItem('lm_lang') || 'he');
+      const [lang, setLang]                     = useState(() => localStorage.getItem('lm_lang') || 'he');
+      const [guideInitCategory, setGuideInitCategory] = useState(null);
+      const [libraryInitSetup, setLibraryInitSetup]   = useState(null);
 
       useEffect(() => {
         document.documentElement.dir = lang === 'en' ? 'ltr' : 'rtl';
@@ -1786,14 +1918,16 @@ score בין 1-10. difficulty: קל/בינוני/מתקדם. החזר 1-3 issues
         localStorage.setItem('lm_lang', lang);
       }, [lang]);
 
+      function handleTrySetup(setup) { setLibraryInitSetup(setup); setPage('library'); }
+
       return (
         <LangContext.Provider value={lang}>
           <div style={{ maxWidth:430, margin:'0 auto', minHeight:'100vh', background:C.bg, position:'relative' }}>
-            {page === 'home'      && <HomePage setPage={setPage} setSelectedChallenge={setSelectedChallenge} />}
+            {page === 'home'      && <HomePage setPage={setPage} setSelectedChallenge={setSelectedChallenge} setGuideInitCategory={setGuideInitCategory} />}
             {page === 'challenge' && <ChallengePage challenge={selectedChallenge} setPage={setPage} />}
             {page === 'scan'      && <SpaceScanPage />}
-            {page === 'library'   && <LibraryPage />}
-            {page === 'guide'     && <GuidePage />}
+            {page === 'library'   && <LibraryPage initSetup={libraryInitSetup} onInitSetupUsed={() => setLibraryInitSetup(null)} />}
+            {page === 'guide'     && <GuidePage initCategory={guideInitCategory} onCategoryUsed={() => setGuideInitCategory(null)} setPage={setPage} onTrySetup={handleTrySetup} />}
             {page === 'coach'     && <LightingCoachPage />}
             {page !== 'challenge' && <Navbar page={page} setPage={setPage} lang={lang} setLang={setLang} />}
           </div>
